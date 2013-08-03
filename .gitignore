@@ -214,3 +214,7 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+/EBAYMASTERDB
+/log
+/miglayout-src.zip
+/miglayout15-swing.jar
