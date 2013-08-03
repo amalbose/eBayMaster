@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.axatrikx</groupId>
-	<artifactId>ebaymaster</artifactId>
+	<artifactId>eBayMaster</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>eBayMaster</name>
 	<description>eBay Master is a tool for managing eBay transactions</description>
@@ -16,6 +16,16 @@
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout-swing</artifactId>
 			<version>4.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.12</version>
 		</dependency>
 	</dependencies>
 </project>
