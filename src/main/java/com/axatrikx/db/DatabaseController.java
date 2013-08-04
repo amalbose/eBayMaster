@@ -6,11 +6,13 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.utils.CommonSettings;
 
@@ -32,6 +34,11 @@ public class DatabaseController {
 
 	private Connection con;
 
+	/**
+	 * {@link DatabaseController} is the Constructor which initializes the database.
+	 * 
+	 * @throws DataBaseException
+	 */
 	public DatabaseController() throws DataBaseException {
 		try {
 			Class.forName(DRIVER_STRING);
@@ -119,13 +126,28 @@ public class DatabaseController {
 	 *            The query to be executed
 	 * @return The result table in 2D arraylist format.
 	 */
-	public ArrayList<ArrayList<String>> executeQueryForResult(String queryString) {
-		// 2D arraylist for result
+	public QueryResultTable executeQueryForResult(String queryString) {
+		// result object
+		QueryResultTable queryResult = new QueryResultTable();
+
+		// 2D arraylist for result table
 		ArrayList<ArrayList<String>> resultTable = new ArrayList<ArrayList<String>>();
+		// hashmap for header details
+		LinkedHashMap<String, String> headers = new LinkedHashMap<String, String>();
 
 		try {
 			ResultSet rs = this.con.createStatement().executeQuery(queryString);
 			int colSize = rs.getMetaData().getColumnCount();
+
+			// setting header details.
+			for (int i = 1; i <= colSize; i++) {
+				headers.put(rs.getMetaData().getColumnLabel(i), rs.getMetaData().getColumnTypeName(i));
+			}
+
+			if (headers.size() < 1) {
+				log.warn("No columns(ColSize: " + colSize + ") were obtained from query : " + queryString);
+			}
+			queryResult.setHeaderDetails(headers);
 
 			ArrayList<String> rowData;
 			while (rs.next()) {
@@ -135,18 +157,21 @@ public class DatabaseController {
 				}
 				resultTable.add(rowData);
 			}
+			
+			if (resultTable.size() < 1) {
+				log.warn("No results(Result Count: " + resultTable.size() + ") were obtained from query : "
+						+ queryString);
+			}
+			
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
 		}
-		System.out.println(resultTable);
-		return resultTable;
+		queryResult.setResultTable(resultTable);
+		return queryResult;
 	}
 
 	public static void main(String[] args) throws DataBaseException {
-		new DatabaseController().executeQueryForResult("Select * from EBAYMASTERDB.TRANSACTIONS");
-	}
-
-	private enum DATA_TYPE {
-		INTEGER, FLOAT, VARCHAR, DOUBLE, DATE;
+		DatabaseController v = new DatabaseController();
+		v.executeQueryForResult("Select * from EBAYMASTERDB.TRANSACTIONS");
 	}
 }
