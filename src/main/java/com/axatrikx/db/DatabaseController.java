@@ -15,12 +15,14 @@ import org.apache.log4j.Logger;
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.utils.CommonSettings;
+import com.axatrikx.utils.ConfigValues;
 
 public class DatabaseController {
 
 	private static Logger log = Logger.getLogger(DatabaseController.class);
 
-	private static final String SQL_FILE_PATH = "dbqueries_create_tables.db";
+	private static final String SQL_FILE_PATH = ConfigValues.QUERY_FOLDER.toString()
+			+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_CREATE_FILE.toString();
 
 	private static final CharSequence DATABASE_TOKEN = "<DATABASE_NAME>";
 
@@ -37,9 +39,9 @@ public class DatabaseController {
 	/**
 	 * {@link DatabaseController} is the Constructor which initializes the database.
 	 * 
-	 * @throws DataBaseException
+	 * @throws Exception
 	 */
-	public DatabaseController() throws DataBaseException {
+	public DatabaseController() throws Exception {
 		try {
 			Class.forName(DRIVER_STRING);
 			initialize();
@@ -51,21 +53,26 @@ public class DatabaseController {
 
 	/**
 	 * Initializes the Database. Creates the Database and tables if not present.
+	 * 
+	 * @throws Exception
 	 */
-	public void initialize() {
+	public void initialize() throws Exception {
 		setUpDataBase();
 	}
 
 	/**
 	 * Creates database and its tables if not present.
+	 * 
+	 * @throws Exception
 	 */
-	private void setUpDataBase() {
+	private void setUpDataBase() throws Exception {
 		try {
 			con = DriverManager.getConnection(JDBC_URL);
 			// create table
 			createTable(con, SQL_FILE_PATH);
 		} catch (SQLException e) {
 			log.error("SQLException while getting Connection: " + JDBC_URL, e);
+			throw new Exception(""); // TODO create custom exception
 		}
 	}
 
@@ -157,20 +164,21 @@ public class DatabaseController {
 				}
 				resultTable.add(rowData);
 			}
-			
+
 			if (resultTable.size() < 1) {
 				log.warn("No results(Result Count: " + resultTable.size() + ") were obtained from query : "
 						+ queryString);
 			}
-			
+
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
 		}
 		queryResult.setResultTable(resultTable);
+		System.out.println(resultTable);
 		return queryResult;
 	}
 
-	public static void main(String[] args) throws DataBaseException {
+	public static void main(String[] args) throws Exception {
 		DatabaseController v = new DatabaseController();
 		v.executeQueryForResult("Select * from EBAYMASTERDB.TRANSACTIONS");
 	}
