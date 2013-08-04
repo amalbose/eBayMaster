@@ -6,7 +6,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -178,6 +180,18 @@ public class DatabaseController {
 		return queryResult;
 	}
 
+	/**
+	 * Gets the column names requested in the provided query.
+	 * @param query The SQL query. It should be simple query (without columnName AS structure)
+	 * @return The list of column names requested by the query.
+	 */
+	public static List<String> getQueryColumns(String query) {
+		List<String> columns;
+		String columnString = query.replace("SELECT", "").trim().split("FROM")[0].trim();
+		columns =  Arrays.asList(columnString.split("\\s*,\\s*"));
+		return columns;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		DatabaseController v = new DatabaseController();
 		v.executeQueryForResult("Select * from EBAYMASTERDB.TRANSACTIONS");
