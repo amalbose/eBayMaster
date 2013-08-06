@@ -2,17 +2,17 @@ package com.axatrikx.beans;
 
 public class Buyer {
 	
-	private String name;
+	private String buyerName;
 	private String location;
 	
 	private static final String BUYER_COLUMN = "BUYERNAME";
 	private static final String LOCATION_COLUMN = "LOCATION";
 	
-	public String getName() {
-		return name;
+	public String getBuyerName() {
+		return buyerName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setBuyerName(String name) {
+		this.buyerName = name;
 	}
 	public String getLocation() {
 		return location;
