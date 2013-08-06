@@ -1,15 +1,18 @@
 package com.axatrikx.beans;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Transaction {
 
 	private TransactionItem item;
+	private int transactionId;
 	private float cost;
 	private float price;
 	private Buyer buyer;
 	private Date date;
+	private float profit;
 	
+	private static final String TRANSACTIONID_COLUMN = "TRANSACTIONID";
 	private static final String COST_COLUMN = "COST";
 	private static final String PRICE_COLUMN = "PRICE";
 	private static final String PROFIT_COLUMN = "PROFIT";
@@ -45,9 +48,18 @@ public class Transaction {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	public int getTransactionId() {
+		return transactionId;
+	}
+	public void setTransactionId(int transactionId) {
+		this.transactionId = transactionId;
+	}
+	public void setProfit(float profit) {
+		this.profit = profit;
+	}
 	public float getProfit(){
 		//TODO calculate profit
-		return 0.0f;
+		return profit;
 	}
 	public static String getCostColumn() {
 		return COST_COLUMN;
@@ -60,5 +72,8 @@ public class Transaction {
 	}
 	public static String getDateColumn() {
 		return DATE_COLUMN;
+	}
+	public static String getTransactionIDColumn() {
+		return TRANSACTIONID_COLUMN;
 	}
 }
