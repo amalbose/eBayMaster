@@ -10,6 +10,11 @@ public class Transaction {
 	private Buyer buyer;
 	private Date date;
 	
+	private static final String COST_COLUMN = "COST";
+	private static final String PRICE_COLUMN = "PRICE";
+	private static final String PROFIT_COLUMN = "PROFIT";
+	private static final String DATE_COLUMN = "DATE";
+	
 	public TransactionItem getItem() {
 		return item;
 	}
@@ -39,5 +44,21 @@ public class Transaction {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	public float getProfit(){
+		//TODO calculate profit
+		return 0.0f;
+	}
+	public static String getCostColumn() {
+		return COST_COLUMN;
+	}
+	public static String getPriceColumn() {
+		return PRICE_COLUMN;
+	}
+	public static String getProfitColumn() {
+		return PROFIT_COLUMN;
+	}
+	public static String getDateColumn() {
+		return DATE_COLUMN;
 	}
 }
