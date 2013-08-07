@@ -26,19 +26,21 @@ public class TransactionsPanel extends JPanel {
 		 * e.printStackTrace(); }
 		 */
 
-		JScrollPane scrollPane = new JScrollPane();
-		add(scrollPane);
 		table = new JTable();
 		table.setModel(new TransactionsTableModel(
 				"SELECT T.TRANSACTIONID, T.ITEMID, T.BUYERNAME, T.LOCATION, T.COST, T.PRICE, T.PROFIT, T.DATE, I.ITEMNAME, I.CATEGORY, I.RATE FROM EBAYMASTERDB.TRANSACTIONS AS T, EBAYMASTERDB.ITEMS AS I WHERE I.ITEMID = T.ITEMID"));
-		table.setFillsViewportHeight(true);
-		scrollPane.setViewportView(table);
-		int colCount = table.getColumnModel().getColumnCount();
-		for (int i = 0; i < colCount; i++) {
+		table.setPreferredScrollableViewportSize(new Dimension(1000, 400));
+        table.setFillsViewportHeight(true);
+
+        //Create the scroll pane and add the table to it.
+        JScrollPane scrollPane = new JScrollPane(table);
+        //Add the scroll pane to this panel.
+        add(scrollPane);
+        
+		/*for (int i = 0; i < colCount; i++) {
 			TableColumn column = table.getColumnModel().getColumn(i);
 			column.setPreferredWidth(250);
-		}
-		scrollPane.setPreferredSize(new Dimension(1024, 400));
+		}*/
 	}
 
 	public static void main(String[] args) {
