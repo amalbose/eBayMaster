@@ -3,6 +3,7 @@ package com.axatrikx.controllers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -25,7 +26,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 
 	private static Logger log = Logger.getLogger(TransactionsTableModel.class);
 
-	private String[] columnNames;
+	private static String[] columnNames;
 	private List<Transaction> transactions;
 	private String queryString;
 
@@ -43,9 +44,10 @@ public class TransactionsTableModel extends AbstractTableModel {
 		DatabaseController dbController = new DatabaseController();
 		QueryResultTable resultTable = dbController.executeQueryForResult(this.queryString);
 		// process data
-		this.columnNames = (String[]) resultTable.getHeaderDetails().keySet().toArray();
+		Object[] objectArray = resultTable.getHeaderDetails().keySet().toArray();
+		columnNames = Arrays.copyOf(objectArray, objectArray.length, String[].class);
 
-		resultTable.getResultTable();
+		transactions = getTransactions(resultTable.getResultTable());
 	}
 
 	public int getColumnCount() {
@@ -61,8 +63,47 @@ public class TransactionsTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		return transactions.get(row).getBuyer(); // TODO Correct
-		// return data[row][col];
+		Object resultVal = null;
+		/*
+		 * Checking for the column name and returns the value.
+		 */
+		if (columnNames[col].equalsIgnoreCase(Transaction.getTransactionIDColumn())) {
+			// Transaction ID
+			resultVal = transactions.get(row).getTransactionId();
+		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getItemIDColumn())) {
+			// Transaction Item ID
+			resultVal = transactions.get(row).getItem().getItemId();
+		} else if (columnNames[col].equalsIgnoreCase(Buyer.getBuyerColumn())) {
+			// Buyer name
+			resultVal = transactions.get(row).getBuyer().getBuyerName();
+		} else if (columnNames[col].equalsIgnoreCase(Buyer.getLocationColumn())) {
+			// Location
+			resultVal = transactions.get(row).getBuyer().getLocation();
+		} else if (columnNames[col].equalsIgnoreCase(Transaction.getCostColumn())) {
+			// Cost
+			resultVal = transactions.get(row).getCost();
+		} else if (columnNames[col].equalsIgnoreCase(Transaction.getPriceColumn())) {
+			// Price
+			resultVal = transactions.get(row).getPrice();
+		} else if (columnNames[col].equalsIgnoreCase(Transaction.getProfitColumn())) {
+			// Profit
+			resultVal = transactions.get(row).getProfit();
+		} else if (columnNames[col].equalsIgnoreCase(Transaction.getDateColumn())) {
+			// Date
+			resultVal = transactions.get(row).getDate();
+		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getItemColumn())) {
+			// Item Name
+			resultVal = transactions.get(row).getItem().getItemName();
+		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getCategoryColumn())) {
+			// Item Category
+			resultVal = transactions.get(row).getItem().getItemCategory();
+		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getRateColumn())) {
+			// Item Category
+			resultVal = transactions.get(row).getItem().getItemRate();
+		} else {
+			log.warn("Unexpected value found: " + col + " in row: " + row);
+		}
+		return resultVal;
 	}
 
 	public Class getColumnClass(int c) {
@@ -75,11 +116,10 @@ public class TransactionsTableModel extends AbstractTableModel {
 	public boolean isCellEditable(int row, int col) {
 		// Note that the data/cell address is constant,
 		// no matter where the cell appears onscreen.
-		if (col < 2) {
-			return false;
-		} else {
-			return true;
-		}
+		/*
+		 * if (col < 2) { return false; } else { return true; }
+		 */
+		return false;
 	}
 
 	/*
@@ -93,7 +133,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 
 	private List<Transaction> getTransactions(ArrayList<ArrayList<String>> tableData) {
 		List<Transaction> transactions = new ArrayList<Transaction>();
-
 		Transaction curTransaction; // temp transaction to store the current transaction.
 		TransactionItem curItem; // temp transaction item
 		Buyer curBuyer; // temp buyer
@@ -108,7 +147,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 			 */
 			curItem = new TransactionItem();
 			curBuyer = new Buyer();
-
 			// setting item and buyer for the current transaction.
 			curTransaction.setBuyer(curBuyer);
 			curTransaction.setItem(curItem);
@@ -120,7 +158,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 				/*
 				 * Checking for each column and updating the corresponding values.
 				 */
-
 				if (columnNames[columnIndex].equalsIgnoreCase(Transaction.getTransactionIDColumn())) {
 					// Transaction ID
 					curTransaction.setTransactionId(Integer.parseInt(columnValue));
@@ -150,18 +187,30 @@ public class TransactionsTableModel extends AbstractTableModel {
 					} catch (ParseException e) {
 						log.error("Error while parsing date - " + columnValue, e);
 					}
+				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getItemColumn())) {
+					// Item Name
+					curTransaction.getItem().setItemName(columnValue);
+				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getCategoryColumn())) {
+					// Item Category
+					curTransaction.getItem().setItemCategory(columnValue);
+				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getRateColumn())) {
+					// Item Category
+					curTransaction.getItem().setItemRate(Float.parseFloat(columnValue));
 				} else {
 					log.warn("Unexpected value found: " + columnValue + " in index: " + columnIndex);
 				}
-
 				// incrementing columnIndex
 				columnIndex++;
 				// add current transaction to the list.
-				transactions.add(curTransaction);
 			}
+			transactions.add(curTransaction);
 		}
-
+		System.out.println(transactions.size());
 		return transactions;
+	}
+
+	public static String[] getColumnNames() {
+		return columnNames;
 	}
 
 }
