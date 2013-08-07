@@ -157,7 +157,6 @@ public class DatabaseController {
 				log.warn("No columns(ColSize: " + colSize + ") were obtained from query : " + queryString);
 			}
 			queryResult.setHeaderDetails(headers);
-
 			ArrayList<String> rowData;
 			while (rs.next()) {
 				rowData = new ArrayList<String>();
@@ -175,6 +174,7 @@ public class DatabaseController {
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
 		}
+		System.out.println(headers);
 		queryResult.setResultTable(resultTable);
 		System.out.println(resultTable);
 		return queryResult;
@@ -194,6 +194,6 @@ public class DatabaseController {
 	
 	public static void main(String[] args) throws Exception {
 		DatabaseController v = new DatabaseController();
-		v.executeQueryForResult("Select * from EBAYMASTERDB.TRANSACTIONS");
+		v.executeQueryForResult("SELECT T.TRANSACTIONID, T.ITEMID, T.BUYERNAME, T.LOCATION, T.COST, T.PRICE, T.PROFIT, T.DATE, I.ITEMNAME, I.CATEGORY, I.RATE FROM EBAYMASTERDB.TRANSACTIONS AS T, EBAYMASTERDB.ITEMS AS I WHERE I.ITEMID = T.ITEMID");
 	}
 }
