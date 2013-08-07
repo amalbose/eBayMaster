@@ -2,6 +2,11 @@ package com.axatrikx.beans;
 
 import java.util.Date;
 
+/**
+ * Transaction bean class handling all transaction details.
+ * @author Amal Bose B S
+ *
+ */
 public class Transaction {
 
 	private TransactionItem item;
