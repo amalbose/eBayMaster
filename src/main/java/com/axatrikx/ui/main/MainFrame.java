@@ -1,4 +1,4 @@
-package com.axatrikx.ui.panels;
+package com.axatrikx.ui.main;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -36,6 +36,8 @@ import java.awt.CardLayout;
 
 import javax.swing.JSeparator;
 import javax.swing.border.EtchedBorder;
+
+import com.axatrikx.ui.panels.TransactionsPanel;
 
 public class MainFrame extends JFrame {
 
