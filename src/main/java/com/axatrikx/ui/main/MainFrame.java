@@ -37,12 +37,16 @@ import java.awt.CardLayout;
 import javax.swing.JSeparator;
 import javax.swing.border.EtchedBorder;
 
+import com.axatrikx.ui.panels.HomePanel;
 import com.axatrikx.ui.panels.TransactionsPanel;
 
 public class MainFrame extends JFrame {
 
 	private JPanel contentPane;
 
+	private CardLayout cardLayout;
+	private JPanel mainPanel;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -73,6 +77,8 @@ public class MainFrame extends JFrame {
 		menuBar.setBounds(new Rectangle(5, 0, 0, 0));
 		menuBar.setAlignmentX(5.0f);
 		setJMenuBar(menuBar);
+
+		cardLayout = new CardLayout();
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -169,6 +175,11 @@ public class MainFrame extends JFrame {
 		contentPane.add(toolBar, BorderLayout.NORTH);
 
 		JButton btnHome = new JButton("Home", new ImageIcon(MainFrame.class.getResource("/images/menu-24.png")));
+		btnHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				changeCard("Home");
+			}
+		});
 		btnHome.setBorder(null);
 		btnHome.setMaximumSize(new Dimension(50, 60));
 		btnHome.setPreferredSize(new Dimension(50, 60));
@@ -184,6 +195,11 @@ public class MainFrame extends JFrame {
 
 		JButton btnTransactions = new JButton("Transactions", new ImageIcon(
 				MainFrame.class.getResource("/images/transaction-24.png")));
+		btnTransactions.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				changeCard("Transactions");
+			}
+		});
 		btnTransactions.setBorder(null);
 		btnTransactions.setPreferredSize(new Dimension(50, 60));
 		btnTransactions.setMaximumSize(new Dimension(75, 60));
@@ -226,18 +242,24 @@ public class MainFrame extends JFrame {
 
 		JPanel sidePanel = new JPanel();
 
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
-		mainPanel.setLayout(new BorderLayout());
-		
-		// adding transaction;
+
+		mainPanel.setLayout(cardLayout);
+
+		JPanel homePanel = new HomePanel();
+		JPanel transactionsPanel = null;
 		try {
-			mainPanel.add(new TransactionsPanel(),BorderLayout.CENTER);
-		} catch (Exception e) {
+			transactionsPanel = new TransactionsPanel();
+		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
-		
+
+		// setting the various cards
+		mainPanel.add(homePanel, "Home");
+		mainPanel.add(transactionsPanel, "Transactions");
+
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidePanel, mainPanel);
 		splitPane.setDividerSize(0);
 		splitPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -248,4 +270,7 @@ public class MainFrame extends JFrame {
 		pack();
 	}
 
+	public void changeCard(String card) {
+		cardLayout.show(mainPanel, card);
+	}
 }
