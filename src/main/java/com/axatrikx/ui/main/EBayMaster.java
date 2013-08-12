@@ -1,10 +1,14 @@
 package com.axatrikx.ui.main;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import java.awt.Color;
-import java.awt.Dimension;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
+import com.axatrikx.ui.panels.MainFrame;
 
 public class EBayMaster {
 
@@ -37,15 +41,32 @@ public class EBayMaster {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		mainFrame = new JFrame();
-		mainFrame.getContentPane().setSize(new Dimension(800, 500));
+		try {
+			UIManager.setLookAndFeel(
+			        UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		mainFrame = new MainFrame();
+		/*mainFrame.getContentPane().setSize(new Dimension(800, 500));
 		mainFrame.getContentPane().setPreferredSize(new Dimension(800, 500));
 		mainFrame.setSize(new Dimension(724, 440));
 		mainFrame.setPreferredSize(new Dimension(800, 500));
+		
 		mainFrame.setName("mainFrame");
 		mainFrame.setTitle("eBay Master");
 		mainFrame.setBackground(Color.WHITE);
-		mainFrame.setBounds(100, 100, 450, 300);
+		mainFrame.setBounds(100, 100, 450, 300);*/
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
