@@ -41,8 +41,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 	 * @throws Exception
 	 */
 	private void getLatestData() throws Exception {
-		DatabaseController dbController = new DatabaseController();
-		QueryResultTable resultTable = dbController.executeQueryForResult(this.queryString);
+		QueryResultTable resultTable = new DatabaseController().executeQueryForResult(this.queryString);
 		// process data
 		Object[] objectArray = resultTable.getHeaderDetails().keySet().toArray();
 		columnNames = Arrays.copyOf(objectArray, objectArray.length, String[].class);
@@ -114,21 +113,39 @@ public class TransactionsTableModel extends AbstractTableModel {
 	 * Don't need to implement this method unless your table's editable.
 	 */
 	public boolean isCellEditable(int row, int col) {
-		// Note that the data/cell address is constant,
-		// no matter where the cell appears onscreen.
-		/*
-		 * if (col < 2) { return false; } else { return true; }
-		 */
-		return false;
+		boolean isEditable = true;
+		if (col < 2 || col > 7) { // TODO to be removed once updation of Items table is completed
+			isEditable = false;
+		}
+		return isEditable;
 	}
 
 	/*
 	 * Don't need to implement this method unless your table's data can change.
 	 */
 	public void setValueAt(Object value, int row, int col) {
-		// data[row][col] = (String) value;
-		// TODO modify the value and update DB
+		System.out.println(getValueAt(row, 0) + " " + columnNames[col]);
+		String table = "EBAYMASTERDB.TRANSACTIONS"; // TODO change
+		if (table.equalsIgnoreCase("EBAYMASTERDB.TRANSACTIONS")) {
+			if(getColumnClass(col).equals(String.class)) {
+				value = "'"+value+"'";
+			}
+			String query = "UPDATE " + table + " SET " + columnNames[col] + " = " + value + " WHERE " + columnNames[0]
+					+ " = " + getValueAt(row, 0);
+			try {
+				new DatabaseController().executeQuery(query);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		fireTableCellUpdated(row, col);
+		try {
+			getLatestData();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private List<Transaction> getTransactions(ArrayList<ArrayList<String>> tableData) {
