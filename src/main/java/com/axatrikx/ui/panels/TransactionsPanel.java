@@ -35,7 +35,7 @@ public class TransactionsPanel extends JPanel {
 	            UIManager.getSystemLookAndFeelClassName());
 		// Getting query for model.
 		table.setModel(new TransactionsTableModel(CommonSettings.getDBInsertQuery(QUERY_TRANS_DETAIL_TKN)));
-		
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		// Settings the window size.
 		table.setPreferredScrollableViewportSize(new Dimension(Integer.parseInt(CommonSettings
 				.getSettingValue(DEFAULT_WINDOW_WIDTH_TKN)), Integer.parseInt(CommonSettings
