@@ -56,15 +56,15 @@ public class EBayMaster {
 			e.printStackTrace();
 		}
 		mainFrame = new MainFrame();
-		mainFrame.getContentPane().setSize(new Dimension(800, 500));
-		mainFrame.getContentPane().setPreferredSize(new Dimension(800, 500));
-		mainFrame.setSize(new Dimension(724, 440));
-		mainFrame.setPreferredSize(new Dimension(800, 500));
+		mainFrame.getContentPane().setSize(new Dimension(1000, 500));
+		mainFrame.getContentPane().setPreferredSize(new Dimension(1000, 500));
+		mainFrame.setSize(new Dimension(1000, 500));
+		mainFrame.setPreferredSize(new Dimension(1000, 500));
 		
 		mainFrame.setName("mainFrame");
 		mainFrame.setTitle("eBay Master");
 		mainFrame.setBackground(Color.WHITE);
-		mainFrame.setBounds(100, 100, 450, 300);
+	//	mainFrame.setBounds(100, 100, 450, 300);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
