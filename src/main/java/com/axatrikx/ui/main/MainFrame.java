@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
@@ -70,7 +71,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setTitle("eBay Master");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 500);
+		//setBounds(100, 100, 800, 500);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setName("menuBar");
@@ -249,6 +250,7 @@ public class MainFrame extends JFrame {
 
 		JPanel homePanel = new HomePanel();
 		JPanel transactionsPanel = null;
+		
 		try {
 			transactionsPanel = new TransactionsPanel();
 		} catch (Exception e1) {
