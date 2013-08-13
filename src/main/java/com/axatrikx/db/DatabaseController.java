@@ -124,6 +124,12 @@ public class DatabaseController {
 			result = true;
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				log.error("SQLException while closing connection", e);
+			}
 		}
 		return result;
 	}
@@ -173,6 +179,12 @@ public class DatabaseController {
 
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
+		} finally {
+			try {
+				con.close();
+			} catch (SQLException e) {
+				log.error("SQLException while closing connection", e);
+			}
 		}
 		System.out.println(headers);
 		queryResult.setResultTable(resultTable);
@@ -182,16 +194,18 @@ public class DatabaseController {
 
 	/**
 	 * Gets the column names requested in the provided query.
-	 * @param query The SQL query. It should be simple query (without columnName AS structure)
+	 * 
+	 * @param query
+	 *            The SQL query. It should be simple query (without columnName AS structure)
 	 * @return The list of column names requested by the query.
 	 */
 	public static List<String> getQueryColumns(String query) {
 		List<String> columns;
 		String columnString = query.replace("SELECT", "").trim().split("FROM")[0].trim();
-		columns =  Arrays.asList(columnString.split("\\s*,\\s*"));
+		columns = Arrays.asList(columnString.split("\\s*,\\s*"));
 		return columns;
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		DatabaseController v = new DatabaseController();
 		v.executeQueryForResult("SELECT T.TRANSACTIONID, T.ITEMID, T.BUYERNAME, T.LOCATION, T.COST, T.PRICE, T.PROFIT, T.DATE, I.ITEMNAME, I.CATEGORY, I.RATE FROM EBAYMASTERDB.TRANSACTIONS AS T, EBAYMASTERDB.ITEMS AS I WHERE I.ITEMID = T.ITEMID");
