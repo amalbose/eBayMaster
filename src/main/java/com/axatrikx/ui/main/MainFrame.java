@@ -38,6 +38,7 @@ import java.awt.CardLayout;
 import javax.swing.JSeparator;
 import javax.swing.border.EtchedBorder;
 
+import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.ui.panels.HomePanel;
 import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionsPanel;
@@ -48,7 +49,7 @@ public class MainFrame extends JFrame {
 
 	private CardLayout cardLayout;
 	private JPanel mainPanel;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -72,7 +73,7 @@ public class MainFrame extends JFrame {
 	public MainFrame() {
 		setTitle("eBay Master");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setBounds(100, 100, 800, 500);
+		// setBounds(100, 100, 800, 500);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setName("menuBar");
@@ -251,9 +252,9 @@ public class MainFrame extends JFrame {
 
 		JPanel homePanel = new HomePanel();
 		JPanel transactionsPanel = new JPanel();
-		
+
 		try {
-			transactionsPanel.add(new TransactionFormPanel());
+			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()));
 			transactionsPanel.add(new TransactionsPanel());
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
