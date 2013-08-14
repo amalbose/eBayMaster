@@ -39,6 +39,7 @@ import javax.swing.JSeparator;
 import javax.swing.border.EtchedBorder;
 
 import com.axatrikx.ui.panels.HomePanel;
+import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionsPanel;
 
 public class MainFrame extends JFrame {
@@ -249,10 +250,11 @@ public class MainFrame extends JFrame {
 		mainPanel.setLayout(cardLayout);
 
 		JPanel homePanel = new HomePanel();
-		JPanel transactionsPanel = null;
+		JPanel transactionsPanel = new JPanel();
 		
 		try {
-			transactionsPanel = new TransactionsPanel();
+			transactionsPanel.add(new TransactionFormPanel());
+			transactionsPanel.add(new TransactionsPanel());
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
