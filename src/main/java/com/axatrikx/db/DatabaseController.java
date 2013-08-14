@@ -206,8 +206,11 @@ public class DatabaseController {
 		return columns;
 	}
 
-	public static void main(String[] args) throws Exception {
-		DatabaseController v = new DatabaseController();
-		v.executeQueryForResult("SELECT T.TRANSACTIONID, T.ITEMID, T.BUYERNAME, T.LOCATION, T.COST, T.PRICE, T.PROFIT, T.DATE, I.ITEMNAME, I.CATEGORY, I.RATE FROM EBAYMASTERDB.TRANSACTIONS AS T, EBAYMASTERDB.ITEMS AS I WHERE I.ITEMID = T.ITEMID");
+	/**
+	 * Returns the database name.
+	 * @return
+	 */
+	public static String getDatabaseName() {
+		return DATABASE_NAME;
 	}
 }
