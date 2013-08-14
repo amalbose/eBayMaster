@@ -1,11 +1,14 @@
 package com.axatrikx.ui.panels;
 
-import javax.swing.JPanel;
 import java.awt.Dimension;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import java.util.List;
+
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import net.miginfocom.swing.MigLayout;
 
 public class TransactionFormPanel extends JPanel {
 	private JTextField textField;
@@ -19,7 +22,7 @@ public class TransactionFormPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public TransactionFormPanel() {
+	public TransactionFormPanel(List<String> categories) {
 		setSize(new Dimension(800, 100));
 		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][grow][][]", "[][][]"));
 		
@@ -54,10 +57,11 @@ public class TransactionFormPanel extends JPanel {
 		add(textField, "cell 0 2,alignx left");
 		textField.setColumns(10);
 		
-		JComboBox comboBox = new JComboBox();
+		JComboBox<String> comboBox = new JComboBox<String>();
 		comboBox.setEditable(true);
-		comboBox.addItem("Value 0");
-		comboBox.addItem("Value 1");
+		for(String category : categories) {
+			comboBox.addItem(category);
+		}
 		add(comboBox, "cell 2 2,growx");
 		
 		textField_1 = new JTextField();
