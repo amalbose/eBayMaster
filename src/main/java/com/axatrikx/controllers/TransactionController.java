@@ -29,7 +29,7 @@ public class TransactionController {
 	 *            'QUERY_TRANS_DETAIL'.
 	 * @return The query string.
 	 */
-	public String getQuery(String queryType) {
+	public static String getDBSelectQuery(String queryType) {
 		String result = null;
 		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_SELECT_FILE.toString());
@@ -40,10 +40,5 @@ public class TransactionController {
 			log.error("Invalid queryType: " + queryType);
 		}
 		return result;
-	}
-	
-	public static void main(String[] args) {
-		TransactionController tran = new TransactionController();
-		System.out.println(DatabaseController.getQueryColumns(tran.getQuery(QUERY_TRANS_DETAIL_TKN)).toString());
 	}
 }

@@ -10,6 +10,7 @@ import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.controllers.TransactionsTableModel;
 import com.axatrikx.utils.CommonSettings;
 
@@ -37,7 +38,7 @@ public class TransactionsPanel extends JPanel {
 
 	private void displayUI() throws Exception {
 		// Getting query for model.
-		table.setModel(new TransactionsTableModel(CommonSettings.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN)));
+		table.setModel(new TransactionsTableModel(TransactionController.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN)));
 		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		// Settings the window size.
