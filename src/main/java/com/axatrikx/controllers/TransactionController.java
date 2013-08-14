@@ -1,5 +1,7 @@
 package com.axatrikx.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -40,5 +42,25 @@ public class TransactionController {
 			log.error("Invalid queryType: " + queryType);
 		}
 		return result;
+	}
+
+	/**
+	 * Gets the transaction item categories as a list.
+	 * @return Categories as a list.
+	 */
+	public static List<String> getCategories() {
+		ArrayList<String> res = new ArrayList<String>();
+		try {
+			ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
+					"SELECT DISTINCT CATEGORY FROM " + DatabaseController.getDatabaseName() + ".ITEMS")
+					.getResultTable();
+			for (ArrayList<String> row : resultTable) {
+				res.add(row.get(0));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 }
