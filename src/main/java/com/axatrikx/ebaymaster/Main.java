@@ -2,9 +2,13 @@ package com.axatrikx.ebaymaster;
 
 import java.awt.EventQueue;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.Logger;
 
 import com.axatrikx.ui.main.EBayMaster;
+import com.axatrikx.ui.panels.ErrorDialog;
 
 public class Main {
 
@@ -24,10 +28,11 @@ public class Main {
 			public void newInstanceCreated() {
 				log.warn("New instance detected...");
 				System.out.println("New instance detected...");
-				// this is where your handler code goes...
+				JOptionPane.showMessageDialog(null, "New instance detected and closed.", "Multiple Instances",
+						JOptionPane.WARNING_MESSAGE);
 			}
 		});
-		
+
 		invokeApplication();
 	}
 
