@@ -1,14 +1,49 @@
 package com.axatrikx.ebaymaster;
 
+import java.awt.EventQueue;
+
 import org.apache.log4j.Logger;
+
+import com.axatrikx.ui.main.EBayMaster;
 
 public class Main {
 
-	static Logger logger = Logger.getLogger(Main.class);
+	static Logger log = Logger.getLogger(Main.class);
 
+	/**
+	 * Launch the application.
+	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		logger.debug("Debug trial");
+		if (!ApplicationInstanceManager.registerInstance()) {
+			// instance already running.
+			log.error("Another instance of this application is already running.  Exiting.");
+			System.out.println("Another instance of this application is already running.  Exiting.");
+			System.exit(0);
+		}
+		ApplicationInstanceManager.setApplicationInstanceListener(new ApplicationInstanceListener() {
+			public void newInstanceCreated() {
+				log.warn("New instance detected...");
+				System.out.println("New instance detected...");
+				// this is where your handler code goes...
+			}
+		});
+		
+		invokeApplication();
+	}
+
+	/**
+	 * Invokes the application
+	 */
+	private static void invokeApplication() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					EBayMaster window = new EBayMaster();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 }

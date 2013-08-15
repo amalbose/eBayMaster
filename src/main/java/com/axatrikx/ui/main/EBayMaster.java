@@ -13,22 +13,6 @@ public class EBayMaster {
 	private JFrame mainFrame;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					EBayMaster window = new EBayMaster();
-					window.mainFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the application.
 	 */
 	public EBayMaster() {
@@ -66,6 +50,7 @@ public class EBayMaster {
 		mainFrame.setBackground(Color.WHITE);
 	//	mainFrame.setBounds(100, 100, 450, 300);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setVisible(true);
 	}
 
 }
