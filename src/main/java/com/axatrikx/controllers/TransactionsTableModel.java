@@ -114,7 +114,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 	 */
 	public boolean isCellEditable(int row, int col) {
 		boolean isEditable = true;
-		if (col < 2 || col > 7) { // TODO to be removed once updation of Items table is completed
+		if (col < 5) { // TODO to be removed once updation of Items table is completed
 			isEditable = false;
 		}
 		return isEditable;
