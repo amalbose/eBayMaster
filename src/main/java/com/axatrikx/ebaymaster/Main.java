@@ -2,13 +2,11 @@ package com.axatrikx.ebaymaster;
 
 import java.awt.EventQueue;
 
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
 import com.axatrikx.ui.main.EBayMaster;
-import com.axatrikx.ui.panels.ErrorDialog;
 
 public class Main {
 
@@ -43,7 +41,7 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EBayMaster window = new EBayMaster();
+					new EBayMaster();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
