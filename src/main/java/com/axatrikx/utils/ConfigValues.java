@@ -8,8 +8,10 @@ public enum ConfigValues {
 	QUERY_CREATE_FILE("dbqueries_create_tables.db"),
 	QUERY_SELECT_FILE("dbqueries_select.db"),
 	SEPARATOR("//"),
-	DATE_FORMAT("yyyy-MM-dd HH:mm:ss.S");
-	
+	DATE_FORMAT("yyyy-MM-dd HH:mm:ss.S"),
+	CALENDAR_DATE_FORMAT("EEE MMM dd HH:mm:ss z yyyy"),
+	DATE_DISPLAY_FORMAT("dd MMM yyyy HH:mm:ss");
+
 	private String value;
 	
 	ConfigValues(String value){
