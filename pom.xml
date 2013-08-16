@@ -27,5 +27,10 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.12</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jbundle.util.jcalendarbutton</groupId>
+			<artifactId>org.jbundle.util.jcalendarbutton</artifactId>
+			<version>1.6.2</version>
+		</dependency>
 	</dependencies>
 </project>
