@@ -20,8 +20,6 @@ import com.axatrikx.utils.PreparedDataExecutor;
  */
 public class TransactionItemController {
 
-	private TransactionItem transactionItemObj;
-
 	private static final String QUERY_ITEM_WITH_NAME_TKN = "QUERY_ITEM_WITH_NAME";
 
 	/**
