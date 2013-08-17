@@ -44,8 +44,6 @@ public class MainFrame extends JFrame {
 	private CardLayout cardLayout;
 	private JPanel mainPanel;
 
-	private TransactionsPanel transactionPanel;
-
 	/**
 	 * Launch the application.
 	 */
@@ -78,11 +76,6 @@ public class MainFrame extends JFrame {
 		setJMenuBar(menuBar);
 
 		cardLayout = new CardLayout();
-		try {
-			transactionPanel = new TransactionsPanel();
-		} catch (Exception e2) {
-			e2.printStackTrace();
-		}
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -253,9 +246,12 @@ public class MainFrame extends JFrame {
 
 		JPanel homePanel = new HomePanel();
 		JPanel transactionsPanel = new JPanel();
+		TransactionsPanel transactionPanel = null;
+
 		transactionsPanel.setLayout(new BorderLayout());
 		try {
 			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()), BorderLayout.NORTH);
+			transactionPanel = new TransactionsPanel();
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
@@ -267,6 +263,9 @@ public class MainFrame extends JFrame {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
 
