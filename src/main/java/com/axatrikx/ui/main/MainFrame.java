@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -28,6 +29,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import com.axatrikx.controllers.TransactionController;
+import com.axatrikx.errors.DataBaseException;
+import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.ui.panels.HomePanel;
 import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionsPanel;
@@ -42,7 +45,6 @@ public class MainFrame extends JFrame {
 	private JPanel mainPanel;
 
 	private TransactionsPanel transactionPanel;
-	
 
 	/**
 	 * Launch the application.
@@ -252,8 +254,21 @@ public class MainFrame extends JFrame {
 		JPanel homePanel = new HomePanel();
 		JPanel transactionsPanel = new JPanel();
 		transactionsPanel.setLayout(new BorderLayout());
-		transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()),BorderLayout.NORTH);
-		transactionsPanel.add(transactionPanel,BorderLayout.CENTER);
+		try {
+			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()), BorderLayout.NORTH);
+		} catch (ClassNotFoundException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+		} catch (DataBaseException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+		} catch (DatabaseTableCreationException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+		}
+		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
 
 		// setting the various cards
 		mainPanel.add(homePanel, "Home");
@@ -268,8 +283,6 @@ public class MainFrame extends JFrame {
 		pack();
 
 	}
-
-
 
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
