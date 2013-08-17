@@ -19,9 +19,6 @@ import com.axatrikx.utils.ConfigValues;
 
 public class TransactionsTableModel extends AbstractTableModel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6932679990291788679L;
 
 	private static Logger log = Logger.getLogger(TransactionsTableModel.class);
