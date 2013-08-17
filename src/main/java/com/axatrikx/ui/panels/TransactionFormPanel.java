@@ -1,6 +1,5 @@
 package com.axatrikx.ui.panels;
 
-import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
@@ -21,6 +20,10 @@ import org.jbundle.util.jcalendarbutton.JCalendarButton;
 import com.axatrikx.utils.ConfigValues;
 
 public class TransactionFormPanel extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -202660505350614300L;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -33,8 +36,7 @@ public class TransactionFormPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public TransactionFormPanel(List<String> categories) {
-		setSize(new Dimension(800, 100));
-		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][grow][][]", "[][][]"));
+		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][]", "[][][]"));
 
 		JLabel lblTransactionItem = new JLabel("Transaction Item");
 		add(lblTransactionItem, "cell 0 1");
@@ -61,7 +63,7 @@ public class TransactionFormPanel extends JPanel {
 		add(lblPrice, "cell 14 1");
 
 		JLabel lblProfit = new JLabel("Profit");
-		add(lblProfit, "cell 16 1");
+		add(lblProfit, "cell 15 1,alignx left");
 
 		textField = new JTextField();
 		add(textField, "cell 0 2,alignx left");
@@ -112,11 +114,10 @@ public class TransactionFormPanel extends JPanel {
 		textField_4.setColumns(7);
 
 		textField_5 = new JTextField();
-		add(textField_5, "cell 14 2,growx");
+		add(textField_5, "cell 14 2,alignx left");
 		textField_5.setColumns(7);
 
 		JLabel lblProfitvalue = new JLabel("0");
-		add(lblProfitvalue, "cell 16 2");
-
+		add(lblProfitvalue, "cell 15 2,alignx left");
 	}
 }
