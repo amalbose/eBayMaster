@@ -23,6 +23,9 @@ import javax.swing.table.TableColumnModel;
 
 import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.controllers.TransactionsTableModel;
+import com.axatrikx.db.DatabaseController;
+import com.axatrikx.errors.DataBaseException;
+import com.axatrikx.errors.DatabaseTableCreationException;
 
 public class TransactionsPanel extends JPanel {
 	/**
@@ -38,10 +41,13 @@ public class TransactionsPanel extends JPanel {
 
 	/**
 	 * Create the panel.
+	 * @throws DatabaseTableCreationException 
+	 * @throws DataBaseException 
+	 * @throws ClassNotFoundException 
 	 * 
 	 * @throws Exception
 	 */
-	public TransactionsPanel() throws Exception {
+	public TransactionsPanel() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		setLayout(new BorderLayout());
 		table = new JTable() {
 
@@ -61,9 +67,8 @@ public class TransactionsPanel extends JPanel {
 		displayUI();
 	}
 
-	private void displayUI() throws Exception {
-		// Getting query for model.
-		table.setModel(new TransactionsTableModel(TransactionController.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN)));
+	private void displayUI() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+		table.setModel(new TransactionsTableModel(processSelectQuery(TransactionController.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN))));
 		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		TableColumnModel tcm = table.getColumnModel();
 
@@ -76,6 +81,15 @@ public class TransactionsPanel extends JPanel {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		// Add the scroll pane to this panel.
 		add(scrollPane, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Returns the query with Database name token replaced with actual DB name.
+	 * @param dbSelectQuery
+	 * @return
+	 */
+	private String processSelectQuery(String dbSelectQuery) {
+		return dbSelectQuery.replace(DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName());
 	}
 
 	private void decorateTable(TableColumnModel tcm) {
