@@ -250,8 +250,9 @@ public class MainFrame extends JFrame {
 
 		transactionsPanel.setLayout(new BorderLayout());
 		try {
-			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()), BorderLayout.NORTH);
+			// add transaction table panel
 			transactionPanel = new TransactionsPanel();
+			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()), BorderLayout.NORTH);
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
@@ -263,9 +264,6 @@ public class MainFrame extends JFrame {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
 
