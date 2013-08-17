@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
@@ -15,11 +16,18 @@ import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.beans.Transaction;
 import com.axatrikx.beans.TransactionItem;
 import com.axatrikx.db.DatabaseController;
+import com.axatrikx.errors.DataBaseException;
+import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
 
 public class TransactionsTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 6932679990291788679L;
+
+	private static final int TRANSACTIONID_ROW = 0;
+	private static final int ITEMID_ROW = 1;
+
+	private static final String TRANSACTIONS_TABLE = "EBAYMASTERDB.TRANSACTIONS";
 
 	private static Logger log = Logger.getLogger(TransactionsTableModel.class);
 
@@ -35,9 +43,13 @@ public class TransactionsTableModel extends AbstractTableModel {
 	/**
 	 * Query database to get the latest data.
 	 * 
+	 * @throws DatabaseTableCreationException
+	 * @throws DataBaseException
+	 * @throws ClassNotFoundException
+	 * 
 	 * @throws Exception
 	 */
-	private void getLatestData() throws Exception {
+	private void getLatestData() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		QueryResultTable resultTable = new DatabaseController().executeQueryForResult(this.queryString);
 		// process data
 		Object[] objectArray = resultTable.getHeaderDetails().keySet().toArray();
@@ -110,9 +122,14 @@ public class TransactionsTableModel extends AbstractTableModel {
 	 * Don't need to implement this method unless your table's editable.
 	 */
 	public boolean isCellEditable(int row, int col) {
-		boolean isEditable = true;
-		if (col < 5) { // TODO to be removed once updation of Items table is completed
-			isEditable = false;
+		boolean isEditable = false;
+		int[] indexes = getColumnIndexes(TRANSACTIONS_TABLE);
+		int size = indexes.length;
+		for (int i = 0; i < size; i++) {
+			if (col == indexes[i]) {
+				isEditable = true;
+				break;
+			}
 		}
 		return isEditable;
 	}
@@ -122,19 +139,24 @@ public class TransactionsTableModel extends AbstractTableModel {
 	 */
 	public void setValueAt(Object value, int row, int col) {
 		System.out.println(getValueAt(row, 0) + " " + columnNames[col]);
-		String table = "EBAYMASTERDB.TRANSACTIONS"; // TODO change
-		if (table.equalsIgnoreCase("EBAYMASTERDB.TRANSACTIONS")) {
-			if(getColumnClass(col).equals(String.class)) {
-				value = "'"+value+"'";
-			}
-			String query = "UPDATE " + table + " SET " + columnNames[col] + " = " + value + " WHERE " + columnNames[0]
-					+ " = " + getValueAt(row, 0);
-			try {
-				new DatabaseController().executeQuery(query);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if (getColumnClass(col).equals(String.class)) {
+			value = "'" + value + "'";
+		}
+		String query = "UPDATE " + TRANSACTIONS_TABLE + " SET " + columnNames[col] + " = " + value + " WHERE "
+				+ columnNames[0] + " = " + getValueAt(row, TRANSACTIONID_ROW);
+		try {
+			new DatabaseController().executeQuery(query);
+		} catch (ClassNotFoundException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : " + e1.getClass().getSimpleName(),
+					JOptionPane.ERROR_MESSAGE);
+		} catch (DataBaseException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : " + e1.getClass().getSimpleName(),
+					JOptionPane.ERROR_MESSAGE);
+		} catch (DatabaseTableCreationException e1) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : " + e1.getClass().getSimpleName(),
+					JOptionPane.ERROR_MESSAGE);
 		}
 		fireTableCellUpdated(row, col);
 		try {
@@ -143,6 +165,16 @@ public class TransactionsTableModel extends AbstractTableModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Gets the column indexes of the given table.
+	 * 
+	 * @param columnIndex
+	 * @return
+	 */
+	public int[] getColumnIndexes(String tableName) {
+		return new int[] { 0, 1, 5, 6, 7, 8, 9, 10 };
 	}
 
 	private List<Transaction> getTransactions(ArrayList<ArrayList<String>> tableData) {
@@ -200,6 +232,8 @@ public class TransactionsTableModel extends AbstractTableModel {
 								.parse(columnValue));
 					} catch (ParseException e) {
 						log.error("Error while parsing date - " + columnValue, e);
+						JOptionPane.showMessageDialog(null, e.getMessage(), "Error while parsing date : "
+								+ e.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 					}
 				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getItemColumn())) {
 					// Item Name
@@ -223,8 +257,33 @@ public class TransactionsTableModel extends AbstractTableModel {
 		return transactions;
 	}
 
+	/**
+	 * Returns the column names as array.
+	 * 
+	 * @return
+	 */
 	public static String[] getColumnNames() {
 		return columnNames;
+	}
+
+	/**
+	 * Returns the index of given column.
+	 * 
+	 * @param columnName
+	 * @return
+	 */
+	public static int getColumnIndex(String columnName) {
+		int index = -1;
+		for (int i = 0; i < columnNames.length; i++) {
+			if (columnName.equalsIgnoreCase(columnNames[i])) {
+				index = i;
+				break;
+			}
+		}
+		if (index == -1) {
+			log.error("Could not find index for columnName " + columnName);
+		}
+		return index;
 	}
 
 }
