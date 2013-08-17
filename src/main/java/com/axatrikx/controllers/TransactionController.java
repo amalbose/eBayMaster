@@ -7,6 +7,8 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 import com.axatrikx.db.DatabaseController;
+import com.axatrikx.errors.DataBaseException;
+import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.CommonSettings;
 import com.axatrikx.utils.ConfigValues;
 
@@ -46,20 +48,18 @@ public class TransactionController {
 
 	/**
 	 * Gets the transaction item categories as a list.
+	 * 
 	 * @return Categories as a list.
+	 * @throws DataBaseException 
+	 * @throws ClassNotFoundException 
+	 * @throws DatabaseTableCreationException 
 	 */
-	public static List<String> getCategories() {
+	public static List<String> getCategories() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		ArrayList<String> res = new ArrayList<String>();
-		try {
-			ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
-					"SELECT DISTINCT CATEGORY FROM " + DatabaseController.getDatabaseName() + ".ITEMS")
-					.getResultTable();
-			for (ArrayList<String> row : resultTable) {
-				res.add(row.get(0));
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
+				"SELECT DISTINCT CATEGORY FROM " + DatabaseController.getDatabaseName() + ".ITEMS").getResultTable();
+		for (ArrayList<String> row : resultTable) {
+			res.add(row.get(0));
 		}
 		return res;
 	}
