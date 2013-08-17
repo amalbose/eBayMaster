@@ -35,7 +35,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 	private List<Transaction> transactions;
 	private String queryString;
 
-	public TransactionsTableModel(String queryString) throws Exception {
+	public TransactionsTableModel(String queryString) throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		this.queryString = queryString;
 		getLatestData();
 	}
