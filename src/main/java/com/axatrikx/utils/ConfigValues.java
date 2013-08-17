@@ -11,8 +11,8 @@ public enum ConfigValues {
 	SEPARATOR("//"),
 	DATE_FORMAT("yyyy-MM-dd HH:mm:ss.S"),
 	CALENDAR_DATE_FORMAT("EEE MMM dd HH:mm:ss z yyyy"),
-	DATE_DISPLAY_FORMAT("dd MMM yyyy HH:mm:ss");
-
+	DATE_DISPLAY_FORMAT("dd MMM yyyy HH:mm:ss"),
+	UI_DATE_FORMAT("dd MMM, yyyy hh:mm aaa");
 	private String value;
 	
 	ConfigValues(String value){
