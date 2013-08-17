@@ -1,41 +1,30 @@
 package com.axatrikx.ui.main;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-
-import java.awt.Rectangle;
-import java.awt.Insets;
-
-import javax.swing.JButton;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Dimension;
-
-import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
-
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
-import javax.swing.JSplitPane;
-
-import java.awt.CardLayout;
-
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JSplitPane;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import com.axatrikx.controllers.TransactionController;
@@ -45,10 +34,15 @@ import com.axatrikx.ui.panels.TransactionsPanel;
 
 public class MainFrame extends JFrame {
 
+	private static final long serialVersionUID = -3828157333553193707L;
+
 	private JPanel contentPane;
 
 	private CardLayout cardLayout;
 	private JPanel mainPanel;
+
+	private TransactionsPanel transactionPanel;
+	
 
 	/**
 	 * Launch the application.
@@ -71,9 +65,9 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setTitle("eBay Master");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// setBounds(100, 100, 800, 500);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setName("menuBar");
@@ -82,6 +76,11 @@ public class MainFrame extends JFrame {
 		setJMenuBar(menuBar);
 
 		cardLayout = new CardLayout();
+		try {
+			transactionPanel = new TransactionsPanel();
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
 
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
@@ -252,19 +251,13 @@ public class MainFrame extends JFrame {
 
 		JPanel homePanel = new HomePanel();
 		JPanel transactionsPanel = new JPanel();
-
-		try {
-			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()));
-			transactionsPanel.add(new TransactionsPanel());
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		transactionsPanel.setLayout(new BorderLayout());
+		transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()),BorderLayout.NORTH);
+		transactionsPanel.add(transactionPanel,BorderLayout.CENTER);
 
 		// setting the various cards
 		mainPanel.add(homePanel, "Home");
 		mainPanel.add(transactionsPanel, "Transactions");
-
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidePanel, mainPanel);
 		splitPane.setDividerSize(0);
 		splitPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -273,7 +266,10 @@ public class MainFrame extends JFrame {
 		splitPane.setEnabled(false);
 		splitPane.setDividerLocation(150);
 		pack();
+
 	}
+
+
 
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
