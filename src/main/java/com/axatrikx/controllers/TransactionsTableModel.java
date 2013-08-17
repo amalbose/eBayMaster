@@ -35,7 +35,8 @@ public class TransactionsTableModel extends AbstractTableModel {
 	private List<Transaction> transactions;
 	private String queryString;
 
-	public TransactionsTableModel(String queryString) throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+	public TransactionsTableModel(String queryString) throws ClassNotFoundException, DataBaseException,
+			DatabaseTableCreationException {
 		this.queryString = queryString;
 		getLatestData();
 	}
@@ -146,24 +147,19 @@ public class TransactionsTableModel extends AbstractTableModel {
 				+ columnNames[0] + " = " + getValueAt(row, TRANSACTIONID_ROW);
 		try {
 			new DatabaseController().executeQuery(query);
+			fireTableCellUpdated(row, col);
+			getLatestData();
 		} catch (ClassNotFoundException e1) {
-			JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : " + e1.getClass().getSimpleName(),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		} catch (DataBaseException e1) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : " + e1.getClass().getSimpleName(),
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		} catch (DatabaseTableCreationException e1) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : " + e1.getClass().getSimpleName(),
-					JOptionPane.ERROR_MESSAGE);
-		}
-		fireTableCellUpdated(row, col);
-		try {
-			getLatestData();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		}
 	}
 
