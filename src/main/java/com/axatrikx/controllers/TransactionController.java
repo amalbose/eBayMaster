@@ -125,9 +125,9 @@ public class TransactionController {
 		dateVal.put(Timestamp.class, new Timestamp(date.getTime()));
 		dataList.add(dateVal);
 
-		new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, getDBInsertQuery(
+		System.out.println(new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, getDBInsertQuery(
 				INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
-				DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
+				DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate());;
 	}
 
 	private TransactionItem processTransactionItem(String itemName) throws ClassNotFoundException, SQLException,

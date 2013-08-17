@@ -33,7 +33,7 @@ public class TransactionsPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 7194810207131313783L;
 
-	private JTable table;
+	private static JTable table;
 	private int selectedRow = -1;
 	private int selectedColumn = -1;
 
@@ -41,9 +41,10 @@ public class TransactionsPanel extends JPanel {
 
 	/**
 	 * Create the panel.
-	 * @throws DatabaseTableCreationException 
-	 * @throws DataBaseException 
-	 * @throws ClassNotFoundException 
+	 * 
+	 * @throws DatabaseTableCreationException
+	 * @throws DataBaseException
+	 * @throws ClassNotFoundException
 	 * 
 	 * @throws Exception
 	 */
@@ -68,7 +69,8 @@ public class TransactionsPanel extends JPanel {
 	}
 
 	private void displayUI() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
-		table.setModel(new TransactionsTableModel(processSelectQuery(TransactionController.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN))));
+		table.setModel(new TransactionsTableModel(processSelectQuery(TransactionController
+				.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN))));
 		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		TableColumnModel tcm = table.getColumnModel();
 
@@ -85,6 +87,7 @@ public class TransactionsPanel extends JPanel {
 
 	/**
 	 * Returns the query with Database name token replaced with actual DB name.
+	 * 
 	 * @param dbSelectQuery
 	 * @return
 	 */
@@ -146,6 +149,21 @@ public class TransactionsPanel extends JPanel {
 				}
 			}
 		});
+	}
+
+	public static void updateTableData() {
+		try {
+			((TransactionsTableModel) table.getModel()).updateLatestData();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DataBaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DatabaseTableCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void hideColumn(TableColumnModel tcm, String columnName) {

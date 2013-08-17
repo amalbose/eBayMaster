@@ -58,6 +58,11 @@ public class TransactionsTableModel extends AbstractTableModel {
 
 		transactions = getTransactions(resultTable.getResultTable());
 	}
+	
+	public void updateLatestData() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+		getLatestData();
+		fireTableDataChanged();
+	}
 
 	public int getColumnCount() {
 		return columnNames.length;

@@ -69,7 +69,6 @@ public class TransactionItemController {
 		item.setItemName(resultRow.get(1).toString());
 		item.setItemCategory(resultRow.get(2).toString());
 		item.setItemRate(Float.parseFloat(resultRow.get(3).toString()));
-		
 		return item;
 	}
 
