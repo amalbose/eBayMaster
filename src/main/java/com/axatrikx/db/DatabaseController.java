@@ -27,7 +27,7 @@ public class DatabaseController {
 	private static final String SQL_FILE_PATH = ConfigValues.QUERY_FOLDER.toString()
 			+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_CREATE_FILE.toString();
 
-	private static final CharSequence DATABASE_TOKEN = "<DATABASE_NAME>";
+	private static final String DATABASE_TOKEN = "<DATABASE_NAME>";
 
 	private static final String DATABASE_NAME = "EBAYMASTERDB";
 	private static final String USERNAME = "ebayAdmin";
@@ -227,5 +227,13 @@ public class DatabaseController {
 	 */
 	public static String getDatabaseName() {
 		return DATABASE_NAME;
+	}
+	
+	/**
+	 * Returns the database name token used in DB property files.
+	 * @return
+	 */
+	public static String getDatabaseNameToken() {
+		return DATABASE_TOKEN;
 	}
 }
