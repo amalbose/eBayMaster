@@ -221,6 +221,14 @@ public class DatabaseController {
 	}
 
 	/**
+	 * Returns the connection object.
+	 * @return
+	 */
+	public Connection getConnection(){
+		return this.con;
+	}
+	
+	/**
 	 * Returns the database name.
 	 * 
 	 * @return
