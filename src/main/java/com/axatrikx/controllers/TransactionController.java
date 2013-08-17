@@ -10,8 +10,6 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import com.axatrikx.beans.Buyer;
-import com.axatrikx.beans.Transaction;
 import com.axatrikx.beans.TransactionItem;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
@@ -23,10 +21,6 @@ import com.axatrikx.utils.PreparedDataExecutor;
 public class TransactionController {
 
 	private static Logger log = Logger.getLogger(TransactionController.class);
-
-	private static final String QUERY_TRANS_TABLE_TKN = "QUERY_TRANS_TABLE";
-	private static final String QUERY_ITEMS_TABLE_TKN = "QUERY_ITEMS_TABLE";
-	private static final String QUERY_TRANS_DETAIL_TKN = "QUERY_TRANS_DETAIL";
 
 	private static final String INSERT_TRANS_TABLE_TKN = "INSERT_TRANS_TABLE";
 
@@ -125,9 +119,10 @@ public class TransactionController {
 		dateVal.put(Timestamp.class, new Timestamp(date.getTime()));
 		dataList.add(dateVal);
 
-		System.out.println(new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, getDBInsertQuery(
-				INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
-				DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate());;
+		System.out.println(new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
+				getDBInsertQuery(INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
+						DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate());
+		;
 	}
 
 	private TransactionItem processTransactionItem(String itemName) throws ClassNotFoundException, SQLException,
