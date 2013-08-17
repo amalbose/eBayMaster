@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.errors.DataBaseException;
+import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.CommonSettings;
 import com.axatrikx.utils.ConfigValues;
 
@@ -41,40 +42,46 @@ public class DatabaseController {
 	/**
 	 * {@link DatabaseController} is the Constructor which initializes the database.
 	 * 
+	 * @throws ClassNotFoundException
+	 * @throws DataBaseException
+	 * @throws DatabaseTableCreationException 
+	 * 
 	 * @throws Exception
 	 */
-	public DatabaseController() throws Exception {
+	public DatabaseController() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		try {
 			Class.forName(DRIVER_STRING);
 			initialize();
 		} catch (ClassNotFoundException e) {
 			log.error("ClassNotFoundException for " + DRIVER_STRING, e);
-			throw new DataBaseException("ClassNotFoundException for " + DRIVER_STRING);
+			throw new ClassNotFoundException("ClassNotFoundException for " + DRIVER_STRING);
 		}
 	}
 
 	/**
 	 * Initializes the Database. Creates the Database and tables if not present.
+	 * @throws DatabaseTableCreationException 
 	 * 
 	 * @throws Exception
 	 */
-	public void initialize() throws Exception {
+	public void initialize() throws DataBaseException, DatabaseTableCreationException {
 		setUpDataBase();
 	}
 
 	/**
 	 * Creates database and its tables if not present.
+	 * @throws DatabaseTableCreationException 
 	 * 
 	 * @throws Exception
 	 */
-	private void setUpDataBase() throws Exception {
+	private void setUpDataBase() throws DataBaseException, DatabaseTableCreationException {
 		try {
 			con = DriverManager.getConnection(JDBC_URL);
 			// create table
 			createTable(con, SQL_FILE_PATH);
 		} catch (SQLException e) {
 			log.error("SQLException while getting Connection: " + JDBC_URL, e);
-			throw new Exception(""); // TODO create custom exception
+			throw new DataBaseException(e.getMessage(), e);
 		}
 	}
 
@@ -87,8 +94,9 @@ public class DatabaseController {
 	 * @param queryFile
 	 *            the query file path relative to resource folder.
 	 * @return True/False based on the success of query executed.
+	 * @throws DatabaseTableCreationException 
 	 */
-	private boolean createTable(Connection con, String queryFile) {
+	private boolean createTable(Connection con, String queryFile) throws DatabaseTableCreationException {
 		boolean result = false;
 		Properties tableProps = CommonSettings.getPropertiesFromFile(queryFile);
 		try {
@@ -107,6 +115,7 @@ public class DatabaseController {
 			result = true;
 		} catch (SQLException e) {
 			log.error("SQL Exception while executing query", e);
+			throw new DatabaseTableCreationException(e.getMessage(), e);
 		}
 		return result;
 	}
@@ -117,18 +126,20 @@ public class DatabaseController {
 	 * @param queryString
 	 * @return
 	 */
-	public boolean executeQuery(String queryString) {
+	public boolean executeQuery(String queryString) throws DataBaseException {
 		boolean result = false;
 		try {
 			this.con.createStatement().execute(queryString);
 			result = true;
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
+			throw new DataBaseException(e.getMessage(), e);
 		} finally {
 			try {
 				con.close();
 			} catch (SQLException e) {
 				log.error("SQLException while closing connection", e);
+				throw new DataBaseException(e.getMessage(), e);
 			}
 		}
 		return result;
@@ -140,8 +151,9 @@ public class DatabaseController {
 	 * @param queryString
 	 *            The query to be executed
 	 * @return The result table in 2D arraylist format.
+	 * @throws DataBaseException
 	 */
-	public QueryResultTable executeQueryForResult(String queryString) {
+	public QueryResultTable executeQueryForResult(String queryString) throws DataBaseException {
 		// result object
 		QueryResultTable queryResult = new QueryResultTable();
 
@@ -179,11 +191,13 @@ public class DatabaseController {
 
 		} catch (SQLException e) {
 			log.error("SQLException while executing query: '" + queryString + "'", e);
+			throw new DataBaseException(e.getMessage(), e);
 		} finally {
 			try {
 				con.close();
 			} catch (SQLException e) {
 				log.error("SQLException while closing connection", e);
+				throw new DataBaseException(e.getMessage(), e);
 			}
 		}
 		System.out.println(headers);
@@ -208,6 +222,7 @@ public class DatabaseController {
 
 	/**
 	 * Returns the database name.
+	 * 
 	 * @return
 	 */
 	public static String getDatabaseName() {
