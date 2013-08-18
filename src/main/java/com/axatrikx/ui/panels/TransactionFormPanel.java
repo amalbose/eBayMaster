@@ -139,9 +139,11 @@ public class TransactionFormPanel extends JPanel {
 				String category = categoryCB.getSelectedItem().toString();
 				float cost = Float.parseFloat(costTF.getText().toString());
 				float price = Float.parseFloat(priceTF.getText().toString());
+				float rate = Float.parseFloat(rateTF.getText().toString());
 				Date date = null;
 				try {
-					date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateTF.getText().toString());
+					date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateTF.getText()
+							.toString());
 				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -149,7 +151,7 @@ public class TransactionFormPanel extends JPanel {
 
 				try {
 					new TransactionController().insertTransaction(buyerName, location, cost, price, date, itemName,
-							category);
+							category, rate);
 					TransactionsPanel.updateTableData();
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
