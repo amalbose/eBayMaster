@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.beans.Response;
-import com.axatrikx.beans.Transaction;
 import com.axatrikx.beans.TransactionItem;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
@@ -27,9 +26,21 @@ public class TransactionItemController {
 
 	private static Logger log = Logger.getLogger(TransactionItemController.class);
 
+	private List<TransactionItem> transactionItems;
+	
 	private static final String QUERY_ITEM_WITH_NAME_TKN = "QUERY_ITEM_WITH_NAME";
 	private static final String QUERY_ITEMS_TABLE_TKN = "QUERY_ITEMS_TABLE";
 
+	/**
+	 * Constructor which sets the transactionItems list.
+	 * @throws ClassNotFoundException
+	 * @throws DataBaseException
+	 * @throws DatabaseTableCreationException
+	 */
+	public TransactionItemController() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+		this.transactionItems = getAllTransactionItems();
+	}
+	
 	/**
 	 * Saves the transaction item to file if data is valid.
 	 * 
@@ -80,7 +91,7 @@ public class TransactionItemController {
 		return item;
 	}
 
-	public List<TransactionItem> getAllTransactions() throws ClassNotFoundException, DataBaseException,
+	private List<TransactionItem> getAllTransactionItems() throws ClassNotFoundException, DataBaseException,
 			DatabaseTableCreationException {
 
 		List<TransactionItem> itemsList = new ArrayList<TransactionItem>();
@@ -127,7 +138,39 @@ public class TransactionItemController {
 		}
 		return itemsList;
 	}
+	
+	/**
+	 * Gets the transactionItem detail by name.
+	 * @param transactionItemName
+	 * @return
+	 */
+	public TransactionItem getDetailByName(String transactionItemName){
+		TransactionItem resultItem = null;
+		for(TransactionItem item : this.transactionItems) {
+			if(item.getItemName().equalsIgnoreCase(transactionItemName)) {
+				resultItem = item;
+				break;
+			}
+		}
+		return resultItem;
+	}
 
+	/**
+	 * Gets the transaction item by category.
+	 * @param category
+	 * @return
+	 */
+	public TransactionItem getDetailByCategory(String category) {
+		TransactionItem resultItem = null;
+		for(TransactionItem item : this.transactionItems) {
+			if(item.getItemCategory().equalsIgnoreCase(category)) {
+				resultItem = item;
+				break;
+			}
+		}
+		return resultItem;
+	}
+	
 	/**
 	 * Validates the transaction data
 	 */
