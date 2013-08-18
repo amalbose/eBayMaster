@@ -59,14 +59,16 @@ public class TransactionItemController {
 				.executeQueryForResult();
 
 		ArrayList<ArrayList<String>> result = resultTable.getResultTable();
+		TransactionItem item = null;
 
-		ArrayList<String> resultRow = result.get(0);
-		
-		TransactionItem item = new TransactionItem();
-		item.setItemId(Integer.parseInt(resultRow.get(0).toString()));
-		item.setItemName(resultRow.get(1).toString());
-		item.setItemCategory(resultRow.get(2).toString());
-		item.setItemRate(Float.parseFloat(resultRow.get(3).toString()));
+		if (!result.isEmpty()) {
+			ArrayList<String> resultRow = result.get(0);
+			item = new TransactionItem();
+			item.setItemId(Integer.parseInt(resultRow.get(0).toString()));
+			item.setItemName(resultRow.get(1).toString());
+			item.setItemCategory(resultRow.get(2).toString());
+			item.setItemRate(Float.parseFloat(resultRow.get(3).toString()));
+		}
 		return item;
 	}
 
