@@ -10,11 +10,14 @@ import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -27,7 +30,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -35,6 +37,7 @@ import javax.swing.border.TitledBorder;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.ui.panels.HomePanel;
+import com.axatrikx.ui.panels.SettingsDialog;
 import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionsPanel;
 
@@ -229,6 +232,14 @@ public class MainFrame extends JFrame {
 
 		JButton btnSettings = new JButton("Settings", new ImageIcon(
 				MainFrame.class.getResource("/images/settings-24.png")));
+		btnSettings.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				SettingsDialog dialog = new SettingsDialog();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
 		btnSettings.setBorder(null);
 		btnSettings.setMaximumSize(new Dimension(50, 60));
 		btnSettings.setPreferredSize(new Dimension(50, 60));
@@ -241,6 +252,7 @@ public class MainFrame extends JFrame {
 		panel.setLayout(new CardLayout(0, 0));
 
 		JPanel sidePanel = new JPanel();
+		sidePanel.setBackground(Color.WHITE);
 
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
@@ -248,6 +260,7 @@ public class MainFrame extends JFrame {
 		mainPanel.setLayout(cardLayout);
 
 		JPanel homePanel = new HomePanel();
+		homePanel.setBackground(Color.WHITE);
 		JPanel transactionsPanel = new JPanel();
 		TransactionsPanel transactionPanel = null;
 
