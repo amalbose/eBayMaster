@@ -144,14 +144,15 @@ public class TransactionFormPanel extends JPanel {
 				try {
 					date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateTF.getText()
 							.toString());
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-				try {
-					new TransactionController().insertTransaction(buyerName, location, cost, price, date, itemName,
+					boolean isSuccessful = new TransactionController().insertTransaction(buyerName, location, cost, price, date, itemName,
 							category, rate);
+					/*
+					 * If category is new value, add new value to Category combobox.
+					 */
+					if(isSuccessful) {
+						categoryCB.addItem(category);
+						categoryCB.revalidate();
+					}
 					TransactionsPanel.updateTableData();
 				} catch (ClassNotFoundException e1) {
 					// TODO Auto-generated catch block
@@ -163,6 +164,9 @@ public class TransactionFormPanel extends JPanel {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (DatabaseTableCreationException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (ParseException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
