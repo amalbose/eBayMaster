@@ -5,7 +5,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -130,6 +129,7 @@ public class TransactionController {
 		return isSuccessful;
 	}
 
+	@SuppressWarnings("rawtypes")
 	private TransactionItem processTransactionItem(String itemName, String category, float rate)
 			throws ClassNotFoundException, SQLException, DataBaseException, DatabaseTableCreationException {
 		TransactionItem item = new TransactionItemController().getItem(itemName);
@@ -162,24 +162,5 @@ public class TransactionController {
 			}
 		}
 		return item;
-	}
-
-	/**
-	 * Gets the transaction item categories as a list.
-	 * 
-	 * @return Categories as a list.
-	 * @throws DataBaseException
-	 * @throws ClassNotFoundException
-	 * @throws DatabaseTableCreationException
-	 */
-	public static List<String> getCategories() throws ClassNotFoundException, DataBaseException,
-			DatabaseTableCreationException {
-		ArrayList<String> res = new ArrayList<String>();
-		ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
-				"SELECT DISTINCT CATEGORY FROM " + DatabaseController.getDatabaseName() + ".ITEMS").getResultTable();
-		for (ArrayList<String> row : resultTable) {
-			res.add(row.get(0));
-		}
-		return res;
 	}
 }
