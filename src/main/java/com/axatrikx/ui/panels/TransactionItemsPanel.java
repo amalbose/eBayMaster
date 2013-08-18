@@ -16,6 +16,7 @@ import java.awt.Component;
 import javax.swing.Box;
 
 public class TransactionItemsPanel extends JPanel {
+	private static final long serialVersionUID = -2551210721481697627L;
 	private JTextField nameField;
 	private JTextField categoryField;
 	private JTextField rateField;
