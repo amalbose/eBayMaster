@@ -8,8 +8,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -30,21 +32,25 @@ import com.axatrikx.controllers.TransactionItemController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+
+import javax.swing.JFormattedTextField;
+import java.awt.Font;
 
 public class TransactionFormPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -202660505350614300L;
-	private JTextField rateTF;
+	private JFormattedTextField rateTF;
 	private JTextField buyerNameTF;
 	private JTextField locationTF;
-	private JTextField costTF;
-	private JTextField priceTF;
+	private JFormattedTextField costTF;
+	private JFormattedTextField priceTF;
 	private JTextField dateTF;
 	private JComboBox<String> itemNameCB;
 	private JComboBox<String> categoryCB;
@@ -96,7 +102,11 @@ public class TransactionFormPanel extends JPanel {
 			e2.printStackTrace();
 		}
 
-		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][]", "[][][]"));
+		setLayout(new MigLayout("", "[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
+		
+		JLabel lblAddNewTransaction = new JLabel("Add new transaction:");
+		lblAddNewTransaction.setFont(new Font("Tahoma", Font.BOLD, 11));
+		add(lblAddNewTransaction, "cell 0 0");
 
 		JLabel lblTransactionItem = new JLabel("Transaction Item");
 		add(lblTransactionItem, "cell 0 1");
@@ -116,17 +126,20 @@ public class TransactionFormPanel extends JPanel {
 		JLabel lblDate = new JLabel("Date");
 		add(lblDate, "cell 10 1");
 
-		JLabel lblCost = new JLabel("Cost");
-		add(lblCost, "cell 12 1");
+		JLabel lblCost = new JLabel("Actual Cost");
+		add(lblCost, "cell 13 1,alignx left");
 
-		JLabel lblPrice = new JLabel("Price");
-		add(lblPrice, "cell 14 1");
+		JLabel lblPrice = new JLabel("Selling Price");
+		add(lblPrice, "cell 15 1,alignx left");
 
 		JLabel lblProfit = new JLabel("Profit");
-		add(lblProfit, "cell 15 1,alignx left");
+		add(lblProfit, "cell 16 1,alignx left");
 
-		rateTF = new JTextField();
-		add(rateTF, "cell 4 2,alignx left");
+		NumberFormat floatFormat = NumberFormat.getNumberInstance();
+		floatFormat.setMinimumFractionDigits(2);
+
+		rateTF = new JFormattedTextField(floatFormat);
+		add(rateTF, "cell 4 2,growx");
 		rateTF.setColumns(7);
 
 		buyerNameTF = new JTextField();
@@ -134,7 +147,7 @@ public class TransactionFormPanel extends JPanel {
 		buyerNameTF.setColumns(10);
 
 		locationTF = new JTextField();
-		add(locationTF, "cell 8 2,alignx left");
+		add(locationTF, "cell 8 2,growx");
 		locationTF.setColumns(10);
 
 		dateTF = new JTextField();
@@ -143,7 +156,6 @@ public class TransactionFormPanel extends JPanel {
 		SimpleDateFormat sdf = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString());
 		dateTF.setText(sdf.format(new Date().getTime()));
 
-		
 		itemNameCB = new JComboBox<String>();
 		itemNameCB.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
@@ -163,13 +175,14 @@ public class TransactionFormPanel extends JPanel {
 			}
 		}
 		AutoCompleteDecorator.decorate(itemNameCB);
-		add(itemNameCB, "cell 0 2,alignx left");
+		add(itemNameCB, "cell 0 2,growx");
 
 		categoryCB = new JComboBox<String>();
 		categoryCB.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == 1) {
-					TransactionItem item = itemController.getDetailByCategory(categoryCB.getEditor().getItem().toString());
+					TransactionItem item = itemController.getDetailByCategory(categoryCB.getEditor().getItem()
+							.toString());
 					if (item != null) {
 						rateTF.setText(String.valueOf(item.getItemRate()));
 					}
@@ -203,16 +216,24 @@ public class TransactionFormPanel extends JPanel {
 		});
 		add(calendarButton, "cell 11 2");
 
-		costTF = new JTextField();
-		add(costTF, "cell 12 2,alignx left");
+		JLabel costSymbol = new JLabel(Currency.getInstance(getLocale()).getSymbol());
+		add(costSymbol, "flowx,cell 13 2,alignx left");
+
+		costTF = new JFormattedTextField(floatFormat);
+		add(costTF, "cell 13 2,alignx left");
 		costTF.setColumns(7);
 
-		priceTF = new JTextField();
-		add(priceTF, "cell 14 2,alignx left");
+		JLabel priceSymbol = new JLabel(Currency.getInstance(getLocale()).getSymbol());
+		add(priceSymbol, "flowx,cell 15 2");
+
+		priceTF = new JFormattedTextField(floatFormat);
+		add(priceTF, "cell 15 2,alignx left");
 		priceTF.setColumns(7);
 
-		JLabel lblProfitvalue = new JLabel("0");
-		add(lblProfitvalue, "cell 15 2,alignx left");
+		JTextField profitTF = new JTextField("");
+		profitTF.setColumns(7);
+		profitTF.setEditable(false);
+		add(profitTF, "cell 16 2,alignx left");
 
 		JButton btnSave = new JButton("Save");
 		btnSave.addMouseListener(new MouseAdapter() {
@@ -278,6 +299,6 @@ public class TransactionFormPanel extends JPanel {
 				}
 			}
 		});
-		add(btnSave, "cell 16 2");
+		add(btnSave, "cell 17 2");
 	}
 }
