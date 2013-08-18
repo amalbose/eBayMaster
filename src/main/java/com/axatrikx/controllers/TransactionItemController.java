@@ -2,10 +2,15 @@ package com.axatrikx.controllers;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.beans.Response;
+import com.axatrikx.beans.Transaction;
 import com.axatrikx.beans.TransactionItem;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
@@ -20,7 +25,10 @@ import com.axatrikx.utils.PreparedDataExecutor;
  */
 public class TransactionItemController {
 
+	private static Logger log = Logger.getLogger(TransactionItemController.class);
+
 	private static final String QUERY_ITEM_WITH_NAME_TKN = "QUERY_ITEM_WITH_NAME";
+	private static final String QUERY_ITEMS_TABLE_TKN = "QUERY_ITEMS_TABLE";
 
 	/**
 	 * Saves the transaction item to file if data is valid.
@@ -72,9 +80,52 @@ public class TransactionItemController {
 		return item;
 	}
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException, DataBaseException,
+	public List<TransactionItem> getAllTransactions() throws ClassNotFoundException, DataBaseException,
 			DatabaseTableCreationException {
-		new TransactionItemController().getItem("Item1");
+
+		List<TransactionItem> itemsList = new ArrayList<TransactionItem>();
+
+		QueryResultTable resultTable = new DatabaseController().executeQueryForResult(TransactionController
+				.getDBSelectQuery(QUERY_ITEMS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
+						DatabaseController.getDatabaseName()));
+
+		Object[] objectArray = resultTable.getHeaderDetails().keySet().toArray();
+		String[] columnNames = Arrays.copyOf(objectArray, objectArray.length, String[].class);
+
+		ArrayList<ArrayList<String>> tableData = resultTable.getResultTable();
+
+		TransactionItem curItem;
+		/*
+		 * Looping through items and creating a Item object.
+		 */
+		for (ArrayList<String> row : tableData) {
+			curItem = new TransactionItem();
+			/*
+			 * Loops through each column and update the values to the item object.
+			 */
+			int columnIndex = 0;
+			for (String columnVal : row) {
+				if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getCategoryColumn())) {
+					// Category
+					curItem.setItemCategory(columnVal);
+				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getItemColumn())) {
+					// Name
+					curItem.setItemName(columnVal);
+				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getRateColumn())) {
+					// Rate
+					curItem.setItemRate(Float.parseFloat(columnVal));
+				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getItemIDColumn())) {
+					// Item ID
+					curItem.setItemId(Integer.parseInt(columnVal));
+				} else {
+					log.warn("Unexpected value found: " + columnVal + " in index: " + columnIndex);
+				}
+				// incrementing columnIndex
+				columnIndex++;
+			}
+			itemsList.add(curItem);
+		}
+		return itemsList;
 	}
 
 	/**
