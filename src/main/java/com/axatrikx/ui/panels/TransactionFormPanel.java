@@ -1,7 +1,9 @@
 package com.axatrikx.ui.panels;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -32,14 +35,6 @@ import com.axatrikx.controllers.TransactionItemController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-
-import javax.swing.JFormattedTextField;
-import java.awt.Font;
 
 public class TransactionFormPanel extends JPanel {
 	/**
@@ -60,6 +55,7 @@ public class TransactionFormPanel extends JPanel {
 	 * Create the panel.
 	 */
 	public TransactionFormPanel() {
+		setBackground(Color.WHITE);
 
 		try {
 			itemController = new TransactionItemController();
