@@ -23,6 +23,7 @@ public class TransactionController {
 	private static Logger log = Logger.getLogger(TransactionController.class);
 
 	private static final String INSERT_TRANS_TABLE_TKN = "INSERT_TRANS_TABLE";
+	private static final String INSERT_ITEMS_TABLE_TKN = "INSERT_ITEMS_TABLE";
 
 	public void getTransactionModel(String queryString) {
 
@@ -59,9 +60,8 @@ public class TransactionController {
 		String result = null;
 		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_INSERT_FILE.toString());
-		if (INSERT_TRANS_TABLE_TKN.equals(tableType)) {
-			result = queryValues.getProperty(tableType);
-		} else {
+		result = queryValues.getProperty(tableType);
+		if (result.isEmpty()) {
 			log.error("Invalid tableType: " + tableType);
 		}
 		return result;
@@ -84,10 +84,10 @@ public class TransactionController {
 	 */
 	@SuppressWarnings("rawtypes")
 	public void insertTransaction(String buyerName, String location, float cost, float price, Date date,
-			String itemName, String category) throws ClassNotFoundException, SQLException, DataBaseException,
-			DatabaseTableCreationException {
+			String itemName, String category, float rate) throws ClassNotFoundException, SQLException,
+			DataBaseException, DatabaseTableCreationException {
 
-		TransactionItem item = processTransactionItem(itemName);
+		TransactionItem item = processTransactionItem(itemName, category, rate);
 
 		ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
 
@@ -119,15 +119,42 @@ public class TransactionController {
 		dateVal.put(Timestamp.class, new Timestamp(date.getTime()));
 		dataList.add(dateVal);
 
-		System.out.println(new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
-				getDBInsertQuery(INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
-						DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate());
-		;
+		new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, getDBInsertQuery(
+				INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
+				DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
 	}
 
-	private TransactionItem processTransactionItem(String itemName) throws ClassNotFoundException, SQLException,
-			DataBaseException, DatabaseTableCreationException {
+	private TransactionItem processTransactionItem(String itemName, String category, float rate)
+			throws ClassNotFoundException, SQLException, DataBaseException, DatabaseTableCreationException {
 		TransactionItem item = new TransactionItemController().getItem(itemName);
+		if (item == null) {
+			log.info("Item " + itemName + " doesn't exist. Creating item record.");
+
+			ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
+
+			HashMap<Class, Object> itemNameVal = new HashMap<Class, Object>();
+			itemNameVal.put(String.class, itemName);
+			dataList.add(itemNameVal);
+
+			HashMap<Class, Object> categoryVal = new HashMap<Class, Object>();
+			categoryVal.put(String.class, category);
+			dataList.add(categoryVal);
+
+			HashMap<Class, Object> rateVal = new HashMap<Class, Object>();
+			rateVal.put(Float.class, rate);
+			dataList.add(rateVal);
+
+			int noOfRowsAffected = new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
+					getDBInsertQuery(INSERT_ITEMS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
+							DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
+
+			if (noOfRowsAffected > 0) {
+				log.info("New item '" + itemName + "' created");
+				item = new TransactionItemController().getItem(itemName);
+			} else {
+				log.error("Failed to add item " + itemName + "'");
+			}
+		}
 		return item;
 	}
 
