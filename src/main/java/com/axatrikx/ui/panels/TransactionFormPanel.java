@@ -139,7 +139,9 @@ public class TransactionFormPanel extends JPanel {
 
 		dateTF = new JTextField();
 		add(dateTF, "cell 10 2,alignx left");
-		dateTF.setColumns(15);
+		dateTF.setColumns(17);
+		SimpleDateFormat sdf = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString());
+		dateTF.setText(sdf.format(new Date().getTime()));
 
 		
 		itemNameCB = new JComboBox<String>();
@@ -154,7 +156,7 @@ public class TransactionFormPanel extends JPanel {
 			}
 		});
 		itemNameCB.setEditable(true);
-		itemNameCB.addItem("");
+		itemNameCB.addItem("<Select Item>");
 		if (items != null) {
 			for (String item : items) {
 				itemNameCB.addItem(item);
@@ -175,7 +177,7 @@ public class TransactionFormPanel extends JPanel {
 			}
 		});
 		categoryCB.setEditable(true);
-		categoryCB.addItem("");
+		categoryCB.addItem("<Select Category>");
 		if (categories != null) {
 			for (String category : categories) {
 				categoryCB.addItem(category);
