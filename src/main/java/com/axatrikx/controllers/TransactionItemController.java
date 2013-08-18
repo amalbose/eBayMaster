@@ -27,12 +27,15 @@ public class TransactionItemController {
 	private static Logger log = Logger.getLogger(TransactionItemController.class);
 
 	private List<TransactionItem> transactionItems;
-	
+
 	private static final String QUERY_ITEM_WITH_NAME_TKN = "QUERY_ITEM_WITH_NAME";
 	private static final String QUERY_ITEMS_TABLE_TKN = "QUERY_ITEMS_TABLE";
+	private static final String QUERY_ALL_ITEMS_TKN = "QUERY_ALL_ITEMS";
+	private static final String QUERY_ALL_CATEGORIES_TKN = "QUERY_ALL_CATEGORIES";
 
 	/**
 	 * Constructor which sets the transactionItems list.
+	 * 
 	 * @throws ClassNotFoundException
 	 * @throws DataBaseException
 	 * @throws DatabaseTableCreationException
@@ -40,7 +43,7 @@ public class TransactionItemController {
 	public TransactionItemController() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		this.transactionItems = getAllTransactionItems();
 	}
-	
+
 	/**
 	 * Saves the transaction item to file if data is valid.
 	 * 
@@ -138,16 +141,17 @@ public class TransactionItemController {
 		}
 		return itemsList;
 	}
-	
+
 	/**
 	 * Gets the transactionItem detail by name.
+	 * 
 	 * @param transactionItemName
 	 * @return
 	 */
-	public TransactionItem getDetailByName(String transactionItemName){
+	public TransactionItem getDetailByName(String transactionItemName) {
 		TransactionItem resultItem = null;
-		for(TransactionItem item : this.transactionItems) {
-			if(item.getItemName().equalsIgnoreCase(transactionItemName)) {
+		for (TransactionItem item : this.transactionItems) {
+			if (item.getItemName().equalsIgnoreCase(transactionItemName)) {
 				resultItem = item;
 				break;
 			}
@@ -157,20 +161,62 @@ public class TransactionItemController {
 
 	/**
 	 * Gets the transaction item by category.
+	 * 
 	 * @param category
 	 * @return
 	 */
 	public TransactionItem getDetailByCategory(String category) {
 		TransactionItem resultItem = null;
-		for(TransactionItem item : this.transactionItems) {
-			if(item.getItemCategory().equalsIgnoreCase(category)) {
+		for (TransactionItem item : this.transactionItems) {
+			if (item.getItemCategory().equalsIgnoreCase(category)) {
 				resultItem = item;
 				break;
 			}
 		}
 		return resultItem;
 	}
-	
+
+	/**
+	 * Gets the transaction item categories as a list.
+	 * 
+	 * @return Categories as a list.
+	 * @throws DataBaseException
+	 * @throws ClassNotFoundException
+	 * @throws DatabaseTableCreationException
+	 */
+	public List<String> getItems() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+		ArrayList<String> res = new ArrayList<String>();
+		ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
+				TransactionController.getDBSelectQuery(QUERY_ALL_ITEMS_TKN).replace(
+						DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
+				.getResultTable();
+		for (ArrayList<String> row : resultTable) {
+			res.add(row.get(0));
+		}
+		return res;
+	}
+
+	/**
+	 * Gets the transaction item categories as a list.
+	 * 
+	 * @return Categories as a list.
+	 * @throws DataBaseException
+	 * @throws ClassNotFoundException
+	 * @throws DatabaseTableCreationException
+	 */
+	public List<String> getCategories() throws ClassNotFoundException, DataBaseException,
+			DatabaseTableCreationException {
+		ArrayList<String> res = new ArrayList<String>();
+		ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
+				TransactionController.getDBSelectQuery(QUERY_ALL_CATEGORIES_TKN).replace(
+						DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
+				.getResultTable();
+		for (ArrayList<String> row : resultTable) {
+			res.add(row.get(0));
+		}
+		return res;
+	}
+
 	/**
 	 * Validates the transaction data
 	 */

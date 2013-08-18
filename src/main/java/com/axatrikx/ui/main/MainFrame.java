@@ -252,7 +252,7 @@ public class MainFrame extends JFrame {
 		try {
 			// add transaction table panel
 			transactionPanel = new TransactionsPanel();
-			transactionsPanel.add(new TransactionFormPanel(TransactionController.getCategories()), BorderLayout.NORTH);
+			transactionsPanel.add(new TransactionFormPanel(), BorderLayout.NORTH);
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);

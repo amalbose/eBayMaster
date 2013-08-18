@@ -1,5 +1,9 @@
 package com.axatrikx.ui.panels;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
@@ -9,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,34 +22,76 @@ import javax.swing.JTextField;
 import net.miginfocom.swing.MigLayout;
 
 import org.jbundle.util.jcalendarbutton.JCalendarButton;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
+import com.axatrikx.beans.TransactionItem;
 import com.axatrikx.controllers.TransactionController;
+import com.axatrikx.controllers.TransactionItemController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
-
-import javax.swing.JButton;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class TransactionFormPanel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -202660505350614300L;
-	private JTextField itemNameTF;
 	private JTextField rateTF;
 	private JTextField buyerNameTF;
 	private JTextField locationTF;
 	private JTextField costTF;
 	private JTextField priceTF;
 	private JTextField dateTF;
+	private JComboBox<String> itemNameCB;
+	private JComboBox<String> categoryCB;
+	private TransactionItemController itemController;
 
 	/**
 	 * Create the panel.
 	 */
-	public TransactionFormPanel(List<String> categories) {
+	public TransactionFormPanel() {
+
+		try {
+			itemController = new TransactionItemController();
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (DataBaseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (DatabaseTableCreationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		List<String> categories = null;
+		try {
+			categories = itemController.getCategories();
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (DataBaseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (DatabaseTableCreationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		List<String> items = null;
+		try {
+			items = itemController.getItems();
+		} catch (ClassNotFoundException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (DataBaseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (DatabaseTableCreationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
 		setLayout(new MigLayout("", "[][][][][][][][][][][][][][][][][][][]", "[][][]"));
 
 		JLabel lblTransactionItem = new JLabel("Transaction Item");
@@ -74,15 +121,34 @@ public class TransactionFormPanel extends JPanel {
 		JLabel lblProfit = new JLabel("Profit");
 		add(lblProfit, "cell 15 1,alignx left");
 
-		itemNameTF = new JTextField();
-		add(itemNameTF, "cell 0 2,alignx left");
-		itemNameTF.setColumns(10);
-
-		final JComboBox<String> categoryCB = new JComboBox<String>();
-		categoryCB.setEditable(true);
-		for (String category : categories) {
-			categoryCB.addItem(category);
+		itemNameCB = new JComboBox<String>();
+		itemNameCB.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				TransactionItem item = itemController.getDetailByName(itemNameCB.getEditor().getItem().toString());
+				if (item != null) {
+					categoryCB.setSelectedItem(item.getItemCategory());
+				}
+			}
+		});
+		itemNameCB.setEditable(true);
+		itemNameCB.addItem("");
+		if (items != null) {
+			for (String item : items) {
+				itemNameCB.addItem(item);
+			}
 		}
+		AutoCompleteDecorator.decorate(itemNameCB);
+		add(itemNameCB, "cell 0 2,alignx left");
+
+		categoryCB = new JComboBox<String>();
+		categoryCB.setEditable(true);
+		if (categories != null) {
+			for (String category : categories) {
+				categoryCB.addItem(category);
+			}
+		}
+		AutoCompleteDecorator.decorate(categoryCB);
 		add(categoryCB, "cell 2 2,growx");
 
 		rateTF = new JTextField();
@@ -133,10 +199,24 @@ public class TransactionFormPanel extends JPanel {
 		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String itemName = itemNameTF.getText();
+				String itemName = itemNameCB.getSelectedItem().toString();
 				String buyerName = buyerNameTF.getText();
 				String location = locationTF.getText();
 				String category = categoryCB.getSelectedItem().toString();
+				boolean isCategoryNew = false, isItemNew = false;
+				try {
+					isCategoryNew = itemController.getCategories().contains(category);
+					isItemNew = itemController.getItems().contains(itemName);
+				} catch (ClassNotFoundException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				} catch (DataBaseException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				} catch (DatabaseTableCreationException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				float cost = Float.parseFloat(costTF.getText().toString());
 				float price = Float.parseFloat(priceTF.getText().toString());
 				float rate = Float.parseFloat(rateTF.getText().toString());
@@ -144,14 +224,21 @@ public class TransactionFormPanel extends JPanel {
 				try {
 					date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateTF.getText()
 							.toString());
-					boolean isSuccessful = new TransactionController().insertTransaction(buyerName, location, cost, price, date, itemName,
-							category, rate);
+					boolean isSuccessful = new TransactionController().insertTransaction(buyerName, location, cost,
+							price, date, itemName, category, rate);
+
 					/*
-					 * If category is new value, add new value to Category combobox.
+					 * If transaction is successful, add the values to combobox if not present
 					 */
-					if(isSuccessful) {
-						categoryCB.addItem(category);
-						categoryCB.revalidate();
+					if (isSuccessful) {
+						if (!isCategoryNew) {
+							categoryCB.revalidate();
+							categoryCB.addItem(category);
+						}
+						if (!isItemNew) {
+							itemNameCB.revalidate();
+							itemNameCB.addItem(itemName);
+						}
 					}
 					TransactionsPanel.updateTableData();
 				} catch (ClassNotFoundException e1) {
