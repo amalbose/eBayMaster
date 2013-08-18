@@ -77,13 +77,14 @@ public class TransactionController {
 	 * @param date
 	 * @param itemName
 	 * @param category
+	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
 	 * @throws DataBaseException
 	 * @throws DatabaseTableCreationException
 	 */
 	@SuppressWarnings("rawtypes")
-	public void insertTransaction(String buyerName, String location, float cost, float price, Date date,
+	public boolean insertTransaction(String buyerName, String location, float cost, float price, Date date,
 			String itemName, String category, float rate) throws ClassNotFoundException, SQLException,
 			DataBaseException, DatabaseTableCreationException {
 
@@ -119,9 +120,14 @@ public class TransactionController {
 		dateVal.put(Timestamp.class, new Timestamp(date.getTime()));
 		dataList.add(dateVal);
 
-		new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, getDBInsertQuery(
-				INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
-				DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
+		int noOfRowsAffected = new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
+				getDBInsertQuery(INSERT_TRANS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
+						DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
+		boolean isSuccessful = false;
+		if (noOfRowsAffected > 0) {
+			isSuccessful = true;
+		}
+		return isSuccessful;
 	}
 
 	private TransactionItem processTransactionItem(String itemName, String category, float rate)
