@@ -12,9 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -25,10 +27,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
-import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.ui.panels.HomePanel;
@@ -252,7 +255,9 @@ public class MainFrame extends JFrame {
 		try {
 			// add transaction table panel
 			transactionPanel = new TransactionsPanel();
-			transactionsPanel.add(new TransactionFormPanel(), BorderLayout.NORTH);
+			TransactionFormPanel transactionFormPanel = new TransactionFormPanel();
+			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
@@ -277,6 +282,17 @@ public class MainFrame extends JFrame {
 		// splitPane.setOneTouchExpandable(true);
 		splitPane.setEnabled(false);
 		splitPane.setDividerLocation(150);
+		
+		JPanel statusPanel = new JPanel();
+		getContentPane().add(statusPanel, BorderLayout.SOUTH);
+		statusPanel.setPreferredSize(new Dimension(getWidth(), 16));
+		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+		JLabel statusLabel = new JLabel("status");
+		statusLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		statusPanel.add(statusLabel);
+		
+		
 		pack();
 
 	}
