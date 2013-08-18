@@ -30,6 +30,10 @@ import com.axatrikx.controllers.TransactionItemController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class TransactionFormPanel extends JPanel {
 	/**
@@ -121,36 +125,6 @@ public class TransactionFormPanel extends JPanel {
 		JLabel lblProfit = new JLabel("Profit");
 		add(lblProfit, "cell 15 1,alignx left");
 
-		itemNameCB = new JComboBox<String>();
-		itemNameCB.getEditor().getEditorComponent().addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent arg0) {
-				TransactionItem item = itemController.getDetailByName(itemNameCB.getEditor().getItem().toString());
-				if (item != null) {
-					categoryCB.setSelectedItem(item.getItemCategory());
-				}
-			}
-		});
-		itemNameCB.setEditable(true);
-		itemNameCB.addItem("");
-		if (items != null) {
-			for (String item : items) {
-				itemNameCB.addItem(item);
-			}
-		}
-		AutoCompleteDecorator.decorate(itemNameCB);
-		add(itemNameCB, "cell 0 2,alignx left");
-
-		categoryCB = new JComboBox<String>();
-		categoryCB.setEditable(true);
-		if (categories != null) {
-			for (String category : categories) {
-				categoryCB.addItem(category);
-			}
-		}
-		AutoCompleteDecorator.decorate(categoryCB);
-		add(categoryCB, "cell 2 2,growx");
-
 		rateTF = new JTextField();
 		add(rateTF, "cell 4 2,alignx left");
 		rateTF.setColumns(7);
@@ -166,6 +140,49 @@ public class TransactionFormPanel extends JPanel {
 		dateTF = new JTextField();
 		add(dateTF, "cell 10 2,alignx left");
 		dateTF.setColumns(15);
+
+		
+		itemNameCB = new JComboBox<String>();
+		itemNameCB.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if (arg0.getStateChange() == 1) {
+					TransactionItem item = itemController.getDetailByName(itemNameCB.getEditor().getItem().toString());
+					if (item != null) {
+						categoryCB.setSelectedItem(item.getItemCategory());
+					}
+				}
+			}
+		});
+		itemNameCB.setEditable(true);
+		itemNameCB.addItem("");
+		if (items != null) {
+			for (String item : items) {
+				itemNameCB.addItem(item);
+			}
+		}
+		AutoCompleteDecorator.decorate(itemNameCB);
+		add(itemNameCB, "cell 0 2,alignx left");
+
+		categoryCB = new JComboBox<String>();
+		categoryCB.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if (arg0.getStateChange() == 1) {
+					TransactionItem item = itemController.getDetailByCategory(categoryCB.getEditor().getItem().toString());
+					if (item != null) {
+						rateTF.setText(String.valueOf(item.getItemRate()));
+					}
+				}
+			}
+		});
+		categoryCB.setEditable(true);
+		categoryCB.addItem("");
+		if (categories != null) {
+			for (String category : categories) {
+				categoryCB.addItem(category);
+			}
+		}
+		AutoCompleteDecorator.decorate(categoryCB);
+		add(categoryCB, "cell 2 2,growx");
 
 		JCalendarButton calendarButton = new JCalendarButton();
 		calendarButton.addPropertyChangeListener(new PropertyChangeListener() {

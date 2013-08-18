@@ -177,11 +177,11 @@ public class TransactionItemController {
 	}
 
 	/**
-	 * Gets the transaction item categories as a list.
+	 * Gets the transaction items as a list.
 	 * 
-	 * @return Categories as a list.
-	 * @throws DataBaseException
+	 * @return
 	 * @throws ClassNotFoundException
+	 * @throws DataBaseException
 	 * @throws DatabaseTableCreationException
 	 */
 	public List<String> getItems() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
@@ -199,9 +199,9 @@ public class TransactionItemController {
 	/**
 	 * Gets the transaction item categories as a list.
 	 * 
-	 * @return Categories as a list.
-	 * @throws DataBaseException
+	 * @return
 	 * @throws ClassNotFoundException
+	 * @throws DataBaseException
 	 * @throws DatabaseTableCreationException
 	 */
 	public List<String> getCategories() throws ClassNotFoundException, DataBaseException,
