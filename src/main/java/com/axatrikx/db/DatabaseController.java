@@ -202,9 +202,7 @@ public class DatabaseController {
 				throw new DataBaseException(e.getMessage(), e);
 			}
 		}
-		System.out.println(headers);
 		queryResult.setResultTable(resultTable);
-		System.out.println(resultTable);
 		return queryResult;
 	}
 

@@ -177,7 +177,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 	 * Don't need to implement this method unless your table's data can change.
 	 */
 	public void setValueAt(Object value, int row, int col) {
-		System.out.println(getValueAt(row, 0) + " " + columnNames[col]);
 		if (getColumnClass(col).equals(String.class)) {
 			value = "'" + value + "'";
 		}
@@ -287,7 +286,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 			}
 			transactions.add(curTransaction);
 		}
-		System.out.println(transactions.size());
 		return transactions;
 	}
 
