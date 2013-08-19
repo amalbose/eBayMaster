@@ -15,6 +15,10 @@ public class Category {
 	private static final String CATEGORY_COLUMN = "CATEGORYNAME";
 	private static final String RATE_COLUMN = "RATE";
 	
+	//header Names
+	public static final String CATEGORY_HEADER = "Category";
+	public static final String RATE_HEADER = "Rate";
+	
 	public String getCategoryName() {
 		return categoryName;
 	}
