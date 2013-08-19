@@ -9,25 +9,27 @@ import java.util.Date;
  */
 public class Transaction {
 
-	private TransactionItem item;
 	private int transactionId;
 	private float cost;
 	private float price;
 	private Buyer buyer;
 	private Date date;
 	private float profit;
+	private String itemName;
+	private Category category;
 	
 	private static final String TRANSACTIONID_COLUMN = "TRANSACTIONID";
 	private static final String COST_COLUMN = "COST";
 	private static final String PRICE_COLUMN = "PRICE";
 	private static final String PROFIT_COLUMN = "PROFIT";
 	private static final String DATE_COLUMN = "DATE";
+	private static final String ITEMNAME_COLUMN = "ITEMNAME";
 	
-	public TransactionItem getItem() {
-		return item;
+	public String getItemName() {
+		return itemName;
 	}
-	public void setItem(TransactionItem item) {
-		this.item = item;
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
 	}
 	public float getCost() {
 		return cost;
@@ -66,6 +68,12 @@ public class Transaction {
 		//TODO calculate profit
 		return profit;
 	}
+	public Category getCategory() {
+		return category;
+	}
+	public void setCategory(Category category) {
+		this.category = category;
+	}
 	public static String getCostColumn() {
 		return COST_COLUMN;
 	}
@@ -80,5 +88,8 @@ public class Transaction {
 	}
 	public static String getTransactionIDColumn() {
 		return TRANSACTIONID_COLUMN;
+	}
+	public static String getItemNameColumn() {
+		return ITEMNAME_COLUMN;
 	}
 }

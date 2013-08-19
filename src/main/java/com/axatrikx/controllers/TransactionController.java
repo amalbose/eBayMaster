@@ -5,11 +5,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import com.axatrikx.beans.TransactionItem;
+import com.axatrikx.beans.Category;
+import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
@@ -22,19 +24,21 @@ public class TransactionController {
 	private static Logger log = Logger.getLogger(TransactionController.class);
 
 	private static final String INSERT_TRANS_TABLE_TKN = "INSERT_TRANS_TABLE";
-	private static final String INSERT_ITEMS_TABLE_TKN = "INSERT_ITEMS_TABLE";
+	private static final String INSERT_CATEGORY_TABLE_TKN = "INSERT_CATEGORY_TABLE";
+	private static final String QUERY_ALL_ITEMS_TKN = "QUERY_ALL_ITEMS";
+	private static final String QUERY_CATEGORY_FROM_ITEM_TKN = "QUERY_CATEGORY_FROM_ITEM";
 
 	public void getTransactionModel(String queryString) {
 
 	}
 
 	/**
-	 * Returns the select query based on the type of query. Types include 'QUERY_TRANS_TABLE', 'QUERY_ITEMS_TABLE',
-	 * QUERY_ITEM_WITH_NAME and 'QUERY_TRANS_DETAIL'.
+	 * Returns the select query based on the type of query. Types include 'QUERY_TRANS_TABLE', 'QUERY_CATEGORY_TABLE',
+	 * 'QUERY_CATEGORY_WITH_NAME', 'QUERY_ALL_ITEMS', 'QUERY_ALL_CATEGORIES' and 'QUERY_TRANS_DETAIL'.
 	 * 
 	 * @param queryType
-	 *            Which query to return. Types include 'QUERY_TRANS_TABLE', 'QUERY_ITEMS_TABLE', QUERY_ITEM_WITH_NAME
-	 *            and 'QUERY_TRANS_DETAIL'.
+	 *            Which query to return. Types include 'QUERY_TRANS_TABLE', 'QUERY_CATEGORY_TABLE',
+	 *            'QUERY_CATEGORY_WITH_NAME', 'QUERY_ALL_ITEMS', 'QUERY_ALL_CATEGORIES' and 'QUERY_TRANS_DETAIL'.
 	 * @return The query string.
 	 */
 	public static String getDBSelectQuery(String queryType) {
@@ -49,10 +53,10 @@ public class TransactionController {
 	}
 
 	/**
-	 * Returns the insert query based on the type of query. Types include 'INSERT_TRANS_TABLE', 'INSERT_ITEMS_TABLE'.
+	 * Returns the insert query based on the type of query. Types include 'INSERT_TRANS_TABLE', 'INSERT_CATEGORY_TABLE'.
 	 * 
 	 * @param queryType
-	 *            Which query to return. Types include 'INSERT_TRANS_TABLE', 'INSERT_ITEMS_TABLE'.
+	 *            Which query to return. Types include 'INSERT_TRANS_TABLE', 'INSERT_CATEGORY_TABLE'.
 	 * @return The query string.
 	 */
 	public static String getDBInsertQuery(String tableType) {
@@ -67,7 +71,7 @@ public class TransactionController {
 	}
 
 	/**
-	 * Inserts the provided transaction to Database. If the transaction item is new, it will also be added to Database.
+	 * Inserts the provided transaction to Database. If the category is new, it will also be added to Database.
 	 * 
 	 * @param buyerName
 	 * @param location
@@ -75,7 +79,7 @@ public class TransactionController {
 	 * @param price
 	 * @param date
 	 * @param itemName
-	 * @param category
+	 * @param categoryName
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -84,16 +88,20 @@ public class TransactionController {
 	 */
 	@SuppressWarnings("rawtypes")
 	public boolean insertTransaction(String buyerName, String location, float cost, float price, Date date,
-			String itemName, String category, float rate) throws ClassNotFoundException, SQLException,
+			String itemName, String categoryName, float rate) throws ClassNotFoundException, SQLException,
 			DataBaseException, DatabaseTableCreationException {
 
-		TransactionItem item = processTransactionItem(itemName, category, rate);
+		Category category = processCategory(categoryName, rate);
 
 		ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
 
-		HashMap<Class, Object> itemIdVal = new HashMap<Class, Object>();
-		itemIdVal.put(Integer.class, item.getItemId());
-		dataList.add(itemIdVal);
+		HashMap<Class, Object> itemNameVal = new HashMap<Class, Object>();
+		itemNameVal.put(String.class, itemName);
+		dataList.add(itemNameVal);
+
+		HashMap<Class, Object> categoryIdVal = new HashMap<Class, Object>();
+		categoryIdVal.put(Integer.class, category.getCategoryId());
+		dataList.add(categoryIdVal);
 
 		HashMap<Class, Object> buyerNameVal = new HashMap<Class, Object>();
 		buyerNameVal.put(String.class, buyerName);
@@ -129,21 +137,29 @@ public class TransactionController {
 		return isSuccessful;
 	}
 
+	/**
+	 * Process category and inserts the category if not present and returns the Category object.
+	 * 
+	 * @param itemName
+	 * @param categoryName
+	 * @param rate
+	 * @return the Category object.
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws DataBaseException
+	 * @throws DatabaseTableCreationException
+	 */
 	@SuppressWarnings("rawtypes")
-	private TransactionItem processTransactionItem(String itemName, String category, float rate)
-			throws ClassNotFoundException, SQLException, DataBaseException, DatabaseTableCreationException {
-		TransactionItem item = new TransactionItemController().getItem(itemName);
-		if (item == null) {
-			log.info("Item " + itemName + " doesn't exist. Creating item record.");
+	private Category processCategory(String categoryName, float rate) throws ClassNotFoundException, SQLException,
+			DataBaseException, DatabaseTableCreationException {
+		Category category = new CategoryController().getCategory(categoryName);
+		if (category == null) {
+			log.info("Category " + categoryName + " doesn't exist. Creating item record.");
 
 			ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
 
-			HashMap<Class, Object> itemNameVal = new HashMap<Class, Object>();
-			itemNameVal.put(String.class, itemName);
-			dataList.add(itemNameVal);
-
 			HashMap<Class, Object> categoryVal = new HashMap<Class, Object>();
-			categoryVal.put(String.class, category);
+			categoryVal.put(String.class, categoryName);
 			dataList.add(categoryVal);
 
 			HashMap<Class, Object> rateVal = new HashMap<Class, Object>();
@@ -151,16 +167,79 @@ public class TransactionController {
 			dataList.add(rateVal);
 
 			int noOfRowsAffected = new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
-					getDBInsertQuery(INSERT_ITEMS_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
+					getDBInsertQuery(INSERT_CATEGORY_TABLE_TKN).replace(DatabaseController.getDatabaseNameToken(),
 							DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
 
 			if (noOfRowsAffected > 0) {
-				log.info("New item '" + itemName + "' created");
-				item = new TransactionItemController().getItem(itemName);
+				log.info("New Category '" + categoryName + "' created");
+				category = new CategoryController().getCategory(categoryName);
 			} else {
-				log.error("Failed to add item " + itemName + "'");
+				log.error("Failed to add category " + categoryName + "'");
 			}
 		}
-		return item;
+		return category;
+	}
+
+	/**
+	 * Gets the transaction items as a list.
+	 * 
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws DataBaseException
+	 * @throws DatabaseTableCreationException
+	 */
+	public List<String> getItems() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+		ArrayList<String> res = new ArrayList<String>();
+		ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
+				TransactionController.getDBSelectQuery(QUERY_ALL_ITEMS_TKN).replace(
+						DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
+				.getResultTable();
+		for (ArrayList<String> row : resultTable) {
+			res.add(row.get(0));
+		}
+		return res;
+	}
+
+	/**
+	 * Gets the category name of the given itemName. If multiple cateogries are present for an item, the latest used
+	 * combination will be selected.
+	 * 
+	 * @param itemName
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws DataBaseException
+	 * @throws DatabaseTableCreationException
+	 */
+	@SuppressWarnings("rawtypes")
+	public String getCategoryFromItem(String itemName) {
+		String categoryName = "";
+		ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
+		HashMap<Class, Object> itemNameVal = new HashMap<Class, Object>();
+		itemNameVal.put(String.class, itemName + "%");
+		dataList.add(itemNameVal);
+
+		QueryResultTable resultTable = null;
+		try {
+			resultTable = new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
+					TransactionController.getDBSelectQuery(QUERY_CATEGORY_FROM_ITEM_TKN).replace(
+							DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
+					.executeQueryForResult();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DataBaseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DatabaseTableCreationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<ArrayList<String>> resultTab = resultTable.getResultTable();
+		if (resultTab.size() > 0) {
+			categoryName = resultTab.get(0).get(0).toString();
+		} else {
+			log.error("No category Name obtained for " + itemName);
+		}
+		return categoryName;
 	}
 }

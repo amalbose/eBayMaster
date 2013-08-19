@@ -12,9 +12,9 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.Logger;
 
 import com.axatrikx.beans.Buyer;
+import com.axatrikx.beans.Category;
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.beans.Transaction;
-import com.axatrikx.beans.TransactionItem;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
@@ -25,7 +25,6 @@ public class TransactionsTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 6932679990291788679L;
 
 	private static final int TRANSACTIONID_ROW = 0;
-	private static final int ITEMID_ROW = 1;
 
 	private static final String TRANSACTIONS_TABLE = "EBAYMASTERDB.TRANSACTIONS";
 
@@ -84,9 +83,9 @@ public class TransactionsTableModel extends AbstractTableModel {
 		if (columnNames[col].equalsIgnoreCase(Transaction.getTransactionIDColumn())) {
 			// Transaction ID
 			resultVal = transactions.get(row).getTransactionId();
-		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getItemIDColumn())) {
-			// Transaction Item ID
-			resultVal = transactions.get(row).getItem().getItemId();
+		} else if (columnNames[col].equalsIgnoreCase(Category.getCategoryIdColumn())) {
+			// Category ID
+			resultVal = transactions.get(row).getCategory().getCategoryId();
 		} else if (columnNames[col].equalsIgnoreCase(Buyer.getBuyerColumn())) {
 			// Buyer name
 			resultVal = transactions.get(row).getBuyer().getBuyerName();
@@ -105,15 +104,15 @@ public class TransactionsTableModel extends AbstractTableModel {
 		} else if (columnNames[col].equalsIgnoreCase(Transaction.getDateColumn())) {
 			// Date
 			resultVal = transactions.get(row).getDate();
-		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getItemColumn())) {
+		} else if (columnNames[col].equalsIgnoreCase(Transaction.getItemNameColumn())) {
 			// Item Name
-			resultVal = transactions.get(row).getItem().getItemName();
-		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getCategoryColumn())) {
-			// Item Category
-			resultVal = transactions.get(row).getItem().getItemCategory();
-		} else if (columnNames[col].equalsIgnoreCase(TransactionItem.getRateColumn())) {
-			// Item Category
-			resultVal = transactions.get(row).getItem().getItemRate();
+			resultVal = transactions.get(row).getItemName();
+		} else if (columnNames[col].equalsIgnoreCase(Category.getCategoryNameColumn())) {
+			// Category
+			resultVal = transactions.get(row).getCategory().getCategoryName();
+		} else if (columnNames[col].equalsIgnoreCase(Category.getRateColumn())) {
+			// Rate
+			resultVal = transactions.get(row).getCategory().getRate();
 		} else {
 			log.warn("Unexpected value found: " + col + " in row: " + row);
 		}
@@ -181,7 +180,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 	private List<Transaction> getTransactions(ArrayList<ArrayList<String>> tableData) {
 		List<Transaction> transactions = new ArrayList<Transaction>();
 		Transaction curTransaction; // temp transaction to store the current transaction.
-		TransactionItem curItem; // temp transaction item
+		Category curCategory; // temp transaction item
 		Buyer curBuyer; // temp buyer
 
 		/*
@@ -192,11 +191,11 @@ public class TransactionsTableModel extends AbstractTableModel {
 			/*
 			 * Transaction Item and Buyer are set and their member values are updated based on the column names.
 			 */
-			curItem = new TransactionItem();
+			curCategory = new Category();
 			curBuyer = new Buyer();
 			// setting item and buyer for the current transaction.
 			curTransaction.setBuyer(curBuyer);
-			curTransaction.setItem(curItem);
+			curTransaction.setCategory(curCategory);
 			/*
 			 * Loops through each column and update the values to the Transaction object.
 			 */
@@ -208,9 +207,9 @@ public class TransactionsTableModel extends AbstractTableModel {
 				if (columnNames[columnIndex].equalsIgnoreCase(Transaction.getTransactionIDColumn())) {
 					// Transaction ID
 					curTransaction.setTransactionId(Integer.parseInt(columnValue));
-				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getItemIDColumn())) {
-					// Transaction Item ID
-					curTransaction.getItem().setItemId(Integer.parseInt(columnValue));
+				} else if (columnNames[columnIndex].equalsIgnoreCase(Category.getCategoryIdColumn())) {
+					// Category ID
+					curTransaction.getCategory().setCategoryId(Integer.parseInt(columnValue));
 				} else if (columnNames[columnIndex].equalsIgnoreCase(Buyer.getBuyerColumn())) {
 					// Buyer name
 					curTransaction.getBuyer().setBuyerName(columnValue);
@@ -236,15 +235,15 @@ public class TransactionsTableModel extends AbstractTableModel {
 						JOptionPane.showMessageDialog(null, e.getMessage(), "Error while parsing date : "
 								+ e.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 					}
-				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getItemColumn())) {
+				} else if (columnNames[columnIndex].equalsIgnoreCase(Transaction.getItemNameColumn())) {
 					// Item Name
-					curTransaction.getItem().setItemName(columnValue);
-				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getCategoryColumn())) {
+					curTransaction.setItemName(columnValue);
+				} else if (columnNames[columnIndex].equalsIgnoreCase(Category.getCategoryNameColumn())) {
 					// Item Category
-					curTransaction.getItem().setItemCategory(columnValue);
-				} else if (columnNames[columnIndex].equalsIgnoreCase(TransactionItem.getRateColumn())) {
+					curTransaction.getCategory().setCategoryName(columnValue);
+				} else if (columnNames[columnIndex].equalsIgnoreCase(Category.getRateColumn())) {
 					// Item Category
-					curTransaction.getItem().setItemRate(Float.parseFloat(columnValue));
+					curTransaction.getCategory().setRate(Float.parseFloat(columnValue));
 				} else {
 					log.warn("Unexpected value found: " + columnValue + " in index: " + columnIndex);
 				}

@@ -6,6 +6,8 @@ import java.awt.Font;
 
 public class HomePanel extends JPanel {
 
+	private static final long serialVersionUID = 3530802818421517890L;
+
 	/**
 	 * Create the panel.
 	 */
