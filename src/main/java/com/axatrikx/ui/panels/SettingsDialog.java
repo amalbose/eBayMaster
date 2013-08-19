@@ -6,13 +6,8 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import javax.swing.JSlider;
-import javax.swing.JCheckBox;
-import javax.swing.JRadioButton;
+import javax.swing.border.EmptyBorder;
 
 public class SettingsDialog extends JDialog {
 
