@@ -8,6 +8,9 @@ public class Buyer {
 	private static final String BUYER_COLUMN = "BUYERNAME";
 	private static final String LOCATION_COLUMN = "LOCATION";
 	
+	public static final String BUYER_HEADER = "Buyer Name";
+	public static final String LOCATION_HEADER = "Location";
+	
 	public String getBuyerName() {
 		return buyerName;
 	}

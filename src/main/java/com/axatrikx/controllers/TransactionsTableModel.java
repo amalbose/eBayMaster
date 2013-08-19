@@ -54,10 +54,9 @@ public class TransactionsTableModel extends AbstractTableModel {
 		// process data
 		Object[] objectArray = resultTable.getHeaderDetails().keySet().toArray();
 		columnNames = Arrays.copyOf(objectArray, objectArray.length, String[].class);
-
 		transactions = getTransactions(resultTable.getResultTable());
 	}
-	
+
 	public void updateLatestData() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		getLatestData();
 		fireTableDataChanged();
@@ -72,7 +71,41 @@ public class TransactionsTableModel extends AbstractTableModel {
 	}
 
 	public String getColumnName(int col) {
-		return columnNames[col];
+		return getHeaderName(columnNames[col]);
+	}
+
+	private String getHeaderName(String columnName) {
+		String headerName = columnName;
+
+		if (columnName.equalsIgnoreCase(Buyer.getBuyerColumn())) {
+			// Buyer name
+			headerName = Buyer.BUYER_HEADER;
+		} else if (columnName.equalsIgnoreCase(Buyer.getLocationColumn())) {
+			// Location
+			headerName = Buyer.LOCATION_HEADER;
+		} else if (columnName.equalsIgnoreCase(Transaction.getCostColumn())) {
+			// Cost
+			headerName = Transaction.COST_HEADER;
+		} else if (columnName.equalsIgnoreCase(Transaction.getPriceColumn())) {
+			// Price
+			headerName = Transaction.PRICE_HEADER;
+		} else if (columnName.equalsIgnoreCase(Transaction.getProfitColumn())) {
+			// Profit
+			headerName = Transaction.PROFIT_HEADER;
+		} else if (columnName.equalsIgnoreCase(Transaction.getDateColumn())) {
+			// Date
+			headerName = Transaction.DATE_HEADER;
+		} else if (columnName.equalsIgnoreCase(Transaction.getItemNameColumn())) {
+			// Item Name
+			headerName = Transaction.ITEMNAME_HEADER;
+		} else if (columnName.equalsIgnoreCase(Category.getCategoryNameColumn())) {
+			// Category
+			headerName = Category.CATEGORY_HEADER;
+		} else if (columnName.equalsIgnoreCase(Category.getRateColumn())) {
+			// Rate
+			headerName = Category.RATE_HEADER;
+		}
+		return headerName;
 	}
 
 	public Object getValueAt(int row, int col) {
@@ -114,7 +147,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 			// Rate
 			resultVal = transactions.get(row).getCategory().getRate();
 		} else {
-			log.warn("Unexpected value found: " + col + " in row: " + row);
+			log.warn("Unexpected value found: " + columnNames[col] + " in row: " + row);
 		}
 		return resultVal;
 	}

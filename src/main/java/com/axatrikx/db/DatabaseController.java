@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -168,7 +169,8 @@ public class DatabaseController {
 
 			// setting header details.
 			for (int i = 1; i <= colSize; i++) {
-				headers.put(rs.getMetaData().getColumnLabel(i), rs.getMetaData().getColumnTypeName(i));
+				ResultSetMetaData metadata = rs.getMetaData();
+				headers.put(metadata.getColumnName(i), metadata.getColumnTypeName(i));
 			}
 
 			if (headers.size() < 1) {
