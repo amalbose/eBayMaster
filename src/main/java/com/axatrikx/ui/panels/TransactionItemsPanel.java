@@ -1,19 +1,16 @@
 package com.axatrikx.ui.panels;
 
-import javax.swing.JPanel;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
-import javax.swing.border.SoftBevelBorder;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.JFormattedTextField;
-import javax.swing.JButton;
 import java.awt.Component;
+
 import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
+import net.miginfocom.swing.MigLayout;
 
 public class TransactionItemsPanel extends JPanel {
 	private static final long serialVersionUID = -2551210721481697627L;

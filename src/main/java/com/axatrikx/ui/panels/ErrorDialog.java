@@ -5,15 +5,15 @@ import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
+
 import net.miginfocom.swing.MigLayout;
-import java.awt.Component;
-import javax.swing.Box;
 
 public class ErrorDialog extends JDialog {
 
+	private static final long serialVersionUID = 8319297770003901938L;
 	private final JPanel contentPanel = new JPanel();
 
 	/**

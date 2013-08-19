@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,6 +18,13 @@ import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 
+/**
+ * PreparedDataExecutor helps in execution of prepared statements. The class expects a list of hashmap which contains
+ * the data to be inserted. Each hashmap should contain the datatype object and the value to be entered.
+ * 
+ * @author Amal Bose B S
+ * 
+ */
 public class PreparedDataExecutor {
 
 	private static Logger log = Logger.getLogger(PreparedDataExecutor.class);
@@ -28,13 +34,28 @@ public class PreparedDataExecutor {
 	private String preparedStatement;
 	private Connection dbConnection;
 
+	/**
+	 * PreparedDataExecutor constructor.
+	 * 
+	 * @param dbConnection
+	 *            The database connection.
+	 * @param dataList
+	 *            The data list each item of which is a hashmap having the datatype object -> datavalue pair.
+	 * @param preparedStatement
+	 *            the prepared statement string.
+	 */
 	@SuppressWarnings("rawtypes")
-	public PreparedDataExecutor(Connection dbConnection, ArrayList<HashMap<Class, Object>> dataList, String preparedStatement) {
+	public PreparedDataExecutor(Connection dbConnection, ArrayList<HashMap<Class, Object>> dataList,
+			String preparedStatement) {
 		this.dataList = dataList;
 		this.preparedStatement = preparedStatement;
 		this.dbConnection = dbConnection;
 	}
 
+	/**
+	 * Returns the prepared statement.
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
 	public PreparedStatement getPreparedStatement() {
 		PreparedStatement preparedStatement = null;
@@ -79,8 +100,7 @@ public class PreparedDataExecutor {
 	 * @return The result table in 2D arraylist format.
 	 * @throws DataBaseException
 	 */
-	public QueryResultTable executeQueryForResult()
-			throws DataBaseException {
+	public QueryResultTable executeQueryForResult() throws DataBaseException {
 		// result object
 		QueryResultTable queryResult = new QueryResultTable();
 

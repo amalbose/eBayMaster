@@ -29,9 +29,9 @@ import net.miginfocom.swing.MigLayout;
 import org.jbundle.util.jcalendarbutton.JCalendarButton;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
-import com.axatrikx.beans.TransactionItem;
+import com.axatrikx.beans.Category;
 import com.axatrikx.controllers.TransactionController;
-import com.axatrikx.controllers.TransactionItemController;
+import com.axatrikx.controllers.CategoryController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
@@ -49,7 +49,8 @@ public class TransactionFormPanel extends JPanel {
 	private JTextField dateTF;
 	private JComboBox<String> itemNameCB;
 	private JComboBox<String> categoryCB;
-	private TransactionItemController itemController;
+	private CategoryController categoryController;
+	private TransactionController transactionController;
 
 	/**
 	 * Create the panel.
@@ -58,7 +59,8 @@ public class TransactionFormPanel extends JPanel {
 		setBackground(Color.WHITE);
 
 		try {
-			itemController = new TransactionItemController();
+			transactionController = new TransactionController();
+			categoryController = new CategoryController();
 		} catch (ClassNotFoundException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -72,7 +74,7 @@ public class TransactionFormPanel extends JPanel {
 
 		List<String> categories = null;
 		try {
-			categories = itemController.getCategories();
+			categories = categoryController.getCategories();
 		} catch (ClassNotFoundException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -86,7 +88,7 @@ public class TransactionFormPanel extends JPanel {
 
 		List<String> items = null;
 		try {
-			items = itemController.getItems();
+			items = transactionController.getItems();
 		} catch (ClassNotFoundException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -98,8 +100,9 @@ public class TransactionFormPanel extends JPanel {
 			e2.printStackTrace();
 		}
 
-		setLayout(new MigLayout("", "[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
-		
+		setLayout(new MigLayout("",
+				"[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
+
 		JLabel lblAddNewTransaction = new JLabel("Add new transaction:");
 		lblAddNewTransaction.setFont(new Font("Tahoma", Font.BOLD, 11));
 		add(lblAddNewTransaction, "cell 0 0");
@@ -156,9 +159,10 @@ public class TransactionFormPanel extends JPanel {
 		itemNameCB.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == 1) {
-					TransactionItem item = itemController.getDetailByName(itemNameCB.getEditor().getItem().toString());
-					if (item != null) {
-						categoryCB.setSelectedItem(item.getItemCategory());
+					String category = transactionController.getCategoryFromItem(itemNameCB.getEditor().getItem()
+							.toString());
+					if (!category.isEmpty()) {
+						categoryCB.setSelectedItem(category);
 					}
 				}
 			}
@@ -177,10 +181,9 @@ public class TransactionFormPanel extends JPanel {
 		categoryCB.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent arg0) {
 				if (arg0.getStateChange() == 1) {
-					TransactionItem item = itemController.getDetailByCategory(categoryCB.getEditor().getItem()
-							.toString());
-					if (item != null) {
-						rateTF.setText(String.valueOf(item.getItemRate()));
+					Category category = categoryController.getDetailByName(categoryCB.getEditor().getItem().toString());
+					if (category != null) {
+						rateTF.setText(String.valueOf(category.getRate()));
 					}
 				}
 			}
@@ -235,14 +238,15 @@ public class TransactionFormPanel extends JPanel {
 		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				float cost = 0.0f, price = 0.0f, rate = 0.0f;
 				String itemName = itemNameCB.getSelectedItem().toString();
 				String buyerName = buyerNameTF.getText();
 				String location = locationTF.getText();
 				String category = categoryCB.getSelectedItem().toString();
 				boolean isCategoryNew = false, isItemNew = false;
 				try {
-					isCategoryNew = itemController.getCategories().contains(category);
-					isItemNew = itemController.getItems().contains(itemName);
+					isCategoryNew = categoryController.getCategories().contains(category);
+					isItemNew = transactionController.getItems().contains(itemName);
 				} catch (ClassNotFoundException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -253,16 +257,26 @@ public class TransactionFormPanel extends JPanel {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
-				float cost = Float.parseFloat(costTF.getText().toString());
-				float price = Float.parseFloat(priceTF.getText().toString());
-				float rate = Float.parseFloat(rateTF.getText().toString());
+				String costString = costTF.getText().toString();
+				if (!costString.isEmpty()) {
+					cost = Float.parseFloat(costString);
+				}
+
+				String priceString = priceTF.getText().toString();
+				if (!priceString.isEmpty()) {
+					price = Float.parseFloat(priceTF.getText().toString());
+				}
+
+				String rateString = rateTF.getText().toString();
+				if (!rateString.isEmpty()) {
+					rate = Float.parseFloat(rateTF.getText().toString());
+				}
 				Date date = null;
 				try {
 					date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateTF.getText()
 							.toString());
 					boolean isSuccessful = new TransactionController().insertTransaction(buyerName, location, cost,
 							price, date, itemName, category, rate);
-
 					/*
 					 * If transaction is successful, add the values to combobox if not present
 					 */

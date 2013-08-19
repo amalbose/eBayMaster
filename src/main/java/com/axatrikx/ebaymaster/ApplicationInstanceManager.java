@@ -31,6 +31,7 @@ public class ApplicationInstanceManager {
 	 * 
 	 * @return true if first instance, false if not.
 	 */
+	@SuppressWarnings("resource")
 	public static boolean registerInstance() {
 		// returnValueOnError should be true if lenient (allows app to run on network error) or false if strict.
 		boolean returnValueOnError = true;
