@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Set;
@@ -14,9 +13,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.axatrikx.beans.QueryResultTable;
-import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
-import com.axatrikx.errors.DatabaseTableCreationException;
 
 /**
  * PreparedDataExecutor helps in execution of prepared statements. The class expects a list of hashmap which contains
@@ -150,43 +147,4 @@ public class PreparedDataExecutor {
 		System.out.println(resultTable);
 		return queryResult;
 	}
-
-	public static void main(String[] args) throws ClassNotFoundException, DataBaseException,
-			DatabaseTableCreationException, SQLException {
-		String query = "INSERT INTO EBAYMASTERDB.TRANSACTIONS(ITEMID, BUYERNAME, LOCATION, COST, PRICE, PROFIT, DATE) VALUES (?,?,?,?,?,?,?)";
-
-		ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
-
-		HashMap<Class, Object> itemIdVal = new HashMap<Class, Object>();
-		itemIdVal.put(Integer.class, 2);
-		dataList.add(itemIdVal);
-
-		HashMap<Class, Object> buyerNameVal = new HashMap<Class, Object>();
-		buyerNameVal.put(String.class, "New buyer");
-		dataList.add(buyerNameVal);
-
-		HashMap<Class, Object> locationVal = new HashMap<Class, Object>();
-		locationVal.put(String.class, "new Location");
-		dataList.add(locationVal);
-
-		HashMap<Class, Object> costVal = new HashMap<Class, Object>();
-		costVal.put(Float.class, 1.0f);
-		dataList.add(costVal);
-
-		HashMap<Class, Object> priceVal = new HashMap<Class, Object>();
-		priceVal.put(Float.class, 2.0f);
-		dataList.add(priceVal);
-
-		HashMap<Class, Object> profitVal = new HashMap<Class, Object>();
-		profitVal.put(Float.class, 1.2f);
-		dataList.add(profitVal);
-
-		HashMap<Class, Object> dateVal = new HashMap<Class, Object>();
-		dateVal.put(Timestamp.class, new Timestamp(new Date().getTime()));
-		dataList.add(dateVal);
-
-		new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, query).getPreparedStatement()
-				.executeUpdate();
-	}
-
 }

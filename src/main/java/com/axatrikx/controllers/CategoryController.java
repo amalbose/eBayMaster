@@ -171,6 +171,7 @@ public class CategoryController {
 	/**
 	 * Validates the transaction data
 	 */
+	@SuppressWarnings("unused")
 	private Response validateData() {
 		// TODO validate
 		return new Response();

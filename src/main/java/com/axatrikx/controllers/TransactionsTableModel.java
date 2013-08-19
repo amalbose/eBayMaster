@@ -119,6 +119,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 		return resultVal;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Class getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
