@@ -1,0 +1,9 @@
+language: java
+jdk:
+  - oraclejdk7
+<<<<<<< HEAD
+  - openjdk7
+=======
+  - openjdk7
+  - openjdk6
+>>>>>>> branch 'master' of https://github.com/axatrikx/eBayMaster.git
