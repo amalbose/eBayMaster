@@ -1,6 +1,18 @@
-eBayMaster
-==========
-
-eBayMaster tool manages eBay transactions
+#eBayMaster
 
 [![Build Status](https://api.travis-ci.org/axatrikx/eBayMaster.png?branch=master)](https://travis-ci.org/axatrikx/eBayMaster)
+
+eBayMaster is a tool for managing you eBay transactions. It keeps track of each transactions and provides a wide variety of reports based on your expense and profit.
+
+## Build the application
+
+Build tool is *maven*
+
+`mvn install -DskipTests=true -B`
+
+
+## Contributors
+*	Amal Bose (axatrikx)
+
+## License
+This is free software; you can redistribute it and/or modify it under the same terms as the Perl 5 programming language system itself.
