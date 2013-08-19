@@ -30,7 +30,6 @@ public class CategoryController {
 
 	private static final String QUERY_CATEGORY_WITH_NAME_TKN = "QUERY_CATEGORY_WITH_NAME";
 	private static final String QUERY_CATEGORY_TABLE_TKN = "QUERY_CATEGORY_TABLE";
-	private static final String QUERY_ALL_ITEMS_TKN = "QUERY_ALL_ITEMS";
 	private static final String QUERY_ALL_CATEGORIES_TKN = "QUERY_ALL_CATEGORIES";
 
 	/**
@@ -146,26 +145,6 @@ public class CategoryController {
 			}
 		}
 		return resultCat;
-	}
-
-	/**
-	 * Gets the transaction items as a list.
-	 * 
-	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws DataBaseException
-	 * @throws DatabaseTableCreationException
-	 */
-	public List<String> getItems() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
-		ArrayList<String> res = new ArrayList<String>();
-		ArrayList<ArrayList<String>> resultTable = new DatabaseController().executeQueryForResult(
-				TransactionController.getDBSelectQuery(QUERY_ALL_ITEMS_TKN).replace(
-						DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
-				.getResultTable();
-		for (ArrayList<String> row : resultTable) {
-			res.add(row.get(0));
-		}
-		return res;
 	}
 
 	/**
