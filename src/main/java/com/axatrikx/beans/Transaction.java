@@ -16,7 +16,7 @@ public class Transaction {
 	private Date date;
 	private float profit;
 	private String itemName;
-	private int categoryId;
+	private Category category;
 	
 	private static final String TRANSACTIONID_COLUMN = "TRANSACTIONID";
 	private static final String COST_COLUMN = "COST";
@@ -68,11 +68,11 @@ public class Transaction {
 		//TODO calculate profit
 		return profit;
 	}
-	public int getCategoryId() {
-		return categoryId;
+	public Category getCategory() {
+		return category;
 	}
-	public void setCategoryId(int categoryId) {
-		this.categoryId = categoryId;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 	public static String getCostColumn() {
 		return COST_COLUMN;
@@ -89,7 +89,7 @@ public class Transaction {
 	public static String getTransactionIDColumn() {
 		return TRANSACTIONID_COLUMN;
 	}
-	public static String getItemnameColumn() {
+	public static String getItemNameColumn() {
 		return ITEMNAME_COLUMN;
 	}
 }
