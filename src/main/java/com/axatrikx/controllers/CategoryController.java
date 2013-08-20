@@ -26,9 +26,9 @@ public class CategoryController {
 
 	private static Logger log = Logger.getLogger(CategoryController.class);
 
-	private List<Category> categories;
+	private static List<Category> categories;
 
-	private static final String QUERY_CATEGORY_WITH_NAME_TKN = "QUERY_CATEGORY_WITH_NAME";
+	private static final String QUERY_CATEGORY_WITH_DETAIL_TKN = "QUERY_CATEGORY_WITH_DETAIL";
 	private static final String QUERY_CATEGORY_TABLE_TKN = "QUERY_CATEGORY_TABLE";
 	private static final String QUERY_ALL_CATEGORIES_TKN = "QUERY_ALL_CATEGORIES";
 
@@ -40,12 +40,18 @@ public class CategoryController {
 	 * @throws DatabaseTableCreationException
 	 */
 	public CategoryController() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
-		this.categories = getAllCategories();
+		updateCategories();
+	}
+
+	public static void updateCategories() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+		categories = getAllCategories();
 	}
 
 	/**
-	 * Gets the category from the category name.
+	 * Gets the category from the category name and rate
+	 * 
 	 * @param categoryName
+	 * @param rate
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws SQLException
@@ -53,15 +59,19 @@ public class CategoryController {
 	 * @throws DatabaseTableCreationException
 	 */
 	@SuppressWarnings("rawtypes")
-	public Category getCategory(String categoryName) throws ClassNotFoundException, SQLException, DataBaseException,
-			DatabaseTableCreationException {
+	public Category getCategory(String categoryName, float rate) throws ClassNotFoundException, SQLException,
+			DataBaseException, DatabaseTableCreationException {
 		ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
 		HashMap<Class, Object> categoryNameMap = new HashMap<Class, Object>();
 		categoryNameMap.put(String.class, categoryName);
 		dataList.add(categoryNameMap);
 
+		HashMap<Class, Object> rateVal = new HashMap<Class, Object>();
+		rateVal.put(Float.class, rate);
+		dataList.add(rateVal);
+
 		QueryResultTable resultTable = new PreparedDataExecutor(new DatabaseController().getConnection(), dataList,
-				TransactionController.getDBSelectQuery(QUERY_CATEGORY_WITH_NAME_TKN).replace(
+				TransactionController.getDBSelectQuery(QUERY_CATEGORY_WITH_DETAIL_TKN).replace(
 						DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
 				.executeQueryForResult();
 
@@ -80,12 +90,13 @@ public class CategoryController {
 
 	/**
 	 * Gets all categories
+	 * 
 	 * @return
 	 * @throws ClassNotFoundException
 	 * @throws DataBaseException
 	 * @throws DatabaseTableCreationException
 	 */
-	private List<Category> getAllCategories() throws ClassNotFoundException, DataBaseException,
+	private static List<Category> getAllCategories() throws ClassNotFoundException, DataBaseException,
 			DatabaseTableCreationException {
 
 		List<Category> categoryList = new ArrayList<Category>();
@@ -138,7 +149,7 @@ public class CategoryController {
 	 */
 	public Category getDetailByName(String categoryName) {
 		Category resultCat = null;
-		for (Category category : this.categories) {
+		for (Category category : categories) {
 			if (category.getCategoryName().equalsIgnoreCase(categoryName)) {
 				resultCat = category;
 				break;

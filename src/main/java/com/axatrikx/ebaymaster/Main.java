@@ -19,13 +19,11 @@ public class Main {
 		if (!ApplicationInstanceManager.registerInstance()) {
 			// instance already running.
 			log.error("Another instance of this application is already running.  Exiting.");
-			System.out.println("Another instance of this application is already running.  Exiting.");
 			System.exit(0);
 		}
 		ApplicationInstanceManager.setApplicationInstanceListener(new ApplicationInstanceListener() {
 			public void newInstanceCreated() {
 				log.warn("New instance detected...");
-				System.out.println("New instance detected...");
 				JOptionPane.showMessageDialog(null, "New instance detected and closed.", "Multiple Instances",
 						JOptionPane.WARNING_MESSAGE);
 			}

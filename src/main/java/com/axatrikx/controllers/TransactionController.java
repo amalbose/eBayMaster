@@ -152,7 +152,7 @@ public class TransactionController {
 	@SuppressWarnings("rawtypes")
 	private Category processCategory(String categoryName, float rate) throws ClassNotFoundException, SQLException,
 			DataBaseException, DatabaseTableCreationException {
-		Category category = new CategoryController().getCategory(categoryName);
+		Category category = new CategoryController().getCategory(categoryName, rate);
 		if (category == null) {
 			log.info("Category " + categoryName + " doesn't exist. Creating item record.");
 
@@ -172,7 +172,8 @@ public class TransactionController {
 
 			if (noOfRowsAffected > 0) {
 				log.info("New Category '" + categoryName + "' created");
-				category = new CategoryController().getCategory(categoryName);
+				category = new CategoryController().getCategory(categoryName, rate);
+				CategoryController.updateCategories();
 			} else {
 				log.error("Failed to add category " + categoryName + "'");
 			}

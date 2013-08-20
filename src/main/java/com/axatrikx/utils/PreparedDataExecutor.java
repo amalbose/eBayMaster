@@ -144,7 +144,6 @@ public class PreparedDataExecutor {
 			}
 		}
 		queryResult.setResultTable(resultTable);
-		System.out.println(resultTable);
 		return queryResult;
 	}
 }
