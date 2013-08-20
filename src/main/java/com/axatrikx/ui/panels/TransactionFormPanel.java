@@ -282,12 +282,12 @@ public class TransactionFormPanel extends JPanel {
 					 */
 					if (isSuccessful) {
 						if (!isCategoryNew) {
-							categoryCB.revalidate();
 							categoryCB.addItem(category);
+							categoryCB.revalidate();
 						}
 						if (!isItemNew) {
-							itemNameCB.revalidate();
 							itemNameCB.addItem(itemName);
+							itemNameCB.revalidate();
 						}
 					}
 					TransactionsPanel.updateTableData();
