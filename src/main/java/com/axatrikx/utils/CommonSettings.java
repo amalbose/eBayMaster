@@ -40,28 +40,4 @@ public class CommonSettings {
 		}
 		return props;
 	}
-
-/*	*//**
-	 * Returns the query based on the query Type.<br/>
-	 * Query types include QUERY_TRANS_TABLE, QUERY_ITEMS_TABLE and QUERY_TRANS_DETAIL
-	 * 
-	 * @param queryType
-	 *            Query types include QUERY_TRANS_TABLE, QUERY_ITEMS_TABLE and QUERY_TRANS_DETAIL
-	 * @return The query string based on query type.
-	 *//*
-	public static String getDBSelectQuery(String queryType) {
-		Properties props = new Properties();
-		String fileName = ConfigValues.QUERY_FOLDER.toString() + ConfigValues.SEPARATOR.toString()
-				+ ConfigValues.QUERY_SELECT_FILE.toString();
-		try {
-			props.load(CommonSettings.class.getClassLoader().getResourceAsStream(fileName));
-		} catch (IOException e) {
-			log.error("IO Exception while loading " + fileName, e);
-		}
-		return props.getProperty(queryType);
-	}*/
-
-	public static void main(String[] args) {
-		System.out.println(getConfigFolder());
-	}
 }
