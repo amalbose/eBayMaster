@@ -269,7 +269,8 @@ public class MainFrame extends JFrame {
 			// add transaction table panel
 			transactionPanel = new TransactionsPanel();
 			TransactionFormPanel transactionFormPanel = new TransactionFormPanel();
-			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
+					null));
 			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
@@ -278,10 +279,12 @@ public class MainFrame extends JFrame {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		} catch (DatabaseTableCreationException e1) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
 		}
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
 
@@ -295,7 +298,7 @@ public class MainFrame extends JFrame {
 		// splitPane.setOneTouchExpandable(true);
 		splitPane.setEnabled(false);
 		splitPane.setDividerLocation(150);
-		
+
 		JPanel statusPanel = new JPanel();
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
 		statusPanel.setPreferredSize(new Dimension(getWidth(), 16));
@@ -304,8 +307,7 @@ public class MainFrame extends JFrame {
 		statusLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
-		
-		
+
 		pack();
 
 	}
