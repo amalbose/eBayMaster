@@ -16,16 +16,20 @@ import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.apache.log4j.Logger;
 import org.jbundle.util.jcalendarbutton.JCalendarButton;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
@@ -37,10 +41,19 @@ import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
 
 public class TransactionFormPanel extends JPanel {
-	/**
-	 * 
-	 */
+
+	private static final Logger log = Logger.getLogger(TransactionFormPanel.class);
+
 	private static final long serialVersionUID = -202660505350614300L;
+	private static final String DEFAULT_ITEM = "<Select Item>";
+	private static final String DEFAULT_CATEGORY = "<Select Category>";
+
+	/**
+	 * Time duration for Saved label display.
+	 */
+	private static final long LABEL_HIDE_TIMEOUT = 2;
+
+	private JLabel lblItemSaved;
 	private JFormattedTextField rateTF;
 	private JTextField buyerNameTF;
 	private JTextField locationTF;
@@ -58,46 +71,19 @@ public class TransactionFormPanel extends JPanel {
 	public TransactionFormPanel() {
 		setBackground(Color.WHITE);
 
+		List<String> categories = null;
+		List<String> items = null;
 		try {
 			transactionController = new TransactionController();
 			categoryController = new CategoryController();
-		} catch (ClassNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (DataBaseException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (DatabaseTableCreationException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-
-		List<String> categories = null;
-		try {
 			categories = categoryController.getCategories();
-		} catch (ClassNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (DataBaseException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (DatabaseTableCreationException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-
-		List<String> items = null;
-		try {
 			items = transactionController.getItems();
 		} catch (ClassNotFoundException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			log.error("Exception while creating controller", e2);
 		} catch (DataBaseException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			log.error("Database exception", e2);
 		} catch (DatabaseTableCreationException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
+			log.error("Exception while creating database tables", e2);
 		}
 
 		setLayout(new MigLayout("",
@@ -106,6 +92,12 @@ public class TransactionFormPanel extends JPanel {
 		JLabel lblAddNewTransaction = new JLabel("Add new transaction:");
 		lblAddNewTransaction.setFont(new Font("Tahoma", Font.BOLD, 11));
 		add(lblAddNewTransaction, "cell 0 0");
+
+		lblItemSaved = new JLabel("Transaction Saved");
+		lblItemSaved.setVisible(false);
+		lblItemSaved.setForeground(new Color(0, 128, 0));
+		lblItemSaved.setFont(new Font("Tahoma", Font.BOLD, 14));
+		add(lblItemSaved, "cell 8 0,alignx right");
 
 		JLabel lblTransactionItem = new JLabel("Transaction Item");
 		add(lblTransactionItem, "cell 0 1");
@@ -168,7 +160,7 @@ public class TransactionFormPanel extends JPanel {
 			}
 		});
 		itemNameCB.setEditable(true);
-		itemNameCB.addItem("<Select Item>");
+		itemNameCB.addItem(DEFAULT_ITEM);
 		if (items != null) {
 			for (String item : items) {
 				itemNameCB.addItem(item);
@@ -189,7 +181,7 @@ public class TransactionFormPanel extends JPanel {
 			}
 		});
 		categoryCB.setEditable(true);
-		categoryCB.addItem("<Select Category>");
+		categoryCB.addItem(DEFAULT_CATEGORY);
 		if (categories != null) {
 			for (String category : categories) {
 				categoryCB.addItem(category);
@@ -207,7 +199,6 @@ public class TransactionFormPanel extends JPanel {
 						dateTF.setText(defaultDf.format(new SimpleDateFormat(ConfigValues.CALENDAR_DATE_FORMAT
 								.toString()).parse(evt.getNewValue().toString())));
 					} catch (ParseException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -238,77 +229,188 @@ public class TransactionFormPanel extends JPanel {
 		btnSave.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				float cost = 0.0f, price = 0.0f, rate = 0.0f;
-				String itemName = itemNameCB.getSelectedItem().toString();
-				String buyerName = buyerNameTF.getText();
-				String location = locationTF.getText();
-				String category = categoryCB.getSelectedItem().toString();
-				boolean isCategoryNew = false, isItemNew = false;
-				try {
-					isCategoryNew = categoryController.getCategories().contains(category);
-					isItemNew = transactionController.getItems().contains(itemName);
-				} catch (ClassNotFoundException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (DataBaseException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (DatabaseTableCreationException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-				String costString = costTF.getText().toString();
-				if (!costString.isEmpty()) {
-					cost = Float.parseFloat(costString);
-				}
-
-				String priceString = priceTF.getText().toString();
-				if (!priceString.isEmpty()) {
-					price = Float.parseFloat(priceTF.getText().toString());
-				}
-
-				String rateString = rateTF.getText().toString();
-				if (!rateString.isEmpty()) {
-					rate = Float.parseFloat(rateTF.getText().toString());
-				}
-				Date date = null;
-				try {
-					date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateTF.getText()
-							.toString());
-					boolean isSuccessful = new TransactionController().insertTransaction(buyerName, location, cost,
-							price, date, itemName, category, rate);
-					/*
-					 * If transaction is successful, add the values to combobox if not present
-					 */
-					if (isSuccessful) {
-						if (!isCategoryNew) {
-							categoryCB.addItem(category);
-							categoryCB.revalidate();
-						}
-						if (!isItemNew) {
-							itemNameCB.addItem(itemName);
-							itemNameCB.revalidate();
-						}
-					}
-					TransactionsPanel.updateTableData();
-				} catch (ClassNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (DataBaseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (DatabaseTableCreationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				saveTransaction();
 			}
+
 		});
 		add(btnSave, "cell 17 2");
+	}
+
+	private void saveTransaction() {
+		float cost = 0.0f, price = 0.0f, rate = 0.0f;
+		String itemName = itemNameCB.getSelectedItem().toString();
+		String buyerName = buyerNameTF.getText();
+		String location = locationTF.getText();
+		String category = categoryCB.getSelectedItem().toString();
+		String costString = costTF.getText().toString();
+		String priceString = priceTF.getText().toString();
+		String rateString = rateTF.getText().toString();
+		String dateString = dateTF.getText().toString();
+
+		if (isDataValid(itemName, category, costString, priceString, dateString, rateString)) {
+			boolean isCategoryNew = false, isItemNew = false;
+			try {
+				isCategoryNew = categoryController.getCategories().contains(category);
+				isItemNew = transactionController.getItems().contains(itemName);
+			} catch (ClassNotFoundException e2) {
+				log.error("Exception while creating controller", e2);
+			} catch (DataBaseException e2) {
+				log.error("Database exception", e2);
+			} catch (DatabaseTableCreationException e2) {
+				log.error("Exception while creating database tables", e2);
+			}
+
+			if (!costString.isEmpty()) {
+				cost = Float.parseFloat(costString);
+			}
+
+			if (!priceString.isEmpty()) {
+				price = Float.parseFloat(priceTF.getText().toString());
+			}
+
+			if (!rateString.isEmpty()) {
+				rate = Float.parseFloat(rateTF.getText().toString());
+			}
+			Date date = null;
+			try {
+				date = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateString);
+				boolean isSuccessful = new TransactionController().insertTransaction(buyerName, location, cost, price,
+						date, itemName, category, rate);
+				/*
+				 * If transaction is successful, add the values to combobox if not present
+				 */
+				if (isSuccessful) {
+					log.info("New Transaction item has been saved");
+
+					showSavedLabel();
+
+					if (!isCategoryNew) {
+						categoryCB.addItem(category);
+						categoryCB.revalidate();
+					}
+					if (!isItemNew) {
+						itemNameCB.addItem(itemName);
+						itemNameCB.revalidate();
+					}
+
+					clearForm();
+				}
+				TransactionsPanel.updateTableData();
+			} catch (ClassNotFoundException e1) {
+				log.error("ClassNotFound Exception while getting controller", e1);
+			} catch (SQLException e1) {
+				log.error("SQL Exception while getting controller", e1);
+			} catch (DataBaseException e1) {
+				log.error("Database Exception while getting controller", e1);
+			} catch (DatabaseTableCreationException e1) {
+				log.error("Exception while creating database tables", e1);
+			} catch (ParseException e1) {
+				log.error("Exception while parsing Date", e1);
+			}
+		}
+	}
+
+	/**
+	 * Clears the cost and price fields.
+	 */
+	private void clearForm() {
+		costTF.setText("");
+		priceTF.setText("");
+	}
+
+	/**
+	 * Validates the form data an returns True/False based on validation result.
+	 * 
+	 * @param itemName
+	 * @param category
+	 * @param costString
+	 * @param priceString
+	 * @param dateString
+	 * @return
+	 */
+	private boolean isDataValid(String itemName, String category, String costString, String priceString,
+			String dateString, String rateString) {
+		if (itemName.trim().equals(DEFAULT_ITEM)) {
+			JOptionPane.showMessageDialog(null,
+					"Please select an Item from the list or create a new one by typing on the listbox.",
+					"Invalid Item Name", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+		if (category.trim().equals(DEFAULT_CATEGORY)) {
+			JOptionPane.showMessageDialog(null,
+					"Please select a Category from the list or create a new one by typing on the listbox.",
+					"Invalid Category", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+		// parse rate
+		try {
+			Float rate = Float.parseFloat(rateString);
+			if (rate < 0) {
+				JOptionPane.showMessageDialog(null, "Rate should be a positive value. eg. 2.50", "Invalid Rate",
+						JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+		} catch (NumberFormatException ne) {
+			JOptionPane.showMessageDialog(null, "Please enter a proper value for Rate. eg. 2.50", "Invalid Rate",
+					JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+		// parse date
+		try {
+			new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString()).parse(dateString);
+		} catch (ParseException e) {
+			JOptionPane.showMessageDialog(null, "The date entered is invalid. Please select from the calender button.",
+					"Invalid Date", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+
+		// parse cost
+		try {
+			Float cost = Float.parseFloat(costString);
+			if (cost < 0) {
+				JOptionPane.showMessageDialog(null, "Actual Cost should be a positive value. eg. 250.99",
+						"Invalid Actual Cost", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+		} catch (NumberFormatException ne) {
+			JOptionPane.showMessageDialog(null, "Please enter a proper value for Actual Cost. eg. 250.99",
+					"Invalid Actual Cost", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+
+		// parse price
+		try {
+			Float price = Float.parseFloat(priceString);
+			if (price < 0) {
+				JOptionPane.showMessageDialog(null, "Selling Price should be a positive value. eg. 250.99",
+						"Invalid Selling Price", JOptionPane.INFORMATION_MESSAGE);
+				return false;
+			}
+		} catch (NumberFormatException ne) {
+			JOptionPane.showMessageDialog(null, "Please enter a proper value for Selling Price. eg. 250.99",
+					"Invalid Selling Price", JOptionPane.INFORMATION_MESSAGE);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Displays the Saved label and hides it after a time duration.
+	 */
+	private void showSavedLabel() {
+		lblItemSaved.setVisible(true);
+		hideSavedLabel();
+	}
+
+	/**
+	 * Hides the Saved label after a time duration.
+	 */
+	public void hideSavedLabel() {
+		ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
+		exec.schedule(new Runnable() {
+			public void run() {
+				lblItemSaved.setVisible(false);
+			}
+		}, LABEL_HIDE_TIMEOUT, TimeUnit.SECONDS);
 	}
 }
