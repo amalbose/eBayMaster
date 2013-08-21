@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
+import com.axatrikx.utils.Utils;
 
 public class TransactionsTableModel extends AbstractTableModel {
 
@@ -29,6 +31,13 @@ public class TransactionsTableModel extends AbstractTableModel {
 	private static final String TRANSACTIONS_TABLE = "EBAYMASTERDB.TRANSACTIONS";
 
 	private static Logger log = Logger.getLogger(TransactionsTableModel.class);
+
+	private static final String COLUMN_NAME_TKN = "<COLUMN_NAME>";
+	private static final String COLUMN_VALUE_TKN = "<COLUMN_VALUE>";
+	private static final String COLUMN_KEY_TKN = "<COLUMN_KEY>";
+	private static final String COLUMN_KEY_VALUE_TKN = "<COLUMN_KEY_VALUE>";
+
+	private static final String UPDATE_TRANSACTIONS_TKN = "UPDATE_TRANSACTIONS";
 
 	private static String[] columnNames;
 	private List<Transaction> transactions;
@@ -173,15 +182,25 @@ public class TransactionsTableModel extends AbstractTableModel {
 		return isEditable;
 	}
 
-	/*
-	 * Don't need to implement this method unless your table's data can change.
-	 */
 	public void setValueAt(Object value, int row, int col) {
 		if (getColumnClass(col).equals(String.class)) {
 			value = "'" + value + "'";
+		} else if (getColumnClass(col).equals(Date.class)) {
+			try {
+				value = "'"
+						+ Utils.changeDateFormat(ConfigValues.CALENDAR_DATE_FORMAT.toString(),
+								ConfigValues.DATE_FORMAT.toString(), value.toString()) + "'";
+			} catch (ParseException e) {
+				JOptionPane.showMessageDialog(null, e.getMessage(), "Invalid Date", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 		}
-		String query = "UPDATE " + TRANSACTIONS_TABLE + " SET " + columnNames[col] + " = " + value + " WHERE "
-				+ columnNames[0] + " = " + getValueAt(row, TRANSACTIONID_ROW);
+
+		String query = TransactionController.getDBUpdateQuery(UPDATE_TRANSACTIONS_TKN)
+				.replace(DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName())
+				.replace(COLUMN_NAME_TKN, columnNames[col]).replace(COLUMN_VALUE_TKN, value.toString())
+				.replace(COLUMN_KEY_TKN, columnNames[0])
+				.replace(COLUMN_KEY_VALUE_TKN, getValueAt(row, TRANSACTIONID_ROW).toString());
 		try {
 			new DatabaseController().executeQuery(query);
 			fireTableCellUpdated(row, col);
@@ -190,11 +209,9 @@ public class TransactionsTableModel extends AbstractTableModel {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		} catch (DataBaseException e1) {
-			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		} catch (DatabaseTableCreationException e1) {
-			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		}

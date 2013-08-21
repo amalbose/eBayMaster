@@ -8,6 +8,7 @@ public enum ConfigValues {
 	QUERY_CREATE_FILE("dbqueries_create_tables.db"),
 	QUERY_SELECT_FILE("dbqueries_select.db"),
 	QUERY_INSERT_FILE("dbqueries_insert.db"),
+	QUERY_UPDATE_FILE("dbqueries_update.db"),
 	SEPARATOR("//"),
 	DATE_FORMAT("yyyy-MM-dd HH:mm:ss.S"),
 	CALENDAR_DATE_FORMAT("EEE MMM dd HH:mm:ss z yyyy"),

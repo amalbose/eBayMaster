@@ -27,6 +27,7 @@ public class TransactionController {
 	private static final String INSERT_CATEGORY_TABLE_TKN = "INSERT_CATEGORY_TABLE";
 	private static final String QUERY_ALL_ITEMS_TKN = "QUERY_ALL_ITEMS";
 	private static final String QUERY_CATEGORY_FROM_ITEM_TKN = "QUERY_CATEGORY_FROM_ITEM";
+	
 
 	public void getTransactionModel(String queryString) {
 
@@ -63,6 +64,23 @@ public class TransactionController {
 		String result = null;
 		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_INSERT_FILE.toString());
+		result = queryValues.getProperty(tableType);
+		if (result.isEmpty()) {
+			log.error("Invalid tableType: " + tableType);
+		}
+		return result;
+	}
+
+	/**
+	 * Returns the update query based on the type of query. Types include 'UPDATE_TRANSACTIONS'
+	 * 
+	 * @param tableType
+	 * @return
+	 */
+	public static String getDBUpdateQuery(String tableType) {
+		String result = null;
+		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
+				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_UPDATE_FILE.toString());
 		result = queryValues.getProperty(tableType);
 		if (result.isEmpty()) {
 			log.error("Invalid tableType: " + tableType);
