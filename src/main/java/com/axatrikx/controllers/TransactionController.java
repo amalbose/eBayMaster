@@ -18,16 +18,22 @@ import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.CommonSettings;
 import com.axatrikx.utils.ConfigValues;
 import com.axatrikx.utils.PreparedDataExecutor;
+import com.axatrikx.utils.Utils;
 
 public class TransactionController {
 
 	private static Logger log = Logger.getLogger(TransactionController.class);
 
+	private static final String DEFAULT_PROFIT_EQN = "<COST> - <PRICE> * (1 + <RATE>)";
+
 	private static final String INSERT_TRANS_TABLE_TKN = "INSERT_TRANS_TABLE";
 	private static final String INSERT_CATEGORY_TABLE_TKN = "INSERT_CATEGORY_TABLE";
 	private static final String QUERY_ALL_ITEMS_TKN = "QUERY_ALL_ITEMS";
 	private static final String QUERY_CATEGORY_FROM_ITEM_TKN = "QUERY_CATEGORY_FROM_ITEM";
-	
+
+	private static final String COST_TKN = "<COST>";
+	private static final String PRICE_TKN = "<PRICE>";
+	private static final String RATE_TKN = "<RATE>";
 
 	public void getTransactionModel(String queryString) {
 
@@ -138,7 +144,7 @@ public class TransactionController {
 		dataList.add(priceVal);
 
 		HashMap<Class, Object> profitVal = new HashMap<Class, Object>();
-		profitVal.put(Float.class, 10.0f); // TODO calculate profit
+		profitVal.put(Float.class, calculateProfit(cost, price, rate));
 		dataList.add(profitVal);
 
 		HashMap<Class, Object> dateVal = new HashMap<Class, Object>();
@@ -260,5 +266,18 @@ public class TransactionController {
 			log.error("No category Name obtained for " + itemName);
 		}
 		return categoryName;
+	}
+
+	/**
+	 * Calculates profit from the profit expression.
+	 * 
+	 * @param cost
+	 * @param price
+	 * @param rate
+	 * @return
+	 */
+	public float calculateProfit(float cost, float price, float rate) {
+		return Float.parseFloat(Utils.evaluateExpression(DEFAULT_PROFIT_EQN.replace(COST_TKN, String.valueOf(cost))
+				.replace(RATE_TKN, String.valueOf(rate)).replace(PRICE_TKN, String.valueOf(price))));
 	}
 }

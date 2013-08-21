@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -26,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.NumberFormatter;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -34,8 +37,8 @@ import org.jbundle.util.jcalendarbutton.JCalendarButton;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 
 import com.axatrikx.beans.Category;
-import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.controllers.CategoryController;
+import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
@@ -64,6 +67,7 @@ public class TransactionFormPanel extends JPanel {
 	private JComboBox<String> categoryCB;
 	private CategoryController categoryController;
 	private TransactionController transactionController;
+	private JTextField profitTF;
 
 	/**
 	 * Create the panel.
@@ -95,6 +99,12 @@ public class TransactionFormPanel extends JPanel {
 
 		lblItemSaved = new JLabel("Transaction Saved");
 		lblItemSaved.setVisible(false);
+
+		final JLabel lblRateBetween = new JLabel("Rate between 0 and 1");
+
+		lblRateBetween.setVisible(false);
+		lblRateBetween.setForeground(Color.RED);
+		add(lblRateBetween, "cell 3 0 4 1");
 		lblItemSaved.setForeground(new Color(0, 128, 0));
 		lblItemSaved.setFont(new Font("Tahoma", Font.BOLD, 14));
 		add(lblItemSaved, "cell 8 0,alignx right");
@@ -105,7 +115,7 @@ public class TransactionFormPanel extends JPanel {
 		JLabel lblCategory = new JLabel("Category");
 		add(lblCategory, "cell 2 1");
 
-		JLabel lblRate = new JLabel("Rate");
+		JLabel lblRate = new JLabel("Rate (0 - 1)");
 		add(lblRate, "cell 4 1");
 
 		JLabel lblBuyer = new JLabel("Buyer");
@@ -126,10 +136,24 @@ public class TransactionFormPanel extends JPanel {
 		JLabel lblProfit = new JLabel("Profit");
 		add(lblProfit, "cell 16 1,alignx left");
 
-		NumberFormat floatFormat = NumberFormat.getNumberInstance();
-		floatFormat.setMinimumFractionDigits(2);
+		NumberFormatter rateFormat = new NumberFormatter();
+		rateFormat.setMinimum(new Float(0));
+		rateFormat.setMaximum(new Float(1));
 
-		rateTF = new JFormattedTextField(floatFormat);
+		rateTF = new JFormattedTextField(rateFormat);
+		rateTF.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (Float.parseFloat(rateTF.getText()) > 1 || Float.parseFloat(rateTF.getText()) < 0) {
+					showLabel(lblRateBetween);
+				}
+				if (!costTF.getText().trim().isEmpty() & !priceTF.getText().trim().isEmpty()) {
+					profitTF.setText(String.valueOf(transactionController.calculateProfit(
+							Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
+							Float.parseFloat(rateTF.getText()))));
+				}
+			}
+		});
 		add(rateTF, "cell 4 2,growx");
 		rateTF.setColumns(7);
 
@@ -206,10 +230,28 @@ public class TransactionFormPanel extends JPanel {
 		});
 		add(calendarButton, "cell 11 2");
 
+		profitTF = new JTextField("");
+		profitTF.setColumns(7);
+		profitTF.setEditable(false);
+		add(profitTF, "cell 16 2,alignx left");
+
 		JLabel costSymbol = new JLabel(Currency.getInstance(getLocale()).getSymbol());
 		add(costSymbol, "flowx,cell 13 2,alignx left");
 
+		NumberFormat floatFormat = NumberFormat.getNumberInstance();
+		floatFormat.setMinimumFractionDigits(2);
+
 		costTF = new JFormattedTextField(floatFormat);
+		costTF.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if (!rateTF.getText().trim().isEmpty() & !priceTF.getText().trim().isEmpty()) {
+					profitTF.setText(String.valueOf(transactionController.calculateProfit(
+							Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
+							Float.parseFloat(rateTF.getText()))));
+				}
+			}
+		});
 		add(costTF, "cell 13 2,alignx left");
 		costTF.setColumns(7);
 
@@ -217,13 +259,18 @@ public class TransactionFormPanel extends JPanel {
 		add(priceSymbol, "flowx,cell 15 2");
 
 		priceTF = new JFormattedTextField(floatFormat);
+		priceTF.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!rateTF.getText().trim().isEmpty() & !costTF.getText().trim().isEmpty()) {
+					profitTF.setText(String.valueOf(transactionController.calculateProfit(
+							Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
+							Float.parseFloat(rateTF.getText()))));
+				}
+			}
+		});
 		add(priceTF, "cell 15 2,alignx left");
 		priceTF.setColumns(7);
-
-		JTextField profitTF = new JTextField("");
-		profitTF.setColumns(7);
-		profitTF.setEditable(false);
-		add(profitTF, "cell 16 2,alignx left");
 
 		JButton btnSave = new JButton("Save");
 		btnSave.addMouseListener(new MouseAdapter() {
@@ -282,7 +329,7 @@ public class TransactionFormPanel extends JPanel {
 				if (isSuccessful) {
 					log.info("New Transaction item has been saved");
 
-					showSavedLabel();
+					showLabel(lblItemSaved);
 
 					if (!isCategoryNew) {
 						categoryCB.addItem(category);
@@ -316,6 +363,7 @@ public class TransactionFormPanel extends JPanel {
 	private void clearForm() {
 		costTF.setText("");
 		priceTF.setText("");
+		profitTF.setText("");
 	}
 
 	/**
@@ -404,21 +452,22 @@ public class TransactionFormPanel extends JPanel {
 	}
 
 	/**
-	 * Displays the Saved label and hides it after a time duration.
+	 * 
+	 * @param labelName
 	 */
-	private void showSavedLabel() {
-		lblItemSaved.setVisible(true);
-		hideSavedLabel();
+	private void showLabel(JLabel labelName) {
+		labelName.setVisible(true);
+		hideLabel(labelName);
 	}
 
 	/**
 	 * Hides the Saved label after a time duration.
 	 */
-	public void hideSavedLabel() {
+	private void hideLabel(final JLabel labelName) {
 		ScheduledThreadPoolExecutor exec = new ScheduledThreadPoolExecutor(1);
 		exec.schedule(new Runnable() {
 			public void run() {
-				lblItemSaved.setVisible(false);
+				labelName.setVisible(false);
 			}
 		}, LABEL_HIDE_TIMEOUT, TimeUnit.SECONDS);
 	}

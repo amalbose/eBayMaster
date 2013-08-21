@@ -227,6 +227,12 @@ public class TransactionsTableModel extends AbstractTableModel {
 		return new int[] { 0, 1, 5, 6, 7, 8, 9, 10 };
 	}
 
+	/**
+	 * Parse the tableData in 2D arraylist format to list of transaction objects.
+	 * 
+	 * @param tableData
+	 * @return
+	 */
 	private List<Transaction> getTransactions(ArrayList<ArrayList<String>> tableData) {
 		List<Transaction> transactions = new ArrayList<Transaction>();
 		Transaction curTransaction; // temp transaction to store the current transaction.

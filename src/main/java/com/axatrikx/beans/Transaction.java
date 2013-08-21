@@ -72,7 +72,6 @@ public class Transaction {
 		this.profit = profit;
 	}
 	public float getProfit(){
-		//TODO calculate profit
 		return profit;
 	}
 	public Category getCategory() {
