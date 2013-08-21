@@ -242,9 +242,9 @@ public class TransactionFormPanel extends JPanel {
 		String buyerName = buyerNameTF.getText();
 		String location = locationTF.getText();
 		String category = categoryCB.getSelectedItem().toString();
-		String costString = costTF.getText().toString();
-		String priceString = priceTF.getText().toString();
-		String rateString = rateTF.getText().toString();
+		String costString = costTF.getText().toString().replace(",", "");
+		String priceString = priceTF.getText().toString().replace(",", "");
+		String rateString = rateTF.getText().toString().replace(",", "");
 		String dateString = dateTF.getText().toString();
 
 		if (isDataValid(itemName, category, costString, priceString, dateString, rateString)) {
@@ -265,11 +265,11 @@ public class TransactionFormPanel extends JPanel {
 			}
 
 			if (!priceString.isEmpty()) {
-				price = Float.parseFloat(priceTF.getText().toString());
+				price = Float.parseFloat(priceString);
 			}
 
 			if (!rateString.isEmpty()) {
-				rate = Float.parseFloat(rateTF.getText().toString());
+				rate = Float.parseFloat(rateString);
 			}
 			Date date = null;
 			try {
@@ -334,12 +334,14 @@ public class TransactionFormPanel extends JPanel {
 			JOptionPane.showMessageDialog(null,
 					"Please select an Item from the list or create a new one by typing on the listbox.",
 					"Invalid Item Name", JOptionPane.INFORMATION_MESSAGE);
+			itemNameCB.requestFocus();
 			return false;
 		}
 		if (category.trim().equals(DEFAULT_CATEGORY)) {
 			JOptionPane.showMessageDialog(null,
 					"Please select a Category from the list or create a new one by typing on the listbox.",
 					"Invalid Category", JOptionPane.INFORMATION_MESSAGE);
+			categoryCB.requestFocus();
 			return false;
 		}
 		// parse rate
@@ -348,11 +350,13 @@ public class TransactionFormPanel extends JPanel {
 			if (rate < 0) {
 				JOptionPane.showMessageDialog(null, "Rate should be a positive value. eg. 2.50", "Invalid Rate",
 						JOptionPane.INFORMATION_MESSAGE);
+				rateTF.requestFocus();
 				return false;
 			}
 		} catch (NumberFormatException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a proper value for Rate. eg. 2.50", "Invalid Rate",
 					JOptionPane.INFORMATION_MESSAGE);
+			rateTF.requestFocus();
 			return false;
 		}
 		// parse date
@@ -361,6 +365,7 @@ public class TransactionFormPanel extends JPanel {
 		} catch (ParseException e) {
 			JOptionPane.showMessageDialog(null, "The date entered is invalid. Please select from the calender button.",
 					"Invalid Date", JOptionPane.INFORMATION_MESSAGE);
+			dateTF.requestFocus();
 			return false;
 		}
 
@@ -370,11 +375,13 @@ public class TransactionFormPanel extends JPanel {
 			if (cost < 0) {
 				JOptionPane.showMessageDialog(null, "Actual Cost should be a positive value. eg. 250.99",
 						"Invalid Actual Cost", JOptionPane.INFORMATION_MESSAGE);
+				costTF.requestFocus();
 				return false;
 			}
 		} catch (NumberFormatException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a proper value for Actual Cost. eg. 250.99",
 					"Invalid Actual Cost", JOptionPane.INFORMATION_MESSAGE);
+			costTF.requestFocus();
 			return false;
 		}
 
@@ -384,11 +391,13 @@ public class TransactionFormPanel extends JPanel {
 			if (price < 0) {
 				JOptionPane.showMessageDialog(null, "Selling Price should be a positive value. eg. 250.99",
 						"Invalid Selling Price", JOptionPane.INFORMATION_MESSAGE);
+				priceTF.requestFocus();
 				return false;
 			}
 		} catch (NumberFormatException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a proper value for Selling Price. eg. 250.99",
 					"Invalid Selling Price", JOptionPane.INFORMATION_MESSAGE);
+			priceTF.requestFocus();
 			return false;
 		}
 		return true;
