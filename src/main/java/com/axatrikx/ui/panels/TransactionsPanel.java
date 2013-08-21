@@ -1,6 +1,7 @@
 package com.axatrikx.ui.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -21,6 +22,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.apache.log4j.Logger;
+
 import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.controllers.TransactionsTableModel;
 import com.axatrikx.db.DatabaseController;
@@ -33,9 +36,14 @@ public class TransactionsPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 7194810207131313783L;
 
+	private static final Logger log = Logger.getLogger(TransactionsPanel.class);
+
 	private static JTable table;
 	private int selectedRow = -1;
 	private int selectedColumn = -1;
+
+	private static final Color rowColor1 = new Color(225, 225, 225);
+	private static final Color rowColor2 = Color.WHITE;
 
 	private static final String QUERY_TRANS_DETAIL_TKN = "QUERY_TRANS_DETAIL";
 
@@ -60,6 +68,13 @@ public class TransactionsPanel extends JPanel {
 				TableColumn tableColumn = getColumnModel().getColumn(column);
 				tableColumn.setPreferredWidth(Math.max(rendererWidth + getIntercellSpacing().width,
 						tableColumn.getPreferredWidth()));
+
+				// row Color
+				if (!component.getBackground().equals(getSelectionBackground())) {
+					Color bg = (row % 2 == 0 ? rowColor1 : rowColor2);
+					component.setBackground(bg);
+					bg = null;
+				}
 				return component;
 			}
 		};
@@ -154,15 +169,12 @@ public class TransactionsPanel extends JPanel {
 	public static void updateTableData() {
 		try {
 			((TransactionsTableModel) table.getModel()).updateLatestData();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DataBaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DatabaseTableCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ClassNotFoundException e2) {
+			log.error("Exception while creating controller", e2);
+		} catch (DataBaseException e2) {
+			log.error("Database exception", e2);
+		} catch (DatabaseTableCreationException e2) {
+			log.error("Exception while creating database tables", e2);
 		}
 	}
 
