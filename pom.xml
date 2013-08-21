@@ -8,9 +8,9 @@
 	<description>eBay Master is a tool for managing eBay transactions</description>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8.5</version>
 		</dependency>
 		<dependency>
 			<groupId>com.miglayout</groupId>
@@ -48,6 +48,18 @@
 						<source>1.7</source>
 						<target>1.7</target>
 						<compilerArgument></compilerArgument>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.16</version>
+					<configuration>
+						<suiteXmlFiles>
+							<suiteXmlFile>testng.xml</suiteXmlFile>
+						</suiteXmlFiles>
+						<parallel>methods</parallel>
+						<threadCount>10</threadCount>
 					</configuration>
 				</plugin>
 			</plugins>
