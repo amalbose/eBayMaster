@@ -51,6 +51,7 @@ public class PreparedDataExecutor {
 
 	/**
 	 * Returns the prepared statement.
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
@@ -65,16 +66,16 @@ public class PreparedDataExecutor {
 					for (Class<?> dataType : keySet) {
 						if (dataType.isAssignableFrom(Integer.class)) {
 							preparedStatement.setInt(index + 1, (Integer) data.get(dataType));
-							log.info("Added Integer " + data.get(dataType));
+							log.info("Added Integer " + data.get(dataType) + " to prepared statement");
 						} else if (dataType.isAssignableFrom(Float.class)) {
 							preparedStatement.setFloat(index + 1, (Float) data.get(dataType));
-							log.info("Added Float " + data.get(dataType));
+							log.info("Added Float " + data.get(dataType) + " to prepared statement");
 						} else if (dataType.isAssignableFrom(String.class)) {
 							preparedStatement.setString(index + 1, (String) data.get(dataType));
-							log.info("Added String " + data.get(dataType));
+							log.info("Added String " + data.get(dataType) + " to prepared statement");
 						} else if (dataType.isAssignableFrom(Timestamp.class)) {
 							preparedStatement.setTimestamp(index + 1, (Timestamp) data.get(dataType));
-							log.info("Added Time " + data.get(dataType));
+							log.info("Added Time " + data.get(dataType) + " to prepared statement");
 						} else {
 							// TODO throw exception.
 						}
