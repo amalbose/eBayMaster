@@ -93,6 +93,22 @@ public class TransactionController {
 		}
 		return result;
 	}
+	
+	/**
+	 * Returns the delete query based on the type of query. Types include 'UPDATE_TRANSACTIONS'
+	 * @param tableType
+	 * @return
+	 */
+	public static String getDBDeleteQuery(String tableType) {
+		String result = null;
+		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
+				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_DELETE_FILE.toString());
+		result = queryValues.getProperty(tableType);
+		if (result.isEmpty()) {
+			log.error("Invalid tableType: " + tableType);
+		}
+		return result;
+	}
 
 	/**
 	 * Inserts the provided transaction to Database. If the category is new, it will also be added to Database.
@@ -249,15 +265,12 @@ public class TransactionController {
 					TransactionController.getDBSelectQuery(QUERY_CATEGORY_FROM_ITEM_TKN).replace(
 							DatabaseController.getDatabaseNameToken(), DatabaseController.getDatabaseName()))
 					.executeQueryForResult();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DataBaseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DatabaseTableCreationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ClassNotFoundException e2) {
+			log.error("Exception while creating controller", e2);
+		} catch (DataBaseException e2) {
+			log.error("Database exception", e2);
+		} catch (DatabaseTableCreationException e2) {
+			log.error("Exception while creating database tables", e2);
 		}
 		ArrayList<ArrayList<String>> resultTab = resultTable.getResultTable();
 		if (resultTab.size() > 0) {

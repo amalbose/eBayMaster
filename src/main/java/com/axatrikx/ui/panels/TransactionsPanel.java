@@ -142,6 +142,12 @@ public class TransactionsPanel extends JPanel {
 				table.editCellAt(selectedRow, selectedColumn);
 			}
 		});
+		
+		deleteItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				((TransactionsTableModel) table.getModel()).deleteRow(selectedRow);
+			}
+		});
 		popupMenu.add(editItem);
 		popupMenu.add(deleteItem);
 		table.setComponentPopupMenu(popupMenu);

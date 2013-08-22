@@ -1,10 +1,12 @@
 package com.axatrikx.controllers;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -20,6 +22,7 @@ import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
+import com.axatrikx.utils.PreparedDataExecutor;
 import com.axatrikx.utils.Utils;
 
 public class TransactionsTableModel extends AbstractTableModel {
@@ -38,6 +41,7 @@ public class TransactionsTableModel extends AbstractTableModel {
 	private static final String COLUMN_KEY_VALUE_TKN = "<COLUMN_KEY_VALUE>";
 
 	private static final String UPDATE_TRANSACTIONS_TKN = "UPDATE_TRANSACTIONS";
+	private static final String DELETE_TRANSACTION_TKN = "DELETE_TRANSACTION";
 
 	private static String[] columnNames;
 	private List<Transaction> transactions;
@@ -341,4 +345,37 @@ public class TransactionsTableModel extends AbstractTableModel {
 		return index;
 	}
 
+	@SuppressWarnings("rawtypes")
+	public void deleteRow(int row) {
+		String itemName = transactions.get(row).getItemName();
+
+		if (JOptionPane.showConfirmDialog(null, "Delete transaction " + itemName + "?") == 0) {
+			ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
+			HashMap<Class, Object> transactionIDMap = new HashMap<Class, Object>();
+			transactionIDMap.put(Integer.class, getValueAt(row, TRANSACTIONID_ROW));
+			dataList.add(transactionIDMap);
+			transactions.remove(row);
+			try {
+				new PreparedDataExecutor(new DatabaseController().getConnection(), dataList, TransactionController
+						.getDBDeleteQuery(DELETE_TRANSACTION_TKN).replace(DatabaseController.getDatabaseNameToken(),
+								DatabaseController.getDatabaseName())).getPreparedStatement().executeUpdate();
+			} catch (ClassNotFoundException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : "
+						+ e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			} catch (DataBaseException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : "
+						+ e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			} catch (DatabaseTableCreationException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : "
+						+ e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(null, e1.getMessage(), "Exception Occured : "
+						+ e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			}
+			fireTableRowsDeleted(row, row);
+			JOptionPane.showMessageDialog(null, "Transaction " + itemName + " deleted", "Transaction Deleted",
+					JOptionPane.INFORMATION_MESSAGE);
+
+		}
+	}
 }
