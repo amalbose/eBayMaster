@@ -24,7 +24,7 @@ public class TransactionController {
 
 	private static Logger log = Logger.getLogger(TransactionController.class);
 
-	private static final String DEFAULT_PROFIT_EQN = "<COST> - <PRICE> * (1 + <RATE>)";
+	private static final String DEFAULT_PROFIT_EQN = "<PRICE> - <COST> * (1 + <RATE>)";
 
 	private static final String INSERT_TRANS_TABLE_TKN = "INSERT_TRANS_TABLE";
 	private static final String INSERT_CATEGORY_TABLE_TKN = "INSERT_CATEGORY_TABLE";

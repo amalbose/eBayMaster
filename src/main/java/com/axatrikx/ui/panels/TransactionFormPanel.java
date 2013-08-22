@@ -144,14 +144,19 @@ public class TransactionFormPanel extends JPanel {
 		rateTF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (Float.parseFloat(rateTF.getText()) > 1 || Float.parseFloat(rateTF.getText()) < 0) {
-					showLabel(lblRateBetween);
+				try {
+					if (Float.parseFloat(rateTF.getText()) > 1 || Float.parseFloat(rateTF.getText()) < 0) {
+						showLabel(lblRateBetween);
+					}
+					if (!costTF.getText().trim().isEmpty() & !priceTF.getText().trim().isEmpty()) {
+						profitTF.setText(String.valueOf(transactionController.calculateProfit(
+								Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
+								Float.parseFloat(rateTF.getText()))));
+					}
+				} catch (NumberFormatException e1) {
+					log.error("Invalid data received : " + rateTF.getText(), e1);
 				}
-				if (!costTF.getText().trim().isEmpty() & !priceTF.getText().trim().isEmpty()) {
-					profitTF.setText(String.valueOf(transactionController.calculateProfit(
-							Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
-							Float.parseFloat(rateTF.getText()))));
-				}
+
 			}
 		});
 		add(rateTF, "cell 4 2,growx");

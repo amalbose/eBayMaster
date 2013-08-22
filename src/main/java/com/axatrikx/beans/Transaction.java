@@ -26,8 +26,8 @@ public class Transaction {
 	private static final String ITEMNAME_COLUMN = "ITEMNAME";
 	
 	// header Names
-	public static final String COST_HEADER = "Cost";
-	public static final String PRICE_HEADER = "Price";
+	public static final String COST_HEADER = "Actual Cost";
+	public static final String PRICE_HEADER = "Selling Price";
 	public static final String PROFIT_HEADER = "Profit";
 	public static final String DATE_HEADER = "Date";
 	public static final String ITEMNAME_HEADER = "Item Name";
