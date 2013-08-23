@@ -304,7 +304,7 @@ public class MainFrame extends JFrame {
 		panel.add(splitPane, "name_11357401020005");
 		// splitPane.setOneTouchExpandable(true);
 		splitPane.setEnabled(false);
-		splitPane.setDividerLocation(150);
+		splitPane.setDividerLocation(200);
 
 		JPanel statusPanel = new JPanel();
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
