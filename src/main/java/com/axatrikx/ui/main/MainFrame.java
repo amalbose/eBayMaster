@@ -37,8 +37,10 @@ import javax.swing.border.TitledBorder;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.ui.panels.HomePanel;
+import com.axatrikx.ui.panels.HomeSideBar;
 import com.axatrikx.ui.panels.SettingsDialog;
 import com.axatrikx.ui.panels.TransactionFormPanel;
+import com.axatrikx.ui.panels.TransactionSideBar;
 import com.axatrikx.ui.panels.TransactionsPanel;
 
 public class MainFrame extends JFrame {
@@ -48,8 +50,9 @@ public class MainFrame extends JFrame {
 	private JPanel contentPane;
 
 	private CardLayout cardLayout;
+	private CardLayout sideBarLayout;
 	private JPanel mainPanel;
-
+	JPanel sidePanel;
 	/**
 	 * Launch the application.
 	 */
@@ -82,7 +85,8 @@ public class MainFrame extends JFrame {
 		setJMenuBar(menuBar);
 
 		cardLayout = new CardLayout();
-
+		sideBarLayout = new CardLayout();
+		
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
@@ -251,8 +255,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(panel, BorderLayout.CENTER);
 		panel.setLayout(new CardLayout(0, 0));
 
-		JPanel sidePanel = new JPanel();
+		sidePanel = new JPanel();
 		sidePanel.setBackground(Color.WHITE);
+		sidePanel.setLayout(sideBarLayout);
+		JPanel transSideBar = new TransactionSideBar();
+		JPanel homeSideBar = new HomeSideBar();
+		sidePanel.add(homeSideBar,"Home");
+		sidePanel.add(transSideBar,"Transactions");
 
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
@@ -276,12 +285,10 @@ public class MainFrame extends JFrame {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 		} catch (DataBaseException e1) {
-			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		} catch (DatabaseTableCreationException e1) {
-			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
@@ -314,5 +321,6 @@ public class MainFrame extends JFrame {
 
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
+		sideBarLayout.show(sidePanel, card);
 	}
 }
