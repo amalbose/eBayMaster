@@ -90,8 +90,7 @@ public class TransactionFormPanel extends JPanel {
 			log.error("Exception while creating database tables", e2);
 		}
 
-		setLayout(new MigLayout("",
-				"[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
+		setLayout(new MigLayout("", "[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
 
 		JLabel lblAddNewTransaction = new JLabel("Add new transaction:");
 		lblAddNewTransaction.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -107,7 +106,7 @@ public class TransactionFormPanel extends JPanel {
 		add(lblRateBetween, "cell 3 0 4 1");
 		lblItemSaved.setForeground(new Color(0, 128, 0));
 		lblItemSaved.setFont(new Font("Tahoma", Font.BOLD, 14));
-		add(lblItemSaved, "cell 8 0,alignx right");
+		add(lblItemSaved, "cell 8 0 3 1,alignx left");
 
 		JLabel lblTransactionItem = new JLabel("Transaction Item");
 		add(lblTransactionItem, "cell 0 1");
@@ -167,11 +166,11 @@ public class TransactionFormPanel extends JPanel {
 		buyerNameTF.setColumns(10);
 
 		locationTF = new JTextField();
-		add(locationTF, "cell 8 2,growx");
+		add(locationTF, "cell 8 2,alignx left");
 		locationTF.setColumns(10);
 
 		dateTF = new JTextField();
-		add(dateTF, "cell 10 2,alignx left");
+		add(dateTF, "cell 10 2,growx");
 		dateTF.setColumns(17);
 		SimpleDateFormat sdf = new SimpleDateFormat(ConfigValues.UI_DATE_FORMAT.toString());
 		dateTF.setText(sdf.format(new Date().getTime()));
