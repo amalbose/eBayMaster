@@ -52,7 +52,8 @@ public class MainFrame extends JFrame {
 	private CardLayout cardLayout;
 	private CardLayout sideBarLayout;
 	private JPanel mainPanel;
-	JPanel sidePanel;
+	private TransactionSideBar transSideBar;
+	private JPanel sidePanel;
 	/**
 	 * Launch the application.
 	 */
@@ -258,7 +259,7 @@ public class MainFrame extends JFrame {
 		sidePanel = new JPanel();
 		sidePanel.setBackground(Color.WHITE);
 		sidePanel.setLayout(sideBarLayout);
-		JPanel transSideBar = new TransactionSideBar();
+		transSideBar = new TransactionSideBar();
 		JPanel homeSideBar = new HomeSideBar();
 		sidePanel.add(homeSideBar,"Home");
 		sidePanel.add(transSideBar,"Transactions");
@@ -318,7 +319,7 @@ public class MainFrame extends JFrame {
 		pack();
 
 	}
-
+	
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
 		sideBarLayout.show(sidePanel, card);

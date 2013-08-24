@@ -29,7 +29,6 @@ import com.axatrikx.controllers.TransactionsTableModel;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
-import java.awt.Rectangle;
 
 public class TransactionsPanel extends JPanel {
 	/**
