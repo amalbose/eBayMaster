@@ -1,4 +1,4 @@
-package com.axatrikx.db;
+package com.axatrikx.controllers;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

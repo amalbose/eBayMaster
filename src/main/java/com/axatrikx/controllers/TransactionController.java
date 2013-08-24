@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.axatrikx.beans.Category;
 import com.axatrikx.beans.QueryResultTable;
-import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
