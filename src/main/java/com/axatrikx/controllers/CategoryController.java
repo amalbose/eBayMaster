@@ -96,7 +96,7 @@ public class CategoryController {
 	 * @throws DataBaseException
 	 * @throws DatabaseTableCreationException
 	 */
-	private static List<Category> getAllCategories() throws ClassNotFoundException, DataBaseException,
+	public static List<Category> getAllCategories() throws ClassNotFoundException, DataBaseException,
 			DatabaseTableCreationException {
 
 		List<Category> categoryList = new ArrayList<Category>();
