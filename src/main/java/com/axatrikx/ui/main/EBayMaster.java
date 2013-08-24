@@ -9,12 +9,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.testng.log4testng.Logger;
 
-import com.axatrikx.utils.Utils;
+import com.axatrikx.utils.Prefs;
 
 public class EBayMaster {
-
-	private static final String DEFAULT_WINDOW_WIDTH_TKN = "DEFAULT_WINDOW_WIDTH";
-	private static final String DEFAULT_WINDOW_HEIGHT_TKN = "DEFAULT_WINDOW_HEIGHT";
 
 	private static final Logger log = Logger.getLogger(EBayMaster.class);
 	private JFrame mainFrame;
@@ -42,8 +39,7 @@ public class EBayMaster {
 			log.error("Exception while setting system look and feel", e2);
 		}
 		mainFrame = new MainFrame();
-		Dimension windowDimension = new Dimension(Integer.parseInt(Utils.getSettingValue(DEFAULT_WINDOW_WIDTH_TKN)),
-				Integer.parseInt(Utils.getSettingValue(DEFAULT_WINDOW_HEIGHT_TKN)));
+		Dimension windowDimension = new Dimension(Prefs.getWindowWidth(), Prefs.getWindowHeight());
 		mainFrame.setSize(windowDimension);
 		mainFrame.setPreferredSize(windowDimension);
 

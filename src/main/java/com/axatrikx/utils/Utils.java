@@ -21,18 +21,9 @@ public class Utils {
 
 	private static Preferences pref;
 	private static final String preferenceNode = "com/axatrikx/ebaymaster";
-	
-	private static final String SETTINGS_FILE = ConfigValues.SETTINGS_FILE.toString();
 
-	private static Properties prop;
 	static {
 		pref = Preferences.userRoot().node(preferenceNode);
-		prop = new Properties();
-		try {
-			prop.load(Utils.class.getClassLoader().getResourceAsStream(SETTINGS_FILE));
-		} catch (IOException e) {
-			log.error("IO Exception while loading " + SETTINGS_FILE, e);
-		}
 	}
 
 	public static String changeDateFormat(String inputFormat, String outputFormat, String originalDate)
@@ -43,16 +34,8 @@ public class Utils {
 		return targetFormat.format(date);
 	}
 
-	public static void setPreference(String key, String value) {
-		pref.put(key, value);
-	}
-
-	public static String getPreference(String key, String defaultVal) {
-		return pref.get(key, defaultVal);
-	}
-
-	public static String getPreference(String key) {
-		return getPreference(key, "");
+	public static Preferences getPreference() {
+		return pref;
 	}
 
 	/**
@@ -74,10 +57,6 @@ public class Utils {
 			}
 		}
 		return result;
-	}
-	
-	public static String getSettingValue(String key) {
-		return prop.getProperty(key);
 	}
 
 	public static Properties getPropertiesFromFile(String fileName) {

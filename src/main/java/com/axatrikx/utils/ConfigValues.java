@@ -3,7 +3,6 @@ package com.axatrikx.utils;
 public enum ConfigValues {
 
 	DB_QUERY_FOLDER("db"),
-	SETTINGS_FILE("settings.properties"), 
 	QUERY_CREATE_FILE("dbqueries_create_tables.db"),
 	QUERY_SELECT_FILE("dbqueries_select.db"),
 	QUERY_INSERT_FILE("dbqueries_insert.db"),
