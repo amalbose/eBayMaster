@@ -90,7 +90,8 @@ public class TransactionFormPanel extends JPanel {
 			log.error("Exception while creating database tables", e2);
 		}
 
-		setLayout(new MigLayout("", "[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
+		setLayout(new MigLayout("",
+				"[grow][][grow][][grow][][grow][][grow][][left][left][][grow,left][][grow,left][grow][][][]", "[][][]"));
 
 		JLabel lblAddNewTransaction = new JLabel("Add new transaction:");
 		lblAddNewTransaction.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -343,7 +344,6 @@ public class TransactionFormPanel extends JPanel {
 						itemNameCB.addItem(itemName);
 						itemNameCB.revalidate();
 					}
-
 					clearForm();
 				}
 				TransactionsPanel.updateTableData();
