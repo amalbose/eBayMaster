@@ -1,9 +1,11 @@
 package com.axatrikx.utils;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 import java.util.prefs.Preferences;
 
 import javax.script.ScriptEngine;
@@ -19,9 +21,18 @@ public class Utils {
 
 	private static Preferences pref;
 	private static final String preferenceNode = "com/axatrikx/ebaymaster";
+	
+	private static final String SETTINGS_FILE = ConfigValues.SETTINGS_FILE.toString();
 
+	private static Properties prop;
 	static {
 		pref = Preferences.userRoot().node(preferenceNode);
+		prop = new Properties();
+		try {
+			prop.load(Utils.class.getClassLoader().getResourceAsStream(SETTINGS_FILE));
+		} catch (IOException e) {
+			log.error("IO Exception while loading " + SETTINGS_FILE, e);
+		}
 	}
 
 	public static String changeDateFormat(String inputFormat, String outputFormat, String originalDate)
@@ -63,6 +74,20 @@ public class Utils {
 			}
 		}
 		return result;
+	}
+	
+	public static String getSettingValue(String key) {
+		return prop.getProperty(key);
+	}
+
+	public static Properties getPropertiesFromFile(String fileName) {
+		Properties props = new Properties();
+		try {
+			props.load(Utils.class.getClassLoader().getResourceAsStream(fileName));
+		} catch (IOException e) {
+			log.error("IO Exception while loading " + fileName, e);
+		}
+		return props;
 	}
 
 	private static boolean isExpressionValid(String expression) {

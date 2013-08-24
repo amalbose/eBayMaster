@@ -15,7 +15,6 @@ import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
-import com.axatrikx.utils.CommonSettings;
 import com.axatrikx.utils.ConfigValues;
 import com.axatrikx.utils.PreparedDataExecutor;
 import com.axatrikx.utils.Utils;
@@ -50,7 +49,7 @@ public class TransactionController {
 	 */
 	public static String getDBSelectQuery(String queryType) {
 		String result = null;
-		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
+		Properties queryValues = Utils.getPropertiesFromFile(ConfigValues.DB_QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_SELECT_FILE.toString());
 		result = queryValues.getProperty(queryType);
 		if (result.isEmpty()) {
@@ -68,7 +67,7 @@ public class TransactionController {
 	 */
 	public static String getDBInsertQuery(String tableType) {
 		String result = null;
-		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
+		Properties queryValues = Utils.getPropertiesFromFile(ConfigValues.DB_QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_INSERT_FILE.toString());
 		result = queryValues.getProperty(tableType);
 		if (result.isEmpty()) {
@@ -85,7 +84,7 @@ public class TransactionController {
 	 */
 	public static String getDBUpdateQuery(String tableType) {
 		String result = null;
-		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
+		Properties queryValues = Utils.getPropertiesFromFile(ConfigValues.DB_QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_UPDATE_FILE.toString());
 		result = queryValues.getProperty(tableType);
 		if (result.isEmpty()) {
@@ -101,7 +100,7 @@ public class TransactionController {
 	 */
 	public static String getDBDeleteQuery(String tableType) {
 		String result = null;
-		Properties queryValues = CommonSettings.getPropertiesFromFile(ConfigValues.QUERY_FOLDER.toString()
+		Properties queryValues = Utils.getPropertiesFromFile(ConfigValues.DB_QUERY_FOLDER.toString()
 				+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_DELETE_FILE.toString());
 		result = queryValues.getProperty(tableType);
 		if (result.isEmpty()) {

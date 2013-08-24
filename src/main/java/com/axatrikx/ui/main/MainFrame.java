@@ -245,9 +245,7 @@ public class MainFrame extends JFrame {
 		btnSettings.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				SettingsDialog dialog = new SettingsDialog();
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
+				showSettingsDialog();
 			}
 		});
 		btnSettings.setBorder(null);
@@ -325,6 +323,12 @@ public class MainFrame extends JFrame {
 
 		pack();
 
+	}
+
+	protected void showSettingsDialog() {
+		SettingsDialog dialog = new SettingsDialog(this,true);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 	}
 
 	public void updateTransactionPanel(String queryString) {

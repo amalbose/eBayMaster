@@ -18,14 +18,14 @@ import org.apache.log4j.Logger;
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
-import com.axatrikx.utils.CommonSettings;
 import com.axatrikx.utils.ConfigValues;
+import com.axatrikx.utils.Utils;
 
 public class DatabaseController {
 
 	private static Logger log = Logger.getLogger(DatabaseController.class);
 
-	private static final String SQL_FILE_PATH = ConfigValues.QUERY_FOLDER.toString()
+	private static final String SQL_FILE_PATH = ConfigValues.DB_QUERY_FOLDER.toString()
 			+ ConfigValues.SEPARATOR.toString() + ConfigValues.QUERY_CREATE_FILE.toString();
 
 	private static final String DATABASE_TOKEN = "<DATABASE_NAME>";
@@ -99,7 +99,7 @@ public class DatabaseController {
 	 */
 	private boolean createTable(Connection con, String queryFile) throws DatabaseTableCreationException {
 		boolean result = false;
-		Properties tableProps = CommonSettings.getPropertiesFromFile(queryFile);
+		Properties tableProps = Utils.getPropertiesFromFile(queryFile);
 		try {
 			Set<Object> tables = tableProps.keySet();
 			String[] types = { "TABLE" };
