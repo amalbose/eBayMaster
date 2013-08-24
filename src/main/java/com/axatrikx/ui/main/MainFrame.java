@@ -47,13 +47,18 @@ public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = -3828157333553193707L;
 
+	private static final String QUERY_TRANS_DETAIL_TKN = "QUERY_TRANS_DETAIL";
+
 	private JPanel contentPane;
 
 	private CardLayout cardLayout;
 	private CardLayout sideBarLayout;
 	private JPanel mainPanel;
 	private TransactionSideBar transSideBar;
+	private TransactionsPanel transactionPanel;
+	private JPanel transactionsPanel;
 	private JPanel sidePanel;
+
 	/**
 	 * Launch the application.
 	 */
@@ -87,7 +92,7 @@ public class MainFrame extends JFrame {
 
 		cardLayout = new CardLayout();
 		sideBarLayout = new CardLayout();
-		
+
 		JMenu mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
@@ -259,10 +264,10 @@ public class MainFrame extends JFrame {
 		sidePanel = new JPanel();
 		sidePanel.setBackground(Color.WHITE);
 		sidePanel.setLayout(sideBarLayout);
-		transSideBar = new TransactionSideBar();
+		transSideBar = new TransactionSideBar(this);
 		JPanel homeSideBar = new HomeSideBar();
-		sidePanel.add(homeSideBar,"Home");
-		sidePanel.add(transSideBar,"Transactions");
+		sidePanel.add(homeSideBar, "Home");
+		sidePanel.add(transSideBar, "Transactions");
 
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
@@ -271,17 +276,19 @@ public class MainFrame extends JFrame {
 
 		JPanel homePanel = new HomePanel();
 		homePanel.setBackground(Color.WHITE);
-		JPanel transactionsPanel = new JPanel();
-		TransactionsPanel transactionPanel = null;
+		transactionsPanel = new JPanel();
 
 		transactionsPanel.setLayout(new BorderLayout());
+
 		try {
 			// add transaction table panel
-			transactionPanel = new TransactionsPanel();
+			transactionPanel = new TransactionsPanel(QUERY_TRANS_DETAIL_TKN);
 			TransactionFormPanel transactionFormPanel = new TransactionFormPanel();
 			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
 					null));
 			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
+			//TransactionsPanel.updateTableData();
+			transactionsPanel.revalidate();
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
 					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
@@ -319,7 +326,35 @@ public class MainFrame extends JFrame {
 		pack();
 
 	}
-	
+
+	public void updateTransactionPanel(String queryString) {
+		transactionsPanel.remove(transactionPanel);
+		try {
+			// add transaction table panel
+			transactionPanel = new TransactionsPanel(queryString);
+			TransactionFormPanel transactionFormPanel = new TransactionFormPanel();
+			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
+					null));
+			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
+			//TransactionsPanel.updateTableData();
+			transactionsPanel.revalidate();
+		} catch (ClassNotFoundException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+		} catch (DataBaseException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		} catch (DatabaseTableCreationException e1) {
+			JOptionPane.showMessageDialog(null, e1.getMessage(),
+					"Exception Occured : " + e1.getClass().getSimpleName(), JOptionPane.ERROR_MESSAGE);
+			System.exit(1);
+		}
+		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
+		transactionPanel.revalidate();
+		transactionsPanel.revalidate();
+	}
+
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
 		sideBarLayout.show(sidePanel, card);

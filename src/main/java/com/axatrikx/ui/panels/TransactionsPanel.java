@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -41,11 +42,9 @@ public class TransactionsPanel extends JPanel {
 	private static JTable table;
 	private int selectedRow = -1;
 	private int selectedColumn = -1;
-
+	private String queryString;
 	private static final Color rowColor1 = new Color(225, 225, 225);
 	private static final Color rowColor2 = Color.WHITE;
-
-	private static final String QUERY_TRANS_DETAIL_TKN = "QUERY_TRANS_DETAIL";
 
 	/**
 	 * Create the panel.
@@ -56,8 +55,9 @@ public class TransactionsPanel extends JPanel {
 	 * 
 	 * @throws Exception
 	 */
-	public TransactionsPanel() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
+	public TransactionsPanel(String queryString) throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		setLayout(new BorderLayout());
+		this.queryString = queryString;
 		table = new JTable() {
 
 			private static final long serialVersionUID = 8390383435099848025L;
@@ -85,7 +85,7 @@ public class TransactionsPanel extends JPanel {
 
 	private void displayUI() throws ClassNotFoundException, DataBaseException, DatabaseTableCreationException {
 		table.setModel(new TransactionsTableModel(processSelectQuery(TransactionController
-				.getDBSelectQuery(QUERY_TRANS_DETAIL_TKN))));
+				.getDBSelectQuery(queryString))));
 		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		TableColumnModel tcm = table.getColumnModel();
 
@@ -175,6 +175,7 @@ public class TransactionsPanel extends JPanel {
 	public static void updateTableData() {
 		try {
 			((TransactionsTableModel) table.getModel()).updateLatestData();
+			((AbstractTableModel) table.getModel()).fireTableDataChanged();
 		} catch (ClassNotFoundException e2) {
 			log.error("Exception while creating controller", e2);
 		} catch (DataBaseException e2) {
@@ -183,7 +184,7 @@ public class TransactionsPanel extends JPanel {
 			log.error("Exception while creating database tables", e2);
 		}
 	}
-
+	
 	private void hideColumn(TableColumnModel tcm, String columnName) {
 		int index = tcm.getColumnIndex(columnName);
 		TableColumn column = tcm.getColumn(index);
