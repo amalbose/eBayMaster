@@ -308,9 +308,8 @@ public class MainFrame extends JFrame {
 		splitPane.setDividerSize(0);
 		splitPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel.add(splitPane, "name_11357401020005");
-		// splitPane.setOneTouchExpandable(true);
 		splitPane.setEnabled(false);
-		splitPane.setDividerLocation(200);
+		splitPane.setDividerLocation(160);
 
 		JPanel statusPanel = new JPanel();
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
@@ -320,9 +319,7 @@ public class MainFrame extends JFrame {
 		statusLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
-
 		pack();
-
 	}
 
 	protected void showSettingsDialog() {
@@ -336,11 +333,6 @@ public class MainFrame extends JFrame {
 		try {
 			// add transaction table panel
 			transactionPanel = new TransactionsPanel(queryString);
-			TransactionFormPanel transactionFormPanel = new TransactionFormPanel();
-			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
-					null));
-			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
-			//TransactionsPanel.updateTableData();
 			transactionsPanel.revalidate();
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
@@ -355,8 +347,6 @@ public class MainFrame extends JFrame {
 			System.exit(1);
 		}
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
-		transactionPanel.revalidate();
-		transactionsPanel.revalidate();
 	}
 
 	public void changeCard(String card) {
