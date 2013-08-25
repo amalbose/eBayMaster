@@ -2,8 +2,15 @@ package com.axatrikx.utils;
 
 import java.util.prefs.Preferences;
 
+import org.testng.log4testng.Logger;
+
+import com.axatrikx.beans.ApplicationPages;
+import com.axatrikx.beans.GraphTypes;
+
 public class Prefs {
 
+	private static final Logger log = Logger.getLogger(Prefs.class);
+	
 	private static final String IS_SETTINGS_SET = "isSettingsSet";
 	private static final String ALWAYS_ON_TOP = "alwaysOnTop";
 	private static final String START_MAXIMIZED = "startMaximized";
@@ -31,16 +38,19 @@ public class Prefs {
 	private static final boolean confirmationOnExit = false;
 	private static final boolean confirmationBeforeDelete = true;
 	private static final boolean confirmationAfterDelete = true;
-	private static final String startPaneVal = "Home";
-	private static final String homeGraphVal = "Trends";
+	private static final ApplicationPages startPaneVal = ApplicationPages.HOME_PAGE;
+	private static final GraphTypes homeGraphVal = GraphTypes.PROFIT_GRAPH;
 	private static final String localizationVal = "Default";
 	private static int windowWidthVal = 1000;
 	private static int windowHeightVal = 600;
 
 	static {
 		if (!prefs.getBoolean(IS_SETTINGS_SET, false)) {
+			log.info("Default preferences not set. Setting values");
 			setDefaultPreference();
 			prefs.putBoolean(IS_SETTINGS_SET, true);
+		} else {
+			log.info("Loading custom preferences");
 		}
 	}
 
@@ -64,7 +74,7 @@ public class Prefs {
 		return prefs.getBoolean(CONFIRMATION_ON_EXIT, confirmationOnExit);
 	}
 
-	public static boolean istConfirmationBeforeDelete() {
+	public static boolean isConfirmationBeforeDelete() {
 		return prefs.getBoolean(CONFIRMATION_BEFORE_DELETE, confirmationBeforeDelete);
 	}
 
@@ -73,11 +83,11 @@ public class Prefs {
 	}
 
 	public static String getStartPane() {
-		return prefs.get(START_PANE, startPaneVal);
+		return prefs.get(START_PANE, startPaneVal.name());
 	}
 
 	public static String getHomeGraph() {
-		return prefs.get(HOME_GRAPH, homeGraphVal);
+		return prefs.get(HOME_GRAPH, homeGraphVal.name());
 	}
 
 	public static String getLocalization() {
@@ -95,7 +105,8 @@ public class Prefs {
 	/**
 	 * Sets the default preferences.
 	 */
-	private static void setDefaultPreference() {
+	public static void setDefaultPreference() {
+		log.info("Setting default preferences");
 		prefs.putBoolean(ALWAYS_ON_TOP, alwaysOnTop);
 		prefs.putBoolean(START_MAXIMIZED, startMaximized);
 		prefs.putBoolean(EXIT_TO_SYS_TRAY, exitToTray);
@@ -103,58 +114,58 @@ public class Prefs {
 		prefs.putBoolean(CONFIRMATION_ON_EXIT, confirmationOnExit);
 		prefs.putBoolean(CONFIRMATION_BEFORE_DELETE, confirmationBeforeDelete);
 		prefs.putBoolean(CONFIRMATION_AFTER_DELETE, confirmationAfterDelete);
-		prefs.put(START_PANE, startPaneVal);
-		prefs.put(HOME_GRAPH, homeGraphVal);
+		prefs.put(START_PANE, startPaneVal.name());
+		prefs.put(HOME_GRAPH, homeGraphVal.name());
 		prefs.put(LOCALIZATION, localizationVal);
 		prefs.putInt(WINDOW_HEIGHT, windowHeightVal);
 		prefs.putInt(WINDOW_WIDTH, windowWidthVal);
 	}
 
-	public void setIsAlwaysOnTop(boolean bool) {
+	public static void setIsAlwaysOnTop(boolean bool) {
 		prefs.putBoolean(ALWAYS_ON_TOP, bool);
 	}
 
-	public void setStartMaximized(boolean bool) {
+	public static void setStartMaximized(boolean bool) {
 		prefs.putBoolean(START_MAXIMIZED, bool);
 	}
 
-	public void setExitToTray(boolean bool) {
+	public static void setExitToTray(boolean bool) {
 		prefs.putBoolean(EXIT_TO_SYS_TRAY, bool);
 	}
 
-	public void setSearchWhenTyping(boolean bool) {
+	public static void setSearchWhenTyping(boolean bool) {
 		prefs.putBoolean(SEACH_WHEN_TYPING, bool);
 	}
 
-	public void setConfirmationOnExit(boolean bool) {
+	public static void setConfirmationOnExit(boolean bool) {
 		prefs.putBoolean(CONFIRMATION_ON_EXIT, bool);
 	}
 
-	public void setConfirmationBeforeDelete(boolean bool) {
+	public static void setConfirmationBeforeDelete(boolean bool) {
 		prefs.putBoolean(CONFIRMATION_BEFORE_DELETE, bool);
 	}
 
-	public void setConfirmationAfterDelete(boolean bool) {
+	public static void setConfirmationAfterDelete(boolean bool) {
 		prefs.putBoolean(CONFIRMATION_AFTER_DELETE, bool);
 	}
 
-	public void setStartPaneVal(String value) {
+	public static void setStartPaneVal(String value) {
 		prefs.put(START_PANE, value);
 	}
 
-	public void setHomeGraphVal(String value) {
+	public static void setHomeGraphVal(String value) {
 		prefs.put(HOME_GRAPH, value);
 	}
 
-	public void setLocalizationVal(String value) {
+	public static void setLocalizationVal(String value) {
 		prefs.put(LOCALIZATION, value);
 	}
 
-	public void setWindowHeightVal(int value) {
+	public static void setWindowHeightVal(int value) {
 		prefs.putInt(WINDOW_HEIGHT, value);
 	}
 
-	public void setWindowWidthVal(int value) {
+	public static void setWindowWidthVal(int value) {
 		prefs.putInt(WINDOW_WIDTH, value);
 	}
 }

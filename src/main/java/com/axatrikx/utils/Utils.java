@@ -20,7 +20,7 @@ public class Utils {
 	private static final Logger log = Logger.getLogger(Utils.class);
 
 	private static Preferences pref;
-	private static final String preferenceNode = "com/axatrikx/ebaymaster";
+	private static final String preferenceNode = "com/axatrikx/trnmaster";
 
 	static {
 		pref = Preferences.userRoot().node(preferenceNode);
