@@ -274,8 +274,9 @@ public class TransactionFormPanel extends JPanel {
 				try {
 					if (!rateTF.getText().trim().isEmpty() & !costTF.getText().trim().isEmpty()) {
 						profitTF.setText(String.valueOf(transactionController.calculateProfit(
-								Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
-								Float.parseFloat(rateTF.getText()))));
+								Float.parseFloat(costTF.getText().replace(",", "")),
+								Float.parseFloat(priceTF.getText().replace(",", "")),
+								Float.parseFloat(rateTF.getText().replace(",", "")))));
 					}
 				} catch (NumberFormatException e1) {
 					log.error(e1.getMessage(), e1);
