@@ -48,6 +48,7 @@ public class EBayMaster {
 		mainFrame.setBackground(Color.WHITE);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setVisible(true);
+		mainFrame.setExtendedState(mainFrame.getExtendedState() | (Prefs.isStartMaximized() ? 6 : 0));
 	}
 
 }

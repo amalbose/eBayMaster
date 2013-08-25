@@ -307,5 +307,6 @@ public class SettingsDialog extends JDialog {
 	private void applySettingChanges() {
 		//Always on top
 		owner.setAlwaysOnTop(Prefs.isAlwaysOnTop());
+		
 	}
 }
