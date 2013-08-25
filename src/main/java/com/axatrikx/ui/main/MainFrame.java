@@ -7,10 +7,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Rectangle;
+import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -40,6 +43,8 @@ import com.axatrikx.ui.panels.SettingsDialog;
 import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionSideBar;
 import com.axatrikx.ui.panels.TransactionsPanel;
+import com.axatrikx.utils.Prefs;
+import com.axatrikx.utils.SystemUtils;
 
 public class MainFrame extends JFrame {
 
@@ -266,7 +271,7 @@ public class MainFrame extends JFrame {
 			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
 					null));
 			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
-			//TransactionsPanel.updateTableData();
+			// TransactionsPanel.updateTableData();
 			transactionsPanel.revalidate();
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
@@ -304,7 +309,7 @@ public class MainFrame extends JFrame {
 	}
 
 	protected void showSettingsDialog() {
-		SettingsDialog dialog = new SettingsDialog(this,true);
+		SettingsDialog dialog = new SettingsDialog(this, true);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		dialog.setVisible(true);
 	}
@@ -333,5 +338,31 @@ public class MainFrame extends JFrame {
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
 		sideBarLayout.show(sidePanel, card);
+	}
+
+	public MainFrame getFrame() {
+		return this;
+	}
+
+	public void setExitToSystemTray() {
+		if (SystemTray.isSupported()) {
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent windowEvent) {
+					setExtendedState(JFrame.ICONIFIED);
+					SystemUtils.exitToSystemTray(getFrame());
+				}
+			});
+		}
+	}
+
+	/**
+	 * Exit application
+	 */
+	public void exitApp() {
+		if (Prefs.isConfirmationOnExit()) {
+			if (JOptionPane.showConfirmDialog(this, "Do you want to exit?") == 0) {
+				System.exit(0);
+			}
+		}
 	}
 }

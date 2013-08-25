@@ -2,6 +2,7 @@ package com.axatrikx.utils;
 
 public enum ConfigValues {
 
+	APPLICATION_ICON("images/bulb.gif"),
 	DB_QUERY_FOLDER("db"),
 	QUERY_CREATE_FILE("dbqueries_create_tables.db"),
 	QUERY_SELECT_FILE("dbqueries_select.db"),
