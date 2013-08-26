@@ -5,13 +5,15 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Rectangle;
+import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -29,7 +31,6 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -42,6 +43,8 @@ import com.axatrikx.ui.panels.SettingsDialog;
 import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionSideBar;
 import com.axatrikx.ui.panels.TransactionsPanel;
+import com.axatrikx.utils.Prefs;
+import com.axatrikx.utils.SystemUtils;
 
 public class MainFrame extends JFrame {
 
@@ -58,23 +61,6 @@ public class MainFrame extends JFrame {
 	private TransactionsPanel transactionPanel;
 	private JPanel transactionsPanel;
 	private JPanel sidePanel;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-					MainFrame frame = new MainFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.
@@ -245,9 +231,7 @@ public class MainFrame extends JFrame {
 		btnSettings.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				SettingsDialog dialog = new SettingsDialog();
-				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				dialog.setVisible(true);
+				showSettingsDialog();
 			}
 		});
 		btnSettings.setBorder(null);
@@ -256,6 +240,20 @@ public class MainFrame extends JFrame {
 		btnSettings.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSettings.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(btnSettings);
+		
+		Component horizontalStrut_3 = Box.createHorizontalStrut(20);
+		horizontalStrut_3.setPreferredSize(new Dimension(10, 0));
+		horizontalStrut_3.setMinimumSize(new Dimension(10, 0));
+		horizontalStrut_3.setMaximumSize(new Dimension(10, 32767));
+		toolBar.add(horizontalStrut_3);
+		
+		JButton btnImport = new JButton("Import", new ImageIcon(MainFrame.class.getResource("/images/1377466837_plus-24.png")));
+		btnImport.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnImport.setPreferredSize(new Dimension(50, 60));
+		btnImport.setMaximumSize(new Dimension(50, 60));
+		btnImport.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnImport.setBorder(null);
+		toolBar.add(btnImport);
 
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
@@ -287,7 +285,7 @@ public class MainFrame extends JFrame {
 			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
 					null));
 			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
-			//TransactionsPanel.updateTableData();
+			// TransactionsPanel.updateTableData();
 			transactionsPanel.revalidate();
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
@@ -310,9 +308,8 @@ public class MainFrame extends JFrame {
 		splitPane.setDividerSize(0);
 		splitPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		panel.add(splitPane, "name_11357401020005");
-		// splitPane.setOneTouchExpandable(true);
 		splitPane.setEnabled(false);
-		splitPane.setDividerLocation(200);
+		splitPane.setDividerLocation(160);
 
 		JPanel statusPanel = new JPanel();
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
@@ -322,9 +319,13 @@ public class MainFrame extends JFrame {
 		statusLabel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
-
 		pack();
+	}
 
+	protected void showSettingsDialog() {
+		SettingsDialog dialog = new SettingsDialog(this, true);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setVisible(true);
 	}
 
 	public void updateTransactionPanel(String queryString) {
@@ -332,11 +333,6 @@ public class MainFrame extends JFrame {
 		try {
 			// add transaction table panel
 			transactionPanel = new TransactionsPanel(queryString);
-			TransactionFormPanel transactionFormPanel = new TransactionFormPanel();
-			transactionFormPanel.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null,
-					null));
-			transactionsPanel.add(transactionFormPanel, BorderLayout.NORTH);
-			//TransactionsPanel.updateTableData();
 			transactionsPanel.revalidate();
 		} catch (ClassNotFoundException e1) {
 			JOptionPane.showMessageDialog(null, e1.getMessage(),
@@ -351,12 +347,36 @@ public class MainFrame extends JFrame {
 			System.exit(1);
 		}
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
-		transactionPanel.revalidate();
-		transactionsPanel.revalidate();
 	}
 
 	public void changeCard(String card) {
 		cardLayout.show(mainPanel, card);
 		sideBarLayout.show(sidePanel, card);
+	}
+
+	public MainFrame getFrame() {
+		return this;
+	}
+
+	public void setExitToSystemTray() {
+		if (SystemTray.isSupported()) {
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent windowEvent) {
+					setExtendedState(JFrame.ICONIFIED);
+					SystemUtils.exitToSystemTray(getFrame());
+				}
+			});
+		}
+	}
+
+	/**
+	 * Exit application
+	 */
+	public void exitApp() {
+		if (Prefs.isConfirmationOnExit()) {
+			if (JOptionPane.showConfirmDialog(this, "Do you want to exit?") == 0) {
+				System.exit(0);
+			}
+		}
 	}
 }

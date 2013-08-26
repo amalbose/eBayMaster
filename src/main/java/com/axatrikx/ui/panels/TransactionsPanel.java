@@ -25,9 +25,9 @@ import javax.swing.table.TableColumnModel;
 
 import org.apache.log4j.Logger;
 
+import com.axatrikx.controllers.DatabaseController;
 import com.axatrikx.controllers.TransactionController;
 import com.axatrikx.controllers.TransactionsTableModel;
-import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 
