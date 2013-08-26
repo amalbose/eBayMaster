@@ -39,6 +39,7 @@ import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.ui.panels.HomePanel;
 import com.axatrikx.ui.panels.HomeSideBar;
+import com.axatrikx.ui.panels.ImportPanel;
 import com.axatrikx.ui.panels.SettingsDialog;
 import com.axatrikx.ui.panels.TransactionFormPanel;
 import com.axatrikx.ui.panels.TransactionSideBar;
@@ -248,6 +249,11 @@ public class MainFrame extends JFrame {
 		toolBar.add(horizontalStrut_3);
 		
 		JButton btnImport = new JButton("Import", new ImageIcon(MainFrame.class.getResource("/images/1377466837_plus-24.png")));
+		btnImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				showImportPanel();
+			}
+		});
 		btnImport.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnImport.setPreferredSize(new Dimension(50, 60));
 		btnImport.setMaximumSize(new Dimension(50, 60));
@@ -301,9 +307,12 @@ public class MainFrame extends JFrame {
 		}
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
 
+		JPanel importPanel = new ImportPanel();
+		
 		// setting the various cards
 		mainPanel.add(homePanel, "Home");
 		mainPanel.add(transactionsPanel, "Transactions");
+		mainPanel.add(importPanel, "Import");
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sidePanel, mainPanel);
 		splitPane.setDividerSize(0);
 		splitPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -320,6 +329,10 @@ public class MainFrame extends JFrame {
 		statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		statusPanel.add(statusLabel);
 		pack();
+	}
+
+	protected void showImportPanel() {
+		changeCard("Import");
 	}
 
 	protected void showSettingsDialog() {
