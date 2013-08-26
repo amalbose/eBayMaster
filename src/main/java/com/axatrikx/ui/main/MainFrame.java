@@ -240,6 +240,20 @@ public class MainFrame extends JFrame {
 		btnSettings.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSettings.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(btnSettings);
+		
+		Component horizontalStrut_3 = Box.createHorizontalStrut(20);
+		horizontalStrut_3.setPreferredSize(new Dimension(10, 0));
+		horizontalStrut_3.setMinimumSize(new Dimension(10, 0));
+		horizontalStrut_3.setMaximumSize(new Dimension(10, 32767));
+		toolBar.add(horizontalStrut_3);
+		
+		JButton btnImport = new JButton("Import", new ImageIcon(MainFrame.class.getResource("/images/1377466837_plus-24.png")));
+		btnImport.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnImport.setPreferredSize(new Dimension(50, 60));
+		btnImport.setMaximumSize(new Dimension(50, 60));
+		btnImport.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnImport.setBorder(null);
+		toolBar.add(btnImport);
 
 		JPanel panel = new JPanel();
 		contentPane.add(panel, BorderLayout.CENTER);
