@@ -1,4 +1,4 @@
-package com.axatrikx.utils;
+package com.axatrikx.controllers;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

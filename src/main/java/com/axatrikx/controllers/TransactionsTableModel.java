@@ -18,11 +18,9 @@ import com.axatrikx.beans.Buyer;
 import com.axatrikx.beans.Category;
 import com.axatrikx.beans.QueryResultTable;
 import com.axatrikx.beans.Transaction;
-import com.axatrikx.db.DatabaseController;
 import com.axatrikx.errors.DataBaseException;
 import com.axatrikx.errors.DatabaseTableCreationException;
 import com.axatrikx.utils.ConfigValues;
-import com.axatrikx.utils.PreparedDataExecutor;
 import com.axatrikx.utils.Utils;
 
 public class TransactionsTableModel extends AbstractTableModel {

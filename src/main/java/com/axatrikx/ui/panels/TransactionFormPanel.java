@@ -250,10 +250,14 @@ public class TransactionFormPanel extends JPanel {
 		costTF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				if (!rateTF.getText().trim().isEmpty() & !priceTF.getText().trim().isEmpty()) {
-					profitTF.setText(String.valueOf(transactionController.calculateProfit(
-							Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
-							Float.parseFloat(rateTF.getText()))));
+				try {
+					if (!rateTF.getText().trim().isEmpty() & !priceTF.getText().trim().isEmpty()) {
+						profitTF.setText(String.valueOf(transactionController.calculateProfit(
+								Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
+								Float.parseFloat(rateTF.getText()))));
+					}
+				} catch (NumberFormatException e1) {
+					log.error(e1.getMessage(), e1);
 				}
 			}
 		});
@@ -267,10 +271,15 @@ public class TransactionFormPanel extends JPanel {
 		priceTF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				if (!rateTF.getText().trim().isEmpty() & !costTF.getText().trim().isEmpty()) {
-					profitTF.setText(String.valueOf(transactionController.calculateProfit(
-							Float.parseFloat(costTF.getText()), Float.parseFloat(priceTF.getText()),
-							Float.parseFloat(rateTF.getText()))));
+				try {
+					if (!rateTF.getText().trim().isEmpty() & !costTF.getText().trim().isEmpty()) {
+						profitTF.setText(String.valueOf(transactionController.calculateProfit(
+								Float.parseFloat(costTF.getText().replace(",", "")),
+								Float.parseFloat(priceTF.getText().replace(",", "")),
+								Float.parseFloat(rateTF.getText().replace(",", "")))));
+					}
+				} catch (NumberFormatException e1) {
+					log.error(e1.getMessage(), e1);
 				}
 			}
 		});
