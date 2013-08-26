@@ -93,8 +93,4 @@ public class SysTrayPopup extends JPopupMenu {
 	private JPopupMenu getPopUp() {
 		return this;
 	}
-
-	private void hideSystemTrayIcon() {
-		this.setVisible(false);
-	}
 }
