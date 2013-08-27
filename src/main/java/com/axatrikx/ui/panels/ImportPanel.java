@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -17,12 +19,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
+import com.axatrikx.controllers.IEController;
+
 import net.miginfocom.swing.MigLayout;
 
 public class ImportPanel extends JPanel {
 
 	private static final long serialVersionUID = 2415734999610676932L;
 	private JTextField filePathTF;
+
+	private IEController controller;
+	private JComboBox<String> sheetNamesCB;
+	private JLabel lblFileAdded;
 
 	/**
 	 * Create the panel.
@@ -40,7 +50,6 @@ public class ImportPanel extends JPanel {
 
 		filePathTF = new JTextField();
 		filePathTF.setPreferredSize(new Dimension(500, 20));
-		filePathTF.setMaximumSize(new Dimension(400, 2147483647));
 		panel.add(filePathTF, "cell 3 1,grow");
 		filePathTF.setColumns(30);
 
@@ -58,13 +67,16 @@ public class ImportPanel extends JPanel {
 		JLabel lblSheet = new JLabel("Sheet");
 		panel.add(lblSheet, "cell 6 1,aligny center");
 
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Sheet 1", "Sheet 2", "Sheet 3" }));
-		panel.add(comboBox, "cell 7 1,growx,aligny center");
+		sheetNamesCB = new JComboBox<String>();
+		sheetNamesCB.setModel(new DefaultComboBoxModel<String>(new String[] { "Sheet 1", "Sheet 2", "Sheet 3" }));
+		panel.add(sheetNamesCB, "cell 7 1,growx,aligny center");
 
 		JPanel panel_1 = new JPanel();
 		add(panel_1, "cell 0 1,grow");
 		panel_1.setLayout(new MigLayout("", "[][][][]", "[][]"));
+		
+		lblFileAdded = new JLabel();
+		panel_1.add(lblFileAdded, "cell 1 0");
 
 		JLabel lblItemName = new JLabel("Item Name");
 		panel_1.add(lblItemName, "cell 0 1");
@@ -115,7 +127,46 @@ public class ImportPanel extends JPanel {
 		fileChooser.setAcceptAllFileFilterUsed(false);
 		if (fileChooser.showOpenDialog(this) == 0) {
 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-			filePathTF.setText(filePath);
+			if (verifyFile(filePath)) {
+				processFile(filePath);
+			}
 		}
+	}
+
+	/**
+	 * Processes the file to get info.
+	 * 
+	 * @param filePath
+	 */
+	private void processFile(String filePath) {
+		filePathTF.setText(filePath);
+		try {
+			controller = new IEController(filePath);
+		} catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//gets sheets
+		Object[] objectArray = controller.getSheetNames().toArray();
+		System.out.println(controller.getSheetNames());
+		getSheetNamesCB().setModel(new DefaultComboBoxModel<String>(Arrays.copyOf(objectArray, objectArray.length, String[].class)));
+		getSheetNamesCB().revalidate();
+		getLblFileAdded().setText("File added: " + filePath);
+	}
+
+	private boolean verifyFile(String filePath) {
+		// TODO Check if extension is proper
+		return true;
+	}
+
+	private JComboBox<String> getSheetNamesCB() {
+		return sheetNamesCB;
+	}
+	protected JLabel getLblFileAdded() {
+		return lblFileAdded;
 	}
 }

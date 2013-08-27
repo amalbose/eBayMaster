@@ -1,5 +1,6 @@
 package com.axatrikx.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,18 +16,21 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.testng.log4testng.Logger;
 
-public class ExcelController {
+import com.axatrikx.beans.IOController;
+
+public class ExcelController extends IOController {
 
 	private static final Logger log = Logger.getLogger(ExcelController.class);
-	
+
 	private Workbook workBook;
+	private int noOfSheets;
 
 	public ExcelController(String fileName) throws IOException, InvalidFormatException {
-		workBook = WorkbookFactory.create(ExcelController.class.getClassLoader().getResourceAsStream(fileName));
+		workBook = WorkbookFactory.create(new File(fileName));
+		noOfSheets = workBook.getNumberOfSheets();
 	}
 
 	public List<Sheet> getSheets() {
-		int noOfSheets = workBook.getNumberOfSheets();
 		List<Sheet> sheets = new ArrayList<Sheet>();
 		for (int i = 0; i < noOfSheets; i++) {
 			sheets.add(workBook.getSheetAt(i));
@@ -93,5 +97,14 @@ public class ExcelController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<String> getSheetNames() {
+		List<String> sheets = new ArrayList<String>();
+		for (int i = 0; i < noOfSheets; i++) {
+			sheets.add(workBook.getSheetName(i));
+		}
+		return sheets;
 	}
 }
