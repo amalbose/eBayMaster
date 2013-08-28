@@ -2,6 +2,7 @@ package com.axatrikx.utils;
 
 import java.awt.Image;
 import java.awt.SystemTray;
+import java.io.File;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -29,5 +30,9 @@ public class SystemUtils {
 		} else {
 			return (new ImageIcon(imageURL, description)).getImage();
 		}
+	}
+	
+	public static String getFileNameFromPath(String filePath) {
+		return new File(filePath).getName();
 	}
 }

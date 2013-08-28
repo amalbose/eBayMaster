@@ -33,4 +33,8 @@ public class IEController {
 	public List<String> getSheetNames() {
 		return this.controller.getSheetNames();
 	}
+	
+	public List<String> getHeaders() {
+		return this.controller.getHeaders();
+	}
 }
