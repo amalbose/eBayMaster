@@ -1,10 +1,14 @@
 package com.axatrikx.ui.panels;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -12,40 +16,26 @@ import java.util.Arrays;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import com.axatrikx.controllers.IEController;
 import com.axatrikx.io.ImportWorker;
 import com.axatrikx.utils.SystemUtils;
-
-import net.miginfocom.swing.MigLayout;
-
-import java.awt.Font;
-
-import javax.swing.JCheckBox;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.border.EtchedBorder;
-
-import java.awt.BorderLayout;
-
-import javax.swing.SwingConstants;
-import javax.swing.JPasswordField;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
-import com.jgoodies.forms.factories.FormFactory;
-
-import javax.swing.JTextArea;
 
 public class ImportPanel extends JPanel {
 
@@ -67,6 +57,7 @@ public class ImportPanel extends JPanel {
 	private JComboBox<String> dateHeaderCB;
 	private JButton importBtn;
 	private JTextArea consoleArea;
+	private JCheckBox chckbxMappingCompleted;
 
 	/**
 	 * Create the panel.
@@ -74,7 +65,7 @@ public class ImportPanel extends JPanel {
 	public ImportPanel() {
 		setPreferredSize(new Dimension(800, 400));
 		setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
-		setLayout(new MigLayout("", "[grow][grow][]", "[][][grow][grow][]"));
+		setLayout(new MigLayout("", "[grow][grow]", "[][][grow][grow]"));
 
 		JPanel fileSelectionPanel = new JPanel();
 		fileSelectionPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
@@ -115,114 +106,134 @@ public class ImportPanel extends JPanel {
 		lblFileAdded.setFont(new Font("Tahoma", Font.BOLD, 11));
 		notifyPanel.add(lblFileAdded, "cell 1 0,alignx left,aligny top");
 
+		JPanel panel_1 = new JPanel();
+		add(panel_1, "cell 0 2,grow");
+		panel_1.setLayout(new BorderLayout(0, 0));
+
 		JPanel mappingPanel = new JPanel();
-		add(mappingPanel, "cell 0 2,grow");
-		mappingPanel.setLayout(new MigLayout("", "[50px][150px][50px][150px][50px][150px][]", "[][][][][][][][][][20px][]"));
+		panel_1.add(mappingPanel, BorderLayout.CENTER);
+		mappingPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Header Mapping",
+				TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		mappingPanel.setLayout(new MigLayout("", "[grow][150px][grow][150px][grow][150px][grow]",
+				"[][][][][][][][][][][][20px][]"));
+
+		JLabel lblMapFieldsTo = new JLabel("Map fields to headers and check 'Mapping Completed' checkbox");
+		mappingPanel.add(lblMapFieldsTo, "cell 1 0 3 1");
 
 		JLabel lblItemName = new JLabel("Item Name");
-		mappingPanel.add(lblItemName, "cell 1 1");
+		mappingPanel.add(lblItemName, "cell 1 2");
 
 		final JCheckBox chckbxCategory = new JCheckBox("Category");
 		chckbxCategory.setSelected(true);
 		chckbxCategory.setToolTipText("Select if Category is being imported");
-		chckbxCategory.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
+		chckbxCategory.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				categoryHeaderCB.setEnabled(chckbxCategory.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxCategory, "cell 3 1");
+		mappingPanel.add(chckbxCategory, "cell 3 2");
 
 		final JCheckBox chckbxRate = new JCheckBox("Rate");
-		chckbxRate.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent arg0) {
+		chckbxRate.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				rateHeaderCB.setEnabled(chckbxRate.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxRate, "cell 5 1");
+		mappingPanel.add(chckbxRate, "cell 5 2");
 
 		itemHeaderCB = new JComboBox<String>();
-		mappingPanel.add(itemHeaderCB, "cell 1 2,growx");
+		mappingPanel.add(itemHeaderCB, "cell 1 3,growx");
 
 		categoryHeaderCB = new JComboBox<String>();
-		mappingPanel.add(categoryHeaderCB, "cell 3 2,growx");
+		mappingPanel.add(categoryHeaderCB, "cell 3 3,growx");
 
 		rateHeaderCB = new JComboBox<String>();
 		rateHeaderCB.setEnabled(false);
-		mappingPanel.add(rateHeaderCB, "cell 5 2,growx");
+		mappingPanel.add(rateHeaderCB, "cell 5 3,growx");
 
 		final JCheckBox chckbxBuyer = new JCheckBox("Buyer");
 		chckbxBuyer.setSelected(true);
-		chckbxBuyer.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxBuyer.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				buyerHeaderCB.setEnabled(chckbxBuyer.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxBuyer, "cell 1 4");
+		mappingPanel.add(chckbxBuyer, "cell 1 5");
 
 		final JCheckBox chckbxLocation = new JCheckBox("Location");
-		chckbxLocation.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxLocation.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				locationHeaderCB.setEnabled(chckbxLocation.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxLocation, "cell 3 4");
+		mappingPanel.add(chckbxLocation, "cell 3 5");
 
 		final JCheckBox chckbxPrice = new JCheckBox("Price");
 		chckbxPrice.setSelected(true);
-		chckbxPrice.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxPrice.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				priceHeaderCB.setEnabled(chckbxPrice.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxPrice, "cell 5 4");
+		mappingPanel.add(chckbxPrice, "cell 5 5");
 
 		buyerHeaderCB = new JComboBox<String>();
-		mappingPanel.add(buyerHeaderCB, "cell 1 5,growx");
+		mappingPanel.add(buyerHeaderCB, "cell 1 6,growx");
 
 		locationHeaderCB = new JComboBox<String>();
 		locationHeaderCB.setEnabled(false);
-		mappingPanel.add(locationHeaderCB, "cell 3 5,growx");
+		mappingPanel.add(locationHeaderCB, "cell 3 6,growx");
 
 		priceHeaderCB = new JComboBox<String>();
-		mappingPanel.add(priceHeaderCB, "cell 5 5,growx");
+		mappingPanel.add(priceHeaderCB, "cell 5 6,growx");
 
 		final JCheckBox chckbxCost = new JCheckBox("Cost");
 		chckbxCost.setSelected(true);
-		chckbxCost.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxCost.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				costHeaderCB.setEnabled(chckbxCost.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxCost, "cell 1 7");
+		mappingPanel.add(chckbxCost, "cell 1 8");
 
 		final JCheckBox chckbxProfit = new JCheckBox("Profit");
 		chckbxProfit.setSelected(true);
-		chckbxProfit.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxProfit.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				profitHeaderCB.setEnabled(chckbxProfit.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxProfit, "cell 3 7");
+		mappingPanel.add(chckbxProfit, "cell 3 8");
 
 		final JCheckBox chckbxDate = new JCheckBox("Date");
-		chckbxDate.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxDate.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
 				dateHeaderCB.setEnabled(chckbxDate.isSelected());
 			}
 		});
-		mappingPanel.add(chckbxDate, "cell 5 7");
+		mappingPanel.add(chckbxDate, "cell 5 8");
 
 		costHeaderCB = new JComboBox<String>();
-		mappingPanel.add(costHeaderCB, "cell 1 8,growx");
+		mappingPanel.add(costHeaderCB, "cell 1 9,growx");
 
 		profitHeaderCB = new JComboBox<String>();
-		mappingPanel.add(profitHeaderCB, "cell 3 8,growx");
+		mappingPanel.add(profitHeaderCB, "cell 3 9,growx");
 
 		dateHeaderCB = new JComboBox<String>();
-		mappingPanel.add(dateHeaderCB, "cell 5 8,growx");
-		
+		mappingPanel.add(dateHeaderCB, "cell 5 9,growx");
+
+		chckbxMappingCompleted = new JCheckBox("Mapping Completed");
+		chckbxMappingCompleted.setEnabled(false);
+		chckbxMappingCompleted.setSelected(true);
+		chckbxMappingCompleted.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+				toggleAllCheckBoxes(chckbxMappingCompleted.isSelected());
+			}
+		});
+		mappingPanel.add(chckbxMappingCompleted, "cell 5 10,alignx right");
+
 		importBtn = new JButton("Start Import");
-		mappingPanel.add(importBtn, "cell 5 10,alignx right");
+		mappingPanel.add(importBtn, "cell 5 12,alignx right");
 		importBtn.setHorizontalAlignment(SwingConstants.RIGHT);
 		importBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -231,32 +242,48 @@ public class ImportPanel extends JPanel {
 			}
 		});
 		importBtn.setEnabled(false);
-		
+
 		JPanel tipPanel = new JPanel();
-		tipPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		tipPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		tipPanel.setPreferredSize(new Dimension(400, 10));
-		add(tipPanel, "cell 1 2,grow");
+		add(tipPanel, "cell 1 2 1 2,grow");
 		tipPanel.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel tipHeader = new JPanel();
 		tipPanel.add(tipHeader, BorderLayout.NORTH);
-		
+
 		JLabel lblStepsForImporting = new JLabel("Steps for Import");
 		lblStepsForImporting.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblStepsForImporting.setHorizontalAlignment(SwingConstants.CENTER);
 		tipHeader.add(lblStepsForImporting);
-		
+
 		JPanel panel = new JPanel();
 		add(panel, "cell 0 3,grow");
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		consoleArea = new JTextArea();
+		consoleArea.setTabSize(4);
+		consoleArea.setRows(10);
 		consoleArea.setEditable(false);
 		consoleArea.setWrapStyleWord(true);
 		consoleArea.setLineWrap(true);
-		consoleArea.setRows(15);
 		panel.add(new JScrollPane(consoleArea), BorderLayout.CENTER);
 
+	}
+
+	protected void toggleAllCheckBoxes(boolean enabled) {
+		itemHeaderCB.setEnabled(enabled);
+		categoryHeaderCB.setEnabled(enabled);
+		rateHeaderCB.setEnabled(enabled);
+		buyerHeaderCB.setEnabled(enabled);
+		locationHeaderCB.setEnabled(enabled);
+		costHeaderCB.setEnabled(enabled);
+		profitHeaderCB.setEnabled(enabled);
+		priceHeaderCB.setEnabled(enabled);
+		dateHeaderCB.setEnabled(enabled);
+		
+		// TODO enable and disable checkboxes
 	}
 
 	private void openFileChooser() {
@@ -302,9 +329,10 @@ public class ImportPanel extends JPanel {
 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
 			if (verifyFile(filePath)) {
 				processFile(filePath);
-				
-				//enable Import button
+
+				// enable Import button
 				importBtn.setEnabled(true);
+				chckbxMappingCompleted.setEnabled(true);
 			}
 		}
 	}
@@ -365,7 +393,7 @@ public class ImportPanel extends JPanel {
 
 		priceHeaderCB.setModel(new DefaultComboBoxModel<String>(Arrays.copyOf(headerArray, headerArray.length,
 				String[].class)));
-		
+
 		dateHeaderCB.setModel(new DefaultComboBoxModel<String>(Arrays.copyOf(headerArray, headerArray.length,
 				String[].class)));
 
