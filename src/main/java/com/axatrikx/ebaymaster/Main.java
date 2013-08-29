@@ -1,8 +1,7 @@
 package com.axatrikx.ebaymaster;
 
-import java.awt.EventQueue;
-
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +35,7 @@ public class Main {
 	 * Invokes the application
 	 */
 	private static void invokeApplication() {
-		EventQueue.invokeLater(new Runnable() {
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					new EBayMaster();

@@ -191,7 +191,7 @@ public class TransactionController {
 			DataBaseException, DatabaseTableCreationException {
 		Category category = new CategoryController().getCategory(categoryName, rate);
 		if (category == null) {
-			log.info("Category " + categoryName + " doesn't exist. Creating item record.");
+			log.info("Category " + categoryName + " doesn't exist. Creating category.");
 
 			ArrayList<HashMap<Class, Object>> dataList = new ArrayList<HashMap<Class, Object>>();
 

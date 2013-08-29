@@ -16,12 +16,14 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import com.axatrikx.controllers.IEController;
+import com.axatrikx.io.ImportWorker;
 import com.axatrikx.utils.SystemUtils;
 
 import net.miginfocom.swing.MigLayout;
@@ -32,9 +34,18 @@ import javax.swing.JCheckBox;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.border.EtchedBorder;
+
 import java.awt.BorderLayout;
+
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
+
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.factories.FormFactory;
+
+import javax.swing.JTextArea;
 
 public class ImportPanel extends JPanel {
 
@@ -54,6 +65,8 @@ public class ImportPanel extends JPanel {
 	private JComboBox<String> costHeaderCB;
 	private JComboBox<String> profitHeaderCB;
 	private JComboBox<String> dateHeaderCB;
+	private JButton importBtn;
+	private JTextArea consoleArea;
 
 	/**
 	 * Create the panel.
@@ -61,19 +74,19 @@ public class ImportPanel extends JPanel {
 	public ImportPanel() {
 		setPreferredSize(new Dimension(800, 400));
 		setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
-		setLayout(new MigLayout("", "[grow][grow][]", "[][][grow][grow]"));
+		setLayout(new MigLayout("", "[grow][grow][]", "[][][grow][grow][]"));
 
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
-		add(panel, "cell 0 0,alignx left,growy");
-		panel.setLayout(new MigLayout("", "[grow][][][284.00][][][][100px][]", "[grow][]"));
+		JPanel fileSelectionPanel = new JPanel();
+		fileSelectionPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
+		add(fileSelectionPanel, "cell 0 0,alignx left,growy");
+		fileSelectionPanel.setLayout(new MigLayout("", "[grow][][][350][][][][100px][]", "[grow][]"));
 
 		JLabel lblFileToImport = new JLabel("Select file to import");
-		panel.add(lblFileToImport, "cell 1 1,growy");
+		fileSelectionPanel.add(lblFileToImport, "cell 1 1,growy");
 
 		filePathTF = new JTextField();
 		filePathTF.setPreferredSize(new Dimension(500, 20));
-		panel.add(filePathTF, "cell 3 1,grow");
+		fileSelectionPanel.add(filePathTF, "cell 3 1,grow");
 		filePathTF.setColumns(30);
 
 		JButton btnBrowse = new JButton("Browse");
@@ -82,32 +95,32 @@ public class ImportPanel extends JPanel {
 				openFileChooser();
 			}
 		});
-		panel.add(btnBrowse, "cell 4 1,growy");
+		fileSelectionPanel.add(btnBrowse, "cell 4 1,growy");
 
 		Component horizontalStrut = Box.createHorizontalStrut(100);
-		panel.add(horizontalStrut, "cell 5 1");
+		fileSelectionPanel.add(horizontalStrut, "cell 5 1");
 
 		JLabel lblSheet = new JLabel("Select Sheet");
-		panel.add(lblSheet, "cell 6 1,aligny center");
+		fileSelectionPanel.add(lblSheet, "cell 6 1,aligny center");
 
 		sheetNamesCB = new JComboBox<String>();
 		sheetNamesCB.setModel(new DefaultComboBoxModel<String>(new String[] { "Default" }));
-		panel.add(sheetNamesCB, "cell 7 1,growx,aligny center");
+		fileSelectionPanel.add(sheetNamesCB, "cell 7 1,growx,aligny center");
 
-		JPanel panel_2 = new JPanel();
-		add(panel_2, "cell 0 1,growx,aligny center");
-		panel_2.setLayout(new MigLayout("", "[][3px][][][]", "[14px]"));
+		JPanel notifyPanel = new JPanel();
+		add(notifyPanel, "cell 0 1,growx,aligny center");
+		notifyPanel.setLayout(new MigLayout("", "[][3px][][][]", "[14px]"));
 
 		lblFileAdded = new JLabel();
 		lblFileAdded.setFont(new Font("Tahoma", Font.BOLD, 11));
-		panel_2.add(lblFileAdded, "cell 1 0,alignx left,aligny top");
+		notifyPanel.add(lblFileAdded, "cell 1 0,alignx left,aligny top");
 
-		JPanel panel_1 = new JPanel();
-		add(panel_1, "cell 0 2,grow");
-		panel_1.setLayout(new MigLayout("", "[50px][150px][50px][150px][50px][150px][]", "[][][][][][][][][]"));
+		JPanel mappingPanel = new JPanel();
+		add(mappingPanel, "cell 0 2,grow");
+		mappingPanel.setLayout(new MigLayout("", "[50px][150px][50px][150px][50px][150px][]", "[][][][][][][][][][20px][]"));
 
 		JLabel lblItemName = new JLabel("Item Name");
-		panel_1.add(lblItemName, "cell 1 1");
+		mappingPanel.add(lblItemName, "cell 1 1");
 
 		final JCheckBox chckbxCategory = new JCheckBox("Category");
 		chckbxCategory.setSelected(true);
@@ -117,7 +130,7 @@ public class ImportPanel extends JPanel {
 				categoryHeaderCB.setEnabled(chckbxCategory.isSelected());
 			}
 		});
-		panel_1.add(chckbxCategory, "cell 3 1");
+		mappingPanel.add(chckbxCategory, "cell 3 1");
 
 		final JCheckBox chckbxRate = new JCheckBox("Rate");
 		chckbxRate.addChangeListener(new ChangeListener() {
@@ -125,17 +138,17 @@ public class ImportPanel extends JPanel {
 				rateHeaderCB.setEnabled(chckbxRate.isSelected());
 			}
 		});
-		panel_1.add(chckbxRate, "cell 5 1");
+		mappingPanel.add(chckbxRate, "cell 5 1");
 
 		itemHeaderCB = new JComboBox<String>();
-		panel_1.add(itemHeaderCB, "cell 1 2,growx");
+		mappingPanel.add(itemHeaderCB, "cell 1 2,growx");
 
 		categoryHeaderCB = new JComboBox<String>();
-		panel_1.add(categoryHeaderCB, "cell 3 2,growx");
+		mappingPanel.add(categoryHeaderCB, "cell 3 2,growx");
 
 		rateHeaderCB = new JComboBox<String>();
 		rateHeaderCB.setEnabled(false);
-		panel_1.add(rateHeaderCB, "cell 5 2,growx");
+		mappingPanel.add(rateHeaderCB, "cell 5 2,growx");
 
 		final JCheckBox chckbxBuyer = new JCheckBox("Buyer");
 		chckbxBuyer.setSelected(true);
@@ -144,7 +157,7 @@ public class ImportPanel extends JPanel {
 				buyerHeaderCB.setEnabled(chckbxBuyer.isSelected());
 			}
 		});
-		panel_1.add(chckbxBuyer, "cell 1 4");
+		mappingPanel.add(chckbxBuyer, "cell 1 4");
 
 		final JCheckBox chckbxLocation = new JCheckBox("Location");
 		chckbxLocation.addChangeListener(new ChangeListener() {
@@ -152,7 +165,7 @@ public class ImportPanel extends JPanel {
 				locationHeaderCB.setEnabled(chckbxLocation.isSelected());
 			}
 		});
-		panel_1.add(chckbxLocation, "cell 3 4");
+		mappingPanel.add(chckbxLocation, "cell 3 4");
 
 		final JCheckBox chckbxPrice = new JCheckBox("Price");
 		chckbxPrice.setSelected(true);
@@ -161,17 +174,17 @@ public class ImportPanel extends JPanel {
 				priceHeaderCB.setEnabled(chckbxPrice.isSelected());
 			}
 		});
-		panel_1.add(chckbxPrice, "cell 5 4");
+		mappingPanel.add(chckbxPrice, "cell 5 4");
 
 		buyerHeaderCB = new JComboBox<String>();
-		panel_1.add(buyerHeaderCB, "cell 1 5,growx");
+		mappingPanel.add(buyerHeaderCB, "cell 1 5,growx");
 
 		locationHeaderCB = new JComboBox<String>();
 		locationHeaderCB.setEnabled(false);
-		panel_1.add(locationHeaderCB, "cell 3 5,growx");
+		mappingPanel.add(locationHeaderCB, "cell 3 5,growx");
 
 		priceHeaderCB = new JComboBox<String>();
-		panel_1.add(priceHeaderCB, "cell 5 5,growx");
+		mappingPanel.add(priceHeaderCB, "cell 5 5,growx");
 
 		final JCheckBox chckbxCost = new JCheckBox("Cost");
 		chckbxCost.setSelected(true);
@@ -180,7 +193,7 @@ public class ImportPanel extends JPanel {
 				costHeaderCB.setEnabled(chckbxCost.isSelected());
 			}
 		});
-		panel_1.add(chckbxCost, "cell 1 7");
+		mappingPanel.add(chckbxCost, "cell 1 7");
 
 		final JCheckBox chckbxProfit = new JCheckBox("Profit");
 		chckbxProfit.setSelected(true);
@@ -189,7 +202,7 @@ public class ImportPanel extends JPanel {
 				profitHeaderCB.setEnabled(chckbxProfit.isSelected());
 			}
 		});
-		panel_1.add(chckbxProfit, "cell 3 7");
+		mappingPanel.add(chckbxProfit, "cell 3 7");
 
 		final JCheckBox chckbxDate = new JCheckBox("Date");
 		chckbxDate.addChangeListener(new ChangeListener() {
@@ -197,30 +210,52 @@ public class ImportPanel extends JPanel {
 				dateHeaderCB.setEnabled(chckbxDate.isSelected());
 			}
 		});
-		panel_1.add(chckbxDate, "cell 5 7");
+		mappingPanel.add(chckbxDate, "cell 5 7");
 
 		costHeaderCB = new JComboBox<String>();
-		panel_1.add(costHeaderCB, "cell 1 8,growx");
+		mappingPanel.add(costHeaderCB, "cell 1 8,growx");
 
 		profitHeaderCB = new JComboBox<String>();
-		panel_1.add(profitHeaderCB, "cell 3 8,growx");
+		mappingPanel.add(profitHeaderCB, "cell 3 8,growx");
 
 		dateHeaderCB = new JComboBox<String>();
-		panel_1.add(dateHeaderCB, "cell 5 8,growx");
+		mappingPanel.add(dateHeaderCB, "cell 5 8,growx");
 		
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		panel_3.setPreferredSize(new Dimension(400, 10));
-		add(panel_3, "cell 1 2,grow");
-		panel_3.setLayout(new BorderLayout(0, 0));
+		importBtn = new JButton("Start Import");
+		mappingPanel.add(importBtn, "cell 5 10,alignx right");
+		importBtn.setHorizontalAlignment(SwingConstants.RIGHT);
+		importBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// process import
+				importData();
+			}
+		});
+		importBtn.setEnabled(false);
+		
+		JPanel tipPanel = new JPanel();
+		tipPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		tipPanel.setPreferredSize(new Dimension(400, 10));
+		add(tipPanel, "cell 1 2,grow");
+		tipPanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel tipHeader = new JPanel();
-		panel_3.add(tipHeader, BorderLayout.NORTH);
+		tipPanel.add(tipHeader, BorderLayout.NORTH);
 		
 		JLabel lblStepsForImporting = new JLabel("Steps for Import");
 		lblStepsForImporting.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblStepsForImporting.setHorizontalAlignment(SwingConstants.CENTER);
 		tipHeader.add(lblStepsForImporting);
+		
+		JPanel panel = new JPanel();
+		add(panel, "cell 0 3,grow");
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		consoleArea = new JTextArea();
+		consoleArea.setEditable(false);
+		consoleArea.setWrapStyleWord(true);
+		consoleArea.setLineWrap(true);
+		consoleArea.setRows(15);
+		panel.add(new JScrollPane(consoleArea), BorderLayout.CENTER);
 
 	}
 
@@ -267,8 +302,17 @@ public class ImportPanel extends JPanel {
 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
 			if (verifyFile(filePath)) {
 				processFile(filePath);
+				
+				//enable Import button
+				importBtn.setEnabled(true);
 			}
 		}
+	}
+
+	private void importData() {
+		// TODO Auto-generated method stub
+		ImportWorker impWorker = new ImportWorker(controller.getTableData(), null, consoleArea);
+		impWorker.execute();
 	}
 
 	/**

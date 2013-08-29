@@ -51,7 +51,11 @@ public class ExcelController extends IOController {
 		return getSheets().get(0);
 	}
 
-	private ArrayList<ArrayList<Object>> getTableData(Sheet curSheet) {
+	public ArrayList<ArrayList<Object>> getTableData() {
+		return getTableData(workBook.getSheetAt(0));
+	}
+	
+	public ArrayList<ArrayList<Object>> getTableData(Sheet curSheet) {
 		ArrayList<ArrayList<Object>> tableData = new ArrayList<ArrayList<Object>>();
 		Iterator<Row> rowIterator = curSheet.iterator();
 		ArrayList<Object> curRow;

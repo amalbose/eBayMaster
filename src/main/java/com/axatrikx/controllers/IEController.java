@@ -1,9 +1,11 @@
 package com.axatrikx.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import com.axatrikx.beans.IOController;
 import com.axatrikx.io.ExcelController;
@@ -36,5 +38,13 @@ public class IEController {
 	
 	public List<String> getHeaders() {
 		return this.controller.getHeaders();
+	}
+	
+	public ArrayList<ArrayList<Object>> getTableData(Sheet curSheet) {
+		return this.controller.getTableData(curSheet);
+	}
+	
+	public ArrayList<ArrayList<Object>> getTableData() {
+		return this.controller.getTableData();
 	}
 }
