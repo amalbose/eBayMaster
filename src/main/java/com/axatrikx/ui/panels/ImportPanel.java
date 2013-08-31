@@ -12,6 +12,7 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -127,7 +128,7 @@ public class ImportPanel extends JPanel {
 		chckbxCategory.setSelected(true);
 		chckbxCategory.setToolTipText("Select if Category is being imported");
 		chckbxCategory.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				categoryHeaderCB.setEnabled(chckbxCategory.isSelected());
 			}
 		});
@@ -135,7 +136,7 @@ public class ImportPanel extends JPanel {
 
 		final JCheckBox chckbxRate = new JCheckBox("Rate");
 		chckbxRate.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				rateHeaderCB.setEnabled(chckbxRate.isSelected());
 			}
 		});
@@ -154,7 +155,7 @@ public class ImportPanel extends JPanel {
 		final JCheckBox chckbxBuyer = new JCheckBox("Buyer");
 		chckbxBuyer.setSelected(true);
 		chckbxBuyer.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				buyerHeaderCB.setEnabled(chckbxBuyer.isSelected());
 			}
 		});
@@ -162,7 +163,7 @@ public class ImportPanel extends JPanel {
 
 		final JCheckBox chckbxLocation = new JCheckBox("Location");
 		chckbxLocation.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				locationHeaderCB.setEnabled(chckbxLocation.isSelected());
 			}
 		});
@@ -171,7 +172,7 @@ public class ImportPanel extends JPanel {
 		final JCheckBox chckbxPrice = new JCheckBox("Price");
 		chckbxPrice.setSelected(true);
 		chckbxPrice.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				priceHeaderCB.setEnabled(chckbxPrice.isSelected());
 			}
 		});
@@ -190,7 +191,7 @@ public class ImportPanel extends JPanel {
 		final JCheckBox chckbxCost = new JCheckBox("Cost");
 		chckbxCost.setSelected(true);
 		chckbxCost.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				costHeaderCB.setEnabled(chckbxCost.isSelected());
 			}
 		});
@@ -199,7 +200,7 @@ public class ImportPanel extends JPanel {
 		final JCheckBox chckbxProfit = new JCheckBox("Profit");
 		chckbxProfit.setSelected(true);
 		chckbxProfit.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				profitHeaderCB.setEnabled(chckbxProfit.isSelected());
 			}
 		});
@@ -207,7 +208,7 @@ public class ImportPanel extends JPanel {
 
 		final JCheckBox chckbxDate = new JCheckBox("Date");
 		chckbxDate.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				dateHeaderCB.setEnabled(chckbxDate.isSelected());
 			}
 		});
@@ -226,7 +227,7 @@ public class ImportPanel extends JPanel {
 		chckbxMappingCompleted.setEnabled(false);
 		chckbxMappingCompleted.setSelected(true);
 		chckbxMappingCompleted.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 				toggleAllCheckBoxes(chckbxMappingCompleted.isSelected());
 			}
 		});
@@ -282,7 +283,7 @@ public class ImportPanel extends JPanel {
 		profitHeaderCB.setEnabled(enabled);
 		priceHeaderCB.setEnabled(enabled);
 		dateHeaderCB.setEnabled(enabled);
-		
+
 		// TODO enable and disable checkboxes
 	}
 
@@ -338,9 +339,41 @@ public class ImportPanel extends JPanel {
 	}
 
 	private void importData() {
-		// TODO Auto-generated method stub
-		ImportWorker impWorker = new ImportWorker(controller.getTableData(), null, consoleArea);
+		ImportWorker impWorker = new ImportWorker(controller.getTableData(), getMapping(), consoleArea);
 		impWorker.execute();
+	}
+
+	private HashMap<String, Integer> getMapping() {
+		HashMap<String, Integer> map = new HashMap<String, Integer>();
+
+		if (itemHeaderCB.isEnabled()) {
+			map.put("ItemName", itemHeaderCB.getSelectedIndex());
+		}
+		if (categoryHeaderCB.isEnabled()) {
+			map.put("Category", categoryHeaderCB.getSelectedIndex());
+		}
+		if (rateHeaderCB.isEnabled()) {
+			map.put("Rate", rateHeaderCB.getSelectedIndex());
+		}
+		if (buyerHeaderCB.isEnabled()) {
+			map.put("Buyer", buyerHeaderCB.getSelectedIndex());
+		}
+		if (locationHeaderCB.isEnabled()) {
+			map.put("Location", locationHeaderCB.getSelectedIndex());
+		}
+		if (costHeaderCB.isEnabled()) {
+			map.put("Cost", costHeaderCB.getSelectedIndex());
+		}
+		if (profitHeaderCB.isEnabled()) {
+			map.put("Profit", profitHeaderCB.getSelectedIndex());
+		}
+		if (priceHeaderCB.isEnabled()) {
+			map.put("Price", priceHeaderCB.getSelectedIndex());
+		}
+		if (dateHeaderCB.isEnabled()) {
+			map.put("Date", dateHeaderCB.getSelectedIndex());
+		}
+		return map;
 	}
 
 	/**

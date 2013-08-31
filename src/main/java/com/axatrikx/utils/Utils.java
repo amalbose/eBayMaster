@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.prefs.Preferences;
 
@@ -13,6 +14,9 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.log4j.Logger;
+
+import com.joestelmach.natty.DateGroup;
+import com.joestelmach.natty.Parser;
 
 @SuppressWarnings("restriction")
 public class Utils {
@@ -72,5 +76,17 @@ public class Utils {
 	private static boolean isExpressionValid(String expression) {
 		// TODO Auto-generated method stub
 		return true;
+	}
+
+	/**
+	 * Finds the date from date string and returns it.
+	 * 
+	 * @param dateString
+	 * @return
+	 */
+	public static Date getDate(String dateString) throws ParseException {
+		Parser parser = new Parser();
+		List<DateGroup> dates = parser.parse(dateString);
+		return dates.get(0).getDates().get(0);
 	}
 }

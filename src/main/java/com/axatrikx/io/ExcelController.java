@@ -71,14 +71,20 @@ public class ExcelController extends IOController {
 					curRow.add(cell.getBooleanCellValue());
 					break;
 				case Cell.CELL_TYPE_NUMERIC:
-					curRow.add(cell.getNumericCellValue());
+					if (DateUtil.isCellDateFormatted(cell)) {
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+						curRow.add(sdf.format(cell.getDateCellValue()));
+					} else {
+						curRow.add(cell.getNumericCellValue());
+					}
 					break;
 				case Cell.CELL_TYPE_STRING:
 					curRow.add(cell.getStringCellValue());
 					break;
 				default:
 					if (DateUtil.isCellDateFormatted(cell)) {
-						SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+						System.out.println(cell.getDateCellValue());
+						SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 						curRow.add(sdf.format(cell.getDateCellValue()));
 					} else {
 						log.warn("Unidentified data format");
@@ -89,18 +95,6 @@ public class ExcelController extends IOController {
 		}
 
 		return tableData;
-	}
-
-	public static void main(String[] args) {
-		try {
-			System.out.println(new ExcelController("a.xlsx").getHeaders());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
