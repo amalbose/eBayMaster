@@ -26,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -59,7 +60,7 @@ public class ImportPanel extends JPanel {
 	private JComboBox<String> profitHeaderCB;
 	private JComboBox<String> dateHeaderCB;
 	private JButton importBtn;
-	private JTextArea consoleArea;
+	private JTextPane consoleArea;
 	private JCheckBox chckbxMappingCompleted;
 
 	/**
@@ -265,12 +266,14 @@ public class ImportPanel extends JPanel {
 		add(panel, "cell 0 3,grow");
 		panel.setLayout(new BorderLayout(0, 0));
 
-		consoleArea = new JTextArea();
-		consoleArea.setTabSize(4);
-		consoleArea.setRows(10);
+		consoleArea = new JTextPane();
+		consoleArea.setPreferredSize(new Dimension(15, 100));
+		consoleArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		//consoleArea.setTabSize(4);
+		//consoleArea.setRows(10);
 		consoleArea.setEditable(false);
-		consoleArea.setWrapStyleWord(true);
-		consoleArea.setLineWrap(true);
+		//consoleArea.setWrapStyleWord(true);
+		//consoleArea.setLineWrap(true);
 		panel.add(new JScrollPane(consoleArea), BorderLayout.CENTER);
 
 	}
