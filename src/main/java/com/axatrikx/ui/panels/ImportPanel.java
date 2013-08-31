@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
@@ -37,6 +38,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import com.axatrikx.controllers.IEController;
 import com.axatrikx.io.ImportWorker;
 import com.axatrikx.utils.SystemUtils;
+import com.axatrikx.utils.Utils;
 
 public class ImportPanel extends JPanel {
 
@@ -429,6 +431,53 @@ public class ImportPanel extends JPanel {
 
 		dateHeaderCB.setModel(new DefaultComboBoxModel<String>(Arrays.copyOf(headerArray, headerArray.length,
 				String[].class)));
+
+		// autoSelect listbox
+		autoSelectListBox(controller.getHeaders());
+
+	}
+
+	private void autoSelectListBox(List<String> headers) {
+
+		String loc;
+		if ((loc = Utils.getBestMatch(controller.getLocationKeywords(), headers)) != null) {
+			locationHeaderCB.setSelectedItem(loc);
+		}
+		
+		String category;
+		if ((category = Utils.getBestMatch(controller.getCategoryKeywords(), headers)) != null) {
+			categoryHeaderCB.setSelectedItem(category);
+		}
+		
+		String buyer;
+		if ((buyer = Utils.getBestMatch(controller.getBuyerKeywords(), headers)) != null) {
+			buyerHeaderCB.setSelectedItem(buyer);
+		}
+		
+		String rate;
+		if ((rate = Utils.getBestMatch(controller.getRateKeywords(), headers)) != null) {
+			rateHeaderCB.setSelectedItem(rate);
+		}
+		
+		String cost;
+		if ((cost = Utils.getBestMatch(controller.getCostKeywords(), headers)) != null) {
+			costHeaderCB.setSelectedItem(cost);
+		}
+		
+		String price;
+		if ((price = Utils.getBestMatch(controller.getPriceKeywords(), headers)) != null) {
+			priceHeaderCB.setSelectedItem(price);
+		}
+
+		String profit;
+		if ((profit = Utils.getBestMatch(controller.getProfitKeywords(), headers)) != null) {
+			profitHeaderCB.setSelectedItem(profit);
+		}
+		
+		String date;
+		if ((date = Utils.getBestMatch(controller.getDateKeywords(), headers)) != null) {
+			dateHeaderCB.setSelectedItem(date);
+		}
 
 	}
 
