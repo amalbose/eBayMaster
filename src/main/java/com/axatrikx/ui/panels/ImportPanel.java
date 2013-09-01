@@ -24,7 +24,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
@@ -99,6 +98,12 @@ public class ImportPanel extends JPanel {
 		fileSelectionPanel.add(lblSheet, "cell 6 1,aligny center");
 
 		sheetNamesCB = new JComboBox<String>();
+		sheetNamesCB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println(sheetNamesCB.getSelectedItem());
+				selectSheet(sheetNamesCB.getSelectedItem().toString());
+			}
+		});
 		sheetNamesCB.setModel(new DefaultComboBoxModel<String>(new String[] { "Default" }));
 		fileSelectionPanel.add(sheetNamesCB, "cell 7 1,growx,aligny center");
 
@@ -110,12 +115,12 @@ public class ImportPanel extends JPanel {
 		lblFileAdded.setFont(new Font("Tahoma", Font.BOLD, 11));
 		notifyPanel.add(lblFileAdded, "cell 1 0,alignx left,aligny top");
 
-		JPanel panel_1 = new JPanel();
-		add(panel_1, "cell 0 2,grow");
-		panel_1.setLayout(new BorderLayout(0, 0));
+		JPanel mapPanel = new JPanel();
+		add(mapPanel, "cell 0 2,grow");
+		mapPanel.setLayout(new BorderLayout(0, 0));
 
 		JPanel mappingPanel = new JPanel();
-		panel_1.add(mappingPanel, BorderLayout.CENTER);
+		mapPanel.add(mappingPanel, BorderLayout.CENTER);
 		mappingPanel.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Header Mapping",
 				TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		mappingPanel.setLayout(new MigLayout("", "[grow][150px][grow][150px][grow][150px][grow]",
@@ -405,9 +410,18 @@ public class ImportPanel extends JPanel {
 		sheetNamesCB.revalidate();
 		lblFileAdded.setText("File added:     " + SystemUtils.getFileNameFromPath(filePath));
 		lblFileAdded.setToolTipText(filePath);
+		
+		selectSheet(null);
+	}
 
+	private void selectSheet(String sheetName) {
 		// set Table header model
-		Object[] headerArray = controller.getHeaders().toArray();
+		Object[] headerArray;
+		if(sheetName==null) {
+			headerArray = controller.getHeaders().toArray();
+		} else {
+			headerArray = controller.getHeader(sheetName).toArray();
+		}
 		itemHeaderCB.setModel(new DefaultComboBoxModel<String>(Arrays.copyOf(headerArray, headerArray.length,
 				String[].class)));
 
@@ -437,7 +451,6 @@ public class ImportPanel extends JPanel {
 
 		// autoSelect listbox
 		autoSelectListBox(controller.getHeaders());
-
 	}
 
 	private void autoSelectListBox(List<String> headers) {

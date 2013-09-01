@@ -40,6 +40,10 @@ public class IEController {
 		return this.controller.getHeaders();
 	}
 	
+	public List<String> getHeader(String sheetName) {
+		return this.controller.getHeaders(sheetName);
+	}
+	
 	public ArrayList<ArrayList<Object>> getTableData(Sheet curSheet) {
 		return this.controller.getTableData(curSheet);
 	}

@@ -99,7 +99,6 @@ public class Utils {
 	public static String getBestMatch(List<String> keywords, List<String> matches) {
 		for(String keyword : keywords) {
 			for(String possMatch : matches) {
-				System.out.println(possMatch.toLowerCase()+"-"+keyword.toLowerCase());
 				if(possMatch.toLowerCase().contains(keyword.toLowerCase())) {
 					return possMatch;
 				}
