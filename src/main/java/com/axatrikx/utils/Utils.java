@@ -89,4 +89,21 @@ public class Utils {
 		List<DateGroup> dates = parser.parse(dateString);
 		return dates.get(0).getDates().get(0);
 	}
+	
+	/**
+	 * Gets the best match(closest match) from the list of strings.
+	 * @param token
+	 * @param matches
+	 * @return
+	 */
+	public static String getBestMatch(List<String> keywords, List<String> matches) {
+		for(String keyword : keywords) {
+			for(String possMatch : matches) {
+				if(possMatch.toLowerCase().contains(keyword.toLowerCase())) {
+					return possMatch;
+				}
+			}
+		}
+		return null;
+	}
 }

@@ -24,10 +24,12 @@ public class ExcelController extends IOController {
 
 	private Workbook workBook;
 	private int noOfSheets;
+	private Sheet curSheet;
 
 	public ExcelController(String fileName) throws IOException, InvalidFormatException {
 		workBook = WorkbookFactory.create(new File(fileName));
 		noOfSheets = workBook.getNumberOfSheets();
+		curSheet = getSheets().get(0);
 	}
 
 	public List<Sheet> getSheets() {
@@ -47,14 +49,28 @@ public class ExcelController extends IOController {
 		return headers;
 	}
 
+	public List<String> getHeaders(String sheetName) {
+		setSheet(sheetName);
+		ArrayList<String> headers = new ArrayList<String>();
+		ArrayList<Object> topRow = getTableData(getCurSheet()).get(0);
+		for (Object item : topRow) {
+			headers.add(String.valueOf(item));
+		}
+		return headers;
+	}
+
+	public void setSheet(String sheetName) {
+		curSheet = workBook.getSheet(sheetName);
+	}
+
 	private Sheet getCurSheet() {
-		return getSheets().get(0);
+		return curSheet;
 	}
 
 	public ArrayList<ArrayList<Object>> getTableData() {
-		return getTableData(workBook.getSheetAt(0));
+		return getTableData(curSheet);
 	}
-	
+
 	public ArrayList<ArrayList<Object>> getTableData(Sheet curSheet) {
 		ArrayList<ArrayList<Object>> tableData = new ArrayList<ArrayList<Object>>();
 		Iterator<Row> rowIterator = curSheet.iterator();

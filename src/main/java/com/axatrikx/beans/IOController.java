@@ -15,11 +15,19 @@ public abstract class IOController {
 	public abstract List<String> getSheetNames();
 
 	/**
-	 * Returns ths header column as a list of string.
+	 * Returns the header column of first sheet as a list of string.
 	 * 
 	 * @return
 	 */
 	public abstract List<String> getHeaders();
+	
+	/**
+	 * Returns the header column of given sheet as a list of string.
+	 * 
+	 * @param sheetName
+	 * @return
+	 */
+	public abstract List<String> getHeaders(String sheetName);
 	
 	/**
 	 * Returns the table data for given sheet.
@@ -34,4 +42,5 @@ public abstract class IOController {
 	 * @return
 	 */
 	public abstract ArrayList<ArrayList<Object>> getTableData();
+
 }
