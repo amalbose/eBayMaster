@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/axatrikx/ebaymaster.png?label=ready)](https://waffle.io/axatrikx/ebaymaster)  
 #eBayMaster
 
 [![Build Status](https://api.travis-ci.org/axatrikx/eBayMaster.png?branch=master)](https://travis-ci.org/axatrikx/eBayMaster)
