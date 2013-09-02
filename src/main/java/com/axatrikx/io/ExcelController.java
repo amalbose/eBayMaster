@@ -1,7 +1,9 @@
 package com.axatrikx.io;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,14 +24,17 @@ public class ExcelController extends IOController {
 
 	private static final Logger log = Logger.getLogger(ExcelController.class);
 
+	private InputStream inputStream;
 	private Workbook workBook;
 	private int noOfSheets;
 	private Sheet curSheet;
 
 	public ExcelController(String fileName) throws IOException, InvalidFormatException {
-		workBook = WorkbookFactory.create(new File(fileName));
+		inputStream = new FileInputStream(new File(fileName));
+		workBook = WorkbookFactory.create(inputStream);
 		noOfSheets = workBook.getNumberOfSheets();
 		curSheet = getSheets().get(0);
+		inputStream.close();
 	}
 
 	public List<Sheet> getSheets() {
