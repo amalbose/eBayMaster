@@ -140,7 +140,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * Gets the transactionItem detail by name.
+	 * Gets the category detail by category name.
 	 * 
 	 * @param categoryName
 	 * @return
