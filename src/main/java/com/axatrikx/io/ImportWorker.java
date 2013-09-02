@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
+import javax.swing.JCheckBox;
+import javax.swing.JProgressBar;
 import javax.swing.JTextPane;
 import javax.swing.SwingWorker;
 import javax.swing.text.BadLocationException;
@@ -27,12 +28,19 @@ public class ImportWorker extends SwingWorker<Boolean, String> {
 	private ArrayList<ArrayList<Object>> tableData;
 	private HashMap<String, Integer> map;
 	private StyledDocument doc;
+	private JProgressBar progressBar;
+	private JCheckBox chckbxImport;
+
+	private int noOfRows;
 
 	public ImportWorker(ArrayList<ArrayList<Object>> tableData, HashMap<String, Integer> map,
-			final JTextPane messageArea) {
+			final JTextPane messageArea, JProgressBar progressBar, JCheckBox chckbxImport) {
 		this.tableData = tableData;
 		this.map = map;
 		this.doc = messageArea.getStyledDocument();
+		this.noOfRows = tableData.size();
+		this.progressBar = progressBar;
+		this.chckbxImport = chckbxImport;
 	}
 
 	@Override
@@ -149,16 +157,8 @@ public class ImportWorker extends SwingWorker<Boolean, String> {
 	}
 
 	protected void done() {
-		boolean status;
-		try {
-			status = get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.progressBar.setValue(100);
+		this.chckbxImport.setSelected(true);
 	}
 
 	protected void process(List<String> chunks) {
@@ -174,11 +174,16 @@ public class ImportWorker extends SwingWorker<Boolean, String> {
 				StyleConstants.setForeground(keyWord, Color.BLACK);
 			}
 			try {
+				this.progressBar.setValue(getProgressLength(chunks.size()));
 				doc.insertString(doc.getLength(), string + "\n", keyWord);
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private int getProgressLength(int curSize) {
+		return (int) (75.0 + (25 * curSize / this.noOfRows));
 	}
 
 }

@@ -40,6 +40,9 @@ import com.axatrikx.controllers.IEController;
 import com.axatrikx.io.ImportWorker;
 import com.axatrikx.utils.SystemUtils;
 import com.axatrikx.utils.Utils;
+import javax.swing.JProgressBar;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class ImportPanel extends JPanel {
 
@@ -62,6 +65,11 @@ public class ImportPanel extends JPanel {
 	private JButton importBtn;
 	private JTextPane consoleArea;
 	private JCheckBox chckbxMappingCompleted;
+	private JProgressBar progressBar;
+	private JCheckBox chckbxSelectFile;
+	private JCheckBox chckbxSelectSheet;
+	private JCheckBox chckbxMapHeaders;
+	private JCheckBox chckbxImport;
 
 	/**
 	 * Create the panel.
@@ -91,12 +99,12 @@ public class ImportPanel extends JPanel {
 			}
 		});
 		fileSelectionPanel.add(btnBrowse, "cell 4 1,growy");
-		
+
 		JButton btnOpenFile = new JButton("Open File");
 		btnOpenFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String fileName = filePathTF.getText().toString();
-				if(!fileName.isEmpty()) {
+				if (!fileName.isEmpty()) {
 					try {
 						Desktop.getDesktop().open(new File(fileName));
 					} catch (IOException e) {
@@ -250,7 +258,6 @@ public class ImportPanel extends JPanel {
 
 		chckbxMappingCompleted = new JCheckBox("Mapping Completed");
 		chckbxMappingCompleted.setEnabled(false);
-		chckbxMappingCompleted.setSelected(true);
 		chckbxMappingCompleted.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				toggleAllCheckBoxes(chckbxMappingCompleted.isSelected());
@@ -284,6 +291,65 @@ public class ImportPanel extends JPanel {
 		lblStepsForImporting.setHorizontalAlignment(SwingConstants.CENTER);
 		tipHeader.add(lblStepsForImporting);
 
+		JPanel panel_1 = new JPanel();
+		tipPanel.add(panel_1, BorderLayout.CENTER);
+		panel_1.setLayout(new MigLayout("", "[146px,grow]", "[14px][][][][][]"));
+
+		progressBar = new JProgressBar();
+		panel_1.add(progressBar, "cell 0 0,growx,aligny top");
+
+		chckbxSelectFile = new JCheckBox("Select File to Import");
+		chckbxSelectFile.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				if (chckbxSelectFile.isSelected()) {
+					getProgressBar().setValue(25);
+				} else {
+					getProgressBar().setValue(0);
+				}
+			}
+		});
+		chckbxSelectFile.setEnabled(false);
+		panel_1.add(chckbxSelectFile, "cell 0 2");
+
+		chckbxSelectSheet = new JCheckBox("Select Sheet");
+		chckbxSelectSheet.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if (chckbxSelectSheet.isSelected()) {
+					getProgressBar().setValue(50);
+				} else {
+					getProgressBar().setValue(25);
+				}
+			}
+		});
+		chckbxSelectSheet.setEnabled(false);
+		panel_1.add(chckbxSelectSheet, "cell 0 3");
+
+		chckbxMapHeaders = new JCheckBox("Map headers");
+		chckbxMapHeaders.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if (chckbxMapHeaders.isSelected()) {
+					getProgressBar().setValue(75);
+				} else {
+					getProgressBar().setValue(0);
+				}
+			}
+		});
+		chckbxMapHeaders.setEnabled(false);
+		panel_1.add(chckbxMapHeaders, "cell 0 4");
+
+		chckbxImport = new JCheckBox("Import");
+		chckbxImport.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if (chckbxImport.isSelected()) {
+					getProgressBar().setValue(100);
+				} else {
+					getProgressBar().setValue(0);
+				}
+			}
+		});
+		chckbxImport.setEnabled(false);
+		panel_1.add(chckbxImport, "cell 0 5");
+
 		JPanel panel = new JPanel();
 		add(panel, "cell 0 3,grow");
 		panel.setLayout(new BorderLayout(0, 0));
@@ -291,16 +357,22 @@ public class ImportPanel extends JPanel {
 		consoleArea = new JTextPane();
 		consoleArea.setPreferredSize(new Dimension(15, 100));
 		consoleArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-		//consoleArea.setTabSize(4);
-		//consoleArea.setRows(10);
+		// consoleArea.setTabSize(4);
+		// consoleArea.setRows(10);
 		consoleArea.setEditable(false);
-		//consoleArea.setWrapStyleWord(true);
-		//consoleArea.setLineWrap(true);
+		// consoleArea.setWrapStyleWord(true);
+		// consoleArea.setLineWrap(true);
 		panel.add(new JScrollPane(consoleArea), BorderLayout.CENTER);
 
 	}
 
 	protected void toggleAllCheckBoxes(boolean enabled) {
+
+		if (enabled) {
+			// enable Import button
+			importBtn.setEnabled(true);
+			getChckbxMapHeaders().setSelected(true);
+		}
 		itemHeaderCB.setEnabled(enabled);
 		categoryHeaderCB.setEnabled(enabled);
 		rateHeaderCB.setEnabled(enabled);
@@ -357,19 +429,16 @@ public class ImportPanel extends JPanel {
 			String filePath = fileChooser.getSelectedFile().getAbsolutePath();
 			if (verifyFile(filePath)) {
 				processFile(filePath);
-
-				// enable Import button
-				importBtn.setEnabled(true);
 				chckbxMappingCompleted.setEnabled(true);
 			}
 		}
 	}
 
 	private void importData() {
-		ImportWorker impWorker = new ImportWorker(controller.getTableData(), getMapping(), consoleArea);
+		ImportWorker impWorker = new ImportWorker(controller.getTableData(), getMapping(), consoleArea, progressBar, chckbxImport);
 		impWorker.execute();
 	}
-
+	
 	private HashMap<String, Integer> getMapping() {
 		HashMap<String, Integer> map = new HashMap<String, Integer>();
 
@@ -427,14 +496,14 @@ public class ImportPanel extends JPanel {
 		sheetNamesCB.revalidate();
 		lblFileAdded.setText("File added:     " + SystemUtils.getFileNameFromPath(filePath));
 		lblFileAdded.setToolTipText(filePath);
-		
+		getChckbxSelectFile().setSelected(true);
 		selectSheet(null);
 	}
 
 	private void selectSheet(String sheetName) {
 		// set Table header model
 		Object[] headerArray;
-		if(sheetName==null) {
+		if (sheetName == null) {
 			headerArray = controller.getHeaders().toArray();
 		} else {
 			headerArray = controller.getHeader(sheetName).toArray();
@@ -468,6 +537,7 @@ public class ImportPanel extends JPanel {
 
 		// autoSelect listbox
 		autoSelectListBox(controller.getHeaders());
+		getChckbxSelectSheet().setSelected(true);
 	}
 
 	private void autoSelectListBox(List<String> headers) {
@@ -476,27 +546,27 @@ public class ImportPanel extends JPanel {
 		if ((loc = Utils.getBestMatch(controller.getLocationKeywords(), headers)) != null) {
 			locationHeaderCB.setSelectedItem(loc);
 		}
-		
+
 		String category;
 		if ((category = Utils.getBestMatch(controller.getCategoryKeywords(), headers)) != null) {
 			categoryHeaderCB.setSelectedItem(category);
 		}
-		
+
 		String buyer;
 		if ((buyer = Utils.getBestMatch(controller.getBuyerKeywords(), headers)) != null) {
 			buyerHeaderCB.setSelectedItem(buyer);
 		}
-		
+
 		String rate;
 		if ((rate = Utils.getBestMatch(controller.getRateKeywords(), headers)) != null) {
 			rateHeaderCB.setSelectedItem(rate);
 		}
-		
+
 		String cost;
 		if ((cost = Utils.getBestMatch(controller.getCostKeywords(), headers)) != null) {
 			costHeaderCB.setSelectedItem(cost);
 		}
-		
+
 		String price;
 		if ((price = Utils.getBestMatch(controller.getPriceKeywords(), headers)) != null) {
 			priceHeaderCB.setSelectedItem(price);
@@ -506,7 +576,7 @@ public class ImportPanel extends JPanel {
 		if ((profit = Utils.getBestMatch(controller.getProfitKeywords(), headers)) != null) {
 			profitHeaderCB.setSelectedItem(profit);
 		}
-		
+
 		String date;
 		if ((date = Utils.getBestMatch(controller.getDateKeywords(), headers)) != null) {
 			dateHeaderCB.setSelectedItem(date);
@@ -517,5 +587,23 @@ public class ImportPanel extends JPanel {
 	private boolean verifyFile(String filePath) {
 		// TODO Check if extension is proper
 		return true;
+	}
+
+	private JProgressBar getProgressBar() {
+		return progressBar;
+	}
+
+	private JCheckBox getChckbxSelectFile() {
+		return chckbxSelectFile;
+	}
+
+	public JCheckBox getChckbxSelectSheet() {
+		return chckbxSelectSheet;
+	}
+	public JCheckBox getChckbxMapHeaders() {
+		return chckbxMapHeaders;
+	}
+	public JCheckBox getChckbxImport() {
+		return chckbxImport;
 	}
 }
