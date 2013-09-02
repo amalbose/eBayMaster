@@ -3,6 +3,7 @@ package com.axatrikx.ui.panels;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -73,7 +74,7 @@ public class ImportPanel extends JPanel {
 		JPanel fileSelectionPanel = new JPanel();
 		fileSelectionPanel.setBorder(new LineBorder(Color.LIGHT_GRAY, 1, true));
 		add(fileSelectionPanel, "cell 0 0,alignx left,growy");
-		fileSelectionPanel.setLayout(new MigLayout("", "[grow][][][350][][][][100px][]", "[grow][]"));
+		fileSelectionPanel.setLayout(new MigLayout("", "[grow][][][350][][][][][100px][]", "[grow][]"));
 
 		JLabel lblFileToImport = new JLabel("Select file to import");
 		fileSelectionPanel.add(lblFileToImport, "cell 1 1,growy");
@@ -90,22 +91,37 @@ public class ImportPanel extends JPanel {
 			}
 		});
 		fileSelectionPanel.add(btnBrowse, "cell 4 1,growy");
+		
+		JButton btnOpenFile = new JButton("Open File");
+		btnOpenFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String fileName = filePathTF.getText().toString();
+				if(!fileName.isEmpty()) {
+					try {
+						Desktop.getDesktop().open(new File(fileName));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		fileSelectionPanel.add(btnOpenFile, "cell 5 1");
 
 		Component horizontalStrut = Box.createHorizontalStrut(100);
-		fileSelectionPanel.add(horizontalStrut, "cell 5 1");
+		fileSelectionPanel.add(horizontalStrut, "cell 6 1");
 
 		JLabel lblSheet = new JLabel("Select Sheet");
-		fileSelectionPanel.add(lblSheet, "cell 6 1,aligny center");
+		fileSelectionPanel.add(lblSheet, "cell 7 1,aligny center");
 
 		sheetNamesCB = new JComboBox<String>();
 		sheetNamesCB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(sheetNamesCB.getSelectedItem());
 				selectSheet(sheetNamesCB.getSelectedItem().toString());
 			}
 		});
 		sheetNamesCB.setModel(new DefaultComboBoxModel<String>(new String[] { "Default" }));
-		fileSelectionPanel.add(sheetNamesCB, "cell 7 1,growx,aligny center");
+		fileSelectionPanel.add(sheetNamesCB, "cell 8 1,growx,aligny center");
 
 		JPanel notifyPanel = new JPanel();
 		add(notifyPanel, "cell 0 1,growx,aligny center");
@@ -229,6 +245,7 @@ public class ImportPanel extends JPanel {
 		mappingPanel.add(profitHeaderCB, "cell 3 9,growx");
 
 		dateHeaderCB = new JComboBox<String>();
+		dateHeaderCB.setEnabled(false);
 		mappingPanel.add(dateHeaderCB, "cell 5 9,growx");
 
 		chckbxMappingCompleted = new JCheckBox("Mapping Completed");
