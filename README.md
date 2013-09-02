@@ -1,5 +1,7 @@
 #eBayMaster
 
+[![Stories in Ready](https://badge.waffle.io/axatrikx/ebaymaster.png)](http://waffle.io/axatrikx/ebaymaster)
+
 [![Build Status](https://api.travis-ci.org/axatrikx/eBayMaster.png?branch=master)](https://travis-ci.org/axatrikx/eBayMaster)
 
 eBayMaster is a tool for managing your eBay transactions. It keeps track of each transactions and provides a wide variety of reports based on your expense and profit.
