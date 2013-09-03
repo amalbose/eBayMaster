@@ -5,7 +5,6 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Rectangle;
 import java.awt.SystemTray;
 import java.awt.event.ActionEvent;
@@ -67,10 +66,6 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
-		setExtendedState(Frame.MAXIMIZED_BOTH);
-		setTitle("eBay Master");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setName("menuBar");
 		menuBar.setBounds(new Rectangle(5, 0, 0, 0));
@@ -241,14 +236,15 @@ public class MainFrame extends JFrame {
 		btnSettings.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSettings.setHorizontalTextPosition(SwingConstants.CENTER);
 		toolBar.add(btnSettings);
-		
+
 		Component horizontalStrut_3 = Box.createHorizontalStrut(20);
 		horizontalStrut_3.setPreferredSize(new Dimension(10, 0));
 		horizontalStrut_3.setMinimumSize(new Dimension(10, 0));
 		horizontalStrut_3.setMaximumSize(new Dimension(10, 32767));
 		toolBar.add(horizontalStrut_3);
-		
-		JButton btnImport = new JButton("Import", new ImageIcon(MainFrame.class.getResource("/images/1377466837_plus-24.png")));
+
+		JButton btnImport = new JButton("Import", new ImageIcon(
+				MainFrame.class.getResource("/images/1377466837_plus-24.png")));
 		btnImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				showImportPanel();
@@ -308,7 +304,7 @@ public class MainFrame extends JFrame {
 		transactionsPanel.add(transactionPanel, BorderLayout.CENTER);
 
 		JPanel importPanel = new ImportPanel();
-		
+
 		// setting the various cards
 		mainPanel.add(homePanel, "Home");
 		mainPanel.add(transactionsPanel, "Transactions");
@@ -387,9 +383,19 @@ public class MainFrame extends JFrame {
 	 */
 	public void exitApp() {
 		if (Prefs.isConfirmationOnExit()) {
-			if (JOptionPane.showConfirmDialog(this, "Do you want to exit?") == 0) {
+			if (JOptionPane.showConfirmDialog(null, "Do you want to exit?", "Exit Application?",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == 0) {
 				System.exit(0);
 			}
 		}
+	}
+
+	public void setCloseOperation() {
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				exitApp();
+				getFrame().setExtendedState(JFrame.NORMAL);
+			}
+		});
 	}
 }

@@ -45,9 +45,10 @@ public class EBayMaster {
 		mainFrame.setName("mainFrame");
 		mainFrame.setTitle("eBay Master");
 		mainFrame.setBackground(Color.WHITE);
-		mainFrame.setDefaultCloseOperation(Prefs.isExitToTray() ? 1 : 3);
+		mainFrame.setDefaultCloseOperation(Prefs.isExitToTray() ? 1 : Prefs.isConfirmationOnExit() ? 0 : 3);
 		mainFrame.setVisible(true);
 		mainFrame.setExtendedState(mainFrame.getExtendedState() | (Prefs.isStartMaximized() ? 6 : 0));
 		mainFrame.setExitToSystemTray();
+		mainFrame.setCloseOperation();
 	}
 }
